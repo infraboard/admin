@@ -1,15 +1,28 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Admin-Token'
+const AccessTokenKey = 'Access-Token'
+const RefreshTokenKey = 'Refresh-Token'
 
-export function getToken() {
-  return Cookies.get(TokenKey)
+export function getAccessToken() {
+  return Cookies.get(AccessTokenKey)
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+export function getRefreshToken() {
+  return Cookies.get(RefreshTokenKey)
 }
 
-export function removeToken() {
-  return Cookies.remove(TokenKey)
+export function setAccessToken(token) {
+  return Cookies.set(AccessTokenKey, token)
+}
+
+export function setRefreshToken(token) {
+  return Cookies.set(RefreshTokenKey, token)
+}
+
+export function removeAccessToken() {
+  return Cookies.remove(AccessTokenKey)
+}
+
+export function removeRefreshToken() {
+  return Cookies.remove(RefreshTokenKey)
 }

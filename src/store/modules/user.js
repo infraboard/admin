@@ -1,9 +1,10 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login, logout, getInfo, refreshAccessToken } from '@/api/user'
+import { getAccessToken, setAccessToken, removeAccessToken, getRefreshToken, setRefreshToken, removeRefreshToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
-  token: getToken(),
+  accessToken: getAccessToken(),
+  refreshToken: getRefreshToken(),
   name: '',
   avatar: '',
   introduction: '',
@@ -11,8 +12,11 @@ const state = {
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_ACCESS_TOKEN: (state, token) => {
+    state.accessToken = token
+  },
+  SET_REFRESH_TOKEN: (state, token) => {
+    state.refreshToken = token
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -32,11 +36,18 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    var req = {
+      grant_type: 'password',
+      username: username.trim(),
+      password: password
+    }
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login(req).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        commit('SET_ACCESS_TOKEN', data.access_token)
+        commit('SET_REFRESH_TOKEN', data.refresh_token)
+        setAccessToken(data.access_token)
+        setRefreshToken(data.refresh_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -75,12 +86,12 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
+      logout().then(() => {
+        commit('SET_ACCESS_TOKEN', '')
         commit('SET_ROLES', [])
-        removeToken()
+        removeAccessToken()
+        removeRefreshToken()
         resetRouter()
-
         resolve()
       }).catch(error => {
         reject(error)
@@ -91,10 +102,30 @@ const actions = {
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
+      commit('SET_ACCESS_TOKEN', '')
       commit('SET_ROLES', [])
-      removeToken()
+      removeAccessToken()
       resolve()
+    })
+  },
+
+  // refresh token
+  refreshToken({ commit, state, dispatch }) {
+    var req = {
+      grant_type: 'refresh',
+      refresh_token: getRefreshToken()
+    }
+    return new Promise((resolve, reject) => {
+      refreshAccessToken(req).then(response => {
+        const { data } = response
+        commit('SET_ACCESS_TOKEN', data.access_token)
+        commit('SET_REFRESH_TOKEN', data.refresh_token)
+        setAccessToken(data.access_token)
+        setRefreshToken(data.refresh_token)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 
@@ -102,8 +133,8 @@ const actions = {
   async changeRoles({ commit, dispatch }, role) {
     const token = role + '-token'
 
-    commit('SET_TOKEN', token)
-    setToken(token)
+    commit('SET_ACCESS_TOKEN', token)
+    setAccessToken(token)
 
     const { roles } = await dispatch('getInfo')
 

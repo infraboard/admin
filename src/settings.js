@@ -25,5 +25,12 @@ module.exports = {
      * The default is only used in the production env
      * If you want to also use it in dev, you can pass ['production', 'development']
      */
-  errorLog: 'production'
+  errorLog: 'production',
+
+  /**
+     * @type {string}
+     * @description app client credential
+     */
+  client_id: 'N3JwQUM2YnI0WVN-fkJEcQ',
+  client_secret: 'RXI0ZDlwLVlITF8yekFYUU1SfjNvZzRuNy4uMi05LnU'
 }

@@ -1,24 +1,45 @@
 import request from '@/utils/request'
 
+const defaultSettings = require('@/settings.js')
+
 export function login(data) {
   return request({
-    url: '/vue-element-admin/user/login',
+    url: '/keyauth/v1/oauth2/tokens/',
     method: 'post',
+    auth: {
+      username: defaultSettings.client_id,
+      password: defaultSettings.client_secret
+    },
     data
   })
 }
 
-export function getInfo(token) {
+export function refreshAccessToken(data) {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    url: '/keyauth/v1/oauth2/tokens/',
+    method: 'post',
+    auth: {
+      username: defaultSettings.client_id,
+      password: defaultSettings.client_secret
+    },
+    data
+  })
+}
+
+export function getInfo() {
+  return request({
+    url: '/keyauth/v1/self/',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/keyauth/v1/oauth2/tokens/',
+    method: 'delete',
+    auth: {
+      username: defaultSettings.client_id,
+      password: defaultSettings.client_secret
+    }
   })
 }
