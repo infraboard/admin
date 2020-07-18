@@ -28,7 +28,7 @@ export function refreshAccessToken(data) {
 
 export function getInfo() {
   return request({
-    url: '/keyauth/v1/self/',
+    url: '/keyauth/v1/profile/',
     method: 'get'
   })
 }

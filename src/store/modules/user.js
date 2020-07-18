@@ -58,9 +58,11 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
 
+        data.roles = ['admin']
+        data.avatar = 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLwp1gIfBxH4dibZZTBrzAWAQN2jeSvp0WGWiaQSvUrbDCqqWIPWNQcbtTsbrGBsZVoicPic4ywibrIzCA/132'
         if (!data) {
           reject('Verification failed, please Login again.')
         }
