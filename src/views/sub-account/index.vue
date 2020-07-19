@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { createSubAccount, querySubAccount, deleteSubAccount } from '@/api/subAccount'
+import { createSubAccount, querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
 
 export default {

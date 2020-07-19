@@ -123,18 +123,28 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/error-log',
+    path: '/system',
     component: Layout,
+    redirect: '/system/role',
+    alwaysShow: true,
+    name: 'System',
+    meta: {
+      title: '系统管理',
+      icon: 'system_management',
+      roles: ['admin'] // you can set roles in root nav
+    },
     children: [
       {
-        path: 'log',
-        component: () => import('@/views/error-log/index'),
-        name: 'ErrorLog',
-        meta: { title: 'errorLog', icon: 'bug' }
+        path: 'role',
+        component: () => import('@/views/role'),
+        name: 'RoleList',
+        meta: {
+          title: '角色列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
       }
     ]
   },
-
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
