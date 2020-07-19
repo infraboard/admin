@@ -99,26 +99,25 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/error',
+    path: '/sub_account',
     component: Layout,
-    redirect: 'noRedirect',
-    name: 'ErrorPages',
+    redirect: '/sub_account/page',
+    alwaysShow: true,
+    name: 'SubAccount',
     meta: {
-      title: 'errorPages',
-      icon: '404'
+      title: '用户管理',
+      icon: 'user_management',
+      roles: ['admin', 'vistor'] // you can set roles in root nav
     },
     children: [
       {
-        path: '401',
-        component: () => import('@/views/error-page/401'),
-        name: 'Page401',
-        meta: { title: 'page401', noCache: true }
-      },
-      {
-        path: '404',
-        component: () => import('@/views/error-page/404'),
-        name: 'Page404',
-        meta: { title: 'page404', noCache: true }
+        path: 'page',
+        component: () => import('@/views/sub-account/index'),
+        name: 'PageSubAccount',
+        meta: {
+          title: '用户列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
       }
     ]
   },
