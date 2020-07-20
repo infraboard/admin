@@ -40,28 +40,28 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
+        component: () => import('@/views/common/redirect/index')
       }
     ]
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/keyauth/login/index'),
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
+    component: () => import('@/views/keyauth/login/auth-redirect'),
     hidden: true
   },
   {
     path: '/404',
-    component: () => import('@/views/error-page/404'),
+    component: () => import('@/views/common/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/error-page/401'),
+    component: () => import('@/views/common/error-page/401'),
     hidden: true
   },
   {
@@ -85,7 +85,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/profile/index'),
+        component: () => import('@/views/keyauth/profile/index'),
         name: 'Profile',
         meta: { title: 'profile', icon: 'user', noCache: true }
       }
@@ -112,7 +112,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'page',
-        component: () => import('@/views/sub-account/index'),
+        component: () => import('@/views/keyauth/sub-account/index'),
         name: 'PageSubAccount',
         meta: {
           title: '用户列表',
@@ -136,10 +136,19 @@ export const asyncRoutes = [
     children: [
       {
         path: 'role',
-        component: () => import('@/views/role'),
+        component: () => import('@/views/keyauth/role'),
         name: 'RoleList',
         meta: {
           title: '角色列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'namespace',
+        component: () => import('@/views/keyauth/namespace'),
+        name: 'RoleList',
+        meta: {
+          title: '空间列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }

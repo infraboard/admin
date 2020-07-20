@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import { queryRoles } from '@/api/keyauth/role'
+import { queryRoles, createRole } from '@/api/keyauth/role'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'ComplexTable',
+  name: 'RoleList',
   components: { Pagination },
   directives: { },
   data() {
@@ -133,26 +133,28 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.dialogFormType === 'create') {
-            // 新建
+            this.createRole()
           } else {
             // 更新
           }
-          // this.createLoading = true
-          // 创建请求
-          // createSubAccount(this.form).then(resp => {
-          //   this.dialogFormVisible = false
-          //   this.roleList.unshift(resp.data)
-          //   this.$notify({
-          //     title: '成功',
-          //     message: '创建成功',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          //   this.createLoading = false
-          // }).catch(() => {
-          //   this.createLoading = false
-          // })
         }
+      })
+    },
+    createRole() {
+      this.createLoading = true
+      // 创建请求
+      createRole(this.form).then(resp => {
+        this.dialogFormVisible = false
+        this.roleList.unshift(resp.data)
+        this.$notify({
+          title: '成功',
+          message: '创建成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.createLoading = false
+      }).catch(() => {
+        this.createLoading = false
       })
     },
     handleUpdate(row) {
