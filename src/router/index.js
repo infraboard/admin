@@ -146,9 +146,18 @@ export const asyncRoutes = [
       {
         path: 'namespace',
         component: () => import('@/views/keyauth/namespace'),
-        name: 'RoleList',
+        name: 'NamespaceList',
         meta: {
           title: '空间列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'department',
+        component: () => import('@/views/keyauth/department'),
+        name: 'DepartmentList',
+        meta: {
+          title: '部门列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }

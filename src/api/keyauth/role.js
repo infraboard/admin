@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function queryRoles(query) {
+export function queryRole(query) {
   return request({
     url: '/keyauth/v1/roles',
     method: 'get',

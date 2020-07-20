@@ -45,7 +45,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getNamespaceList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" />
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
+import { queryDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'NamespaceList',
+  name: 'DepartmentList',
   components: { Pagination },
   directives: { },
   data() {
@@ -101,13 +101,13 @@ export default {
     }
   },
   created() {
-    this.getNamespaceList()
+    this.getDepartmentList()
   },
   methods: {
-    getNamespaceList() {
+    getDepartmentList() {
       this.listLoading = true
       // 获取用户列表
-      queryNamespace(this.listQuery).then(response => {
+      queryDepartment(this.listQuery).then(response => {
         this.roleList = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -134,17 +134,17 @@ export default {
         if (valid) {
           if (this.dialogFormType === 'create') {
             // 新建
-            this.createNamespace()
+            this.createDepartment()
           } else {
             // 更新
           }
         }
       })
     },
-    createNamespace() {
+    createDepartment() {
       this.createLoading = true
       // 创建请求
-      createNamespace(this.form).then(resp => {
+      createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
         this.roleList.unshift(resp.data)
         this.$notify({
@@ -168,7 +168,7 @@ export default {
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
-      deleteNamespace(row.id).then(resp => {
+      deleteDepartment(row.id).then(resp => {
         this.$notify({
           title: '成功',
           message: '删除成功',

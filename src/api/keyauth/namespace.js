@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function queryNamespaces(query) {
+export function queryNamespace(query) {
   return request({
     url: '/keyauth/v1/namespaces',
     method: 'get',

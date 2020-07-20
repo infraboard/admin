@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { queryRoles, createRole } from '@/api/keyauth/role'
+import { queryRole, createRole } from '@/api/keyauth/role'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -107,7 +107,7 @@ export default {
     getRoleList() {
       this.listLoading = true
       // 获取用户列表
-      queryRoles(this.listQuery).then(response => {
+      queryRole(this.listQuery).then(response => {
         this.roleList = response.data.items
         this.total = response.data.total
         this.listLoading = false
