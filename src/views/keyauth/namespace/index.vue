@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增命名空间' : '编辑命名空间'
+      return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
     }
   },
   created() {

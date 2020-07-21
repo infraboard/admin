@@ -45,7 +45,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getServiceList" />
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import { queryDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
+import { queryService, createService, deleteService } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'DepartmentList',
+  name: 'ServiceList',
   components: { Pagination },
   directives: { },
   data() {
@@ -97,17 +97,17 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
+      return this.dialogFormType === 'create' ? '新增服务' : '编辑服务'
     }
   },
   created() {
-    this.getDepartmentList()
+    this.getServiceList()
   },
   methods: {
-    getDepartmentList() {
+    getServiceList() {
       this.listLoading = true
       // 获取用户列表
-      queryDepartment(this.listQuery).then(response => {
+      queryService(this.listQuery).then(response => {
         this.roleList = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -134,17 +134,17 @@ export default {
         if (valid) {
           if (this.dialogFormType === 'create') {
             // 新建
-            this.createDepartment()
+            this.createService()
           } else {
             // 更新
           }
         }
       })
     },
-    createDepartment() {
+    createService() {
       this.createLoading = true
       // 创建请求
-      createDepartment(this.form).then(resp => {
+      createService(this.form).then(resp => {
         this.dialogFormVisible = false
         this.roleList.unshift(resp.data)
         this.$notify({
@@ -168,7 +168,7 @@ export default {
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
-      deleteDepartment(row.id).then(resp => {
+      deleteService(row.id).then(resp => {
         this.$notify({
           title: '成功',
           message: '删除成功',

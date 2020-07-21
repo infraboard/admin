@@ -26,13 +26,6 @@ export function refreshAccessToken(data) {
   })
 }
 
-export function getInfo() {
-  return request({
-    url: '/keyauth/v1/profile/',
-    method: 'get'
-  })
-}
-
 export function logout() {
   return request({
     url: '/keyauth/v1/oauth2/tokens/',

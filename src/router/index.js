@@ -99,21 +99,21 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/sub_account',
+    path: '/user',
     component: Layout,
-    redirect: '/sub_account/page',
+    redirect: '/user/sub',
     alwaysShow: true,
     name: 'SubAccount',
     meta: {
       title: '用户管理',
-      icon: 'user_management',
+      icon: 'account',
       roles: ['admin', 'vistor'] // you can set roles in root nav
     },
     children: [
       {
-        path: 'page',
+        path: 'sub',
         component: () => import('@/views/keyauth/sub-account/index'),
-        name: 'PageSubAccount',
+        name: 'SubAccount',
         meta: {
           title: '用户列表',
           roles: ['admin'] // or you can only set roles in sub nav
@@ -132,11 +132,11 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/system',
+    path: '/permission',
     component: Layout,
-    redirect: '/system/role',
+    redirect: '/permission/role',
     alwaysShow: true,
-    name: 'System',
+    name: 'Permission',
     meta: {
       title: '权限管理',
       icon: 'permission',
@@ -158,6 +158,30 @@ export const asyncRoutes = [
         name: 'NamespaceList',
         meta: {
           title: '空间列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/service',
+    component: Layout,
+    redirect: '/service/list',
+    alwaysShow: true,
+    name: 'Permission',
+    meta: {
+      title: '服务管理',
+      icon: 'micro',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/keyauth/service'),
+        name: 'RoleList',
+        meta: {
+          title: '服务列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }

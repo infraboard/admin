@@ -1,4 +1,5 @@
-import { login, logout, getInfo, refreshAccessToken } from '@/api/keyauth/user'
+import { login, logout, refreshAccessToken } from '@/api/keyauth/token'
+import { getProfile } from '@/api/keyauth/profile'
 import { getAccessToken, setAccessToken, removeAccessToken, getRefreshToken, setRefreshToken, removeRefreshToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -58,7 +59,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo().then(response => {
+      getProfile().then(response => {
         const { data } = response
 
         data.roles = ['admin']
