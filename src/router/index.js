@@ -118,6 +118,15 @@ export const asyncRoutes = [
           title: '用户列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
+      },
+      {
+        path: 'department',
+        component: () => import('@/views/keyauth/department'),
+        name: 'DepartmentList',
+        meta: {
+          title: '部门列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
       }
     ]
   },
@@ -129,8 +138,8 @@ export const asyncRoutes = [
     alwaysShow: true,
     name: 'System',
     meta: {
-      title: '系统管理',
-      icon: 'system_management',
+      title: '权限管理',
+      icon: 'permission',
       roles: ['admin'] // you can set roles in root nav
     },
     children: [
@@ -149,15 +158,6 @@ export const asyncRoutes = [
         name: 'NamespaceList',
         meta: {
           title: '空间列表',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'department',
-        component: () => import('@/views/keyauth/department'),
-        name: 'DepartmentList',
-        meta: {
-          title: '部门列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }

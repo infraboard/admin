@@ -14,7 +14,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (store.getters.accessToken) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -44,42 +43,53 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
+      // 判断是否需要刷新token, 并重新请求
+      if (res.code === 50014) {
+        return store.dispatch('user/refreshToken').then(() => {
+          response.config.headers['X-OAUTH-TOKEN'] = getAccessToken()
+          return axios.request(response.config).then((retryResp) => {
+            return retryResp.data
+          })
+        })
+      }
+
+      // token不合法, 或者刷新token失效 需要重新登录
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      if (res.code === 50008 || res.code === 50012 || res.code === 50015) {
+        // to re-login
+        return MessageBox.confirm('当前会话已经过期, 您可以取消停留在此页面或再次登录', '确认退出', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          await store.dispatch('user/resetToken')
+          location.reload()
+        })
+      }
+
       Message({
-        message: res.message || 'Error',
+        message: res.reason || res.message,
         type: 'error',
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log(error)
-    var msg = error.message
-    if (error.response.data.message) {
-      msg = error.response.data.message
+    console.log('err' + error) // for debug
+    var message = error
+    if (error.response) {
+      const res = error.response.data
+      message = res.reason || res.message
     }
 
     Message({
-      message: msg,
+      message: message,
       type: 'error',
       duration: 5 * 1000
     })
