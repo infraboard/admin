@@ -13,7 +13,7 @@
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.name }}</div>
-        <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div>
+        <div class="user-role text-center text-muted">{{ user.type | uppercaseFirst }}</div>
       </div>
     </div>
 
@@ -53,20 +53,24 @@
 </template>
 
 <script>
+import { getProfile } from '@/api/keyauth/profile'
 import PanThumb from '@/components/PanThumb'
 export default {
+  name: 'UserCard',
   components: { PanThumb },
-  props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {
-          name: '',
-          email: '',
-          avatar: '',
-          role: ''
-        }
-      }
+  data() {
+    return {
+      user: {}
+    }
+  },
+  created() {
+    this.getProfile()
+  },
+  methods: {
+    getProfile() {
+      getProfile().then(resp => {
+        this.user = resp.data
+      })
     }
   }
 }
