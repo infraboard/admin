@@ -8,11 +8,11 @@
       <div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           <div>Hello</div>
-          {{ user.role }}
+          {{ user.account }}
         </pan-thumb>
       </div>
       <div class="box-center">
-        <div class="user-name text-center">{{ user.name }}</div>
+        <div class="user-name text-center">{{ user.account }}</div>
         <div class="user-role text-center text-muted">{{ user.type | uppercaseFirst }}</div>
       </div>
     </div>
@@ -60,7 +60,11 @@ export default {
   components: { PanThumb },
   data() {
     return {
-      user: {}
+      user: {
+        account: '',
+        avatar: '',
+        type: ''
+      }
     }
   },
   created() {
@@ -70,6 +74,8 @@ export default {
     getProfile() {
       getProfile().then(resp => {
         this.user = resp.data
+        this.user.avatar = 'https://wpimg.wallstcn.com/9679ffb0-9e0b-4451-9916-e21992218054.jpg'
+        console.log(this.user)
       })
     }
   }
