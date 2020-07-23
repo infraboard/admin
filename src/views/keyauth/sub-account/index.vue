@@ -25,11 +25,6 @@
           <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色" prop="role" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.role }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="状态" prop="status" align="center" min-width="110">
         <template slot-scope="{row}">
           <span v-if="row.status.locked"><svg-icon icon-class="locked" /></span>
@@ -55,11 +50,6 @@
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="form.password" show-password />
-        </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-select v-model="form.role" class="filter-item" placeholder="请选择">
-            <el-option v-for="item in roleOptions" :key="item" :label="item" :value="item" />
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -89,13 +79,11 @@ export default {
         page_number: 1,
         page_size: 20
       },
-      roleOptions: ['访客', '客服'],
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
         account: '',
-        password: '',
-        role: ''
+        password: ''
       },
       rules: {
         account: [{ required: true, message: '请输入用户名！', trigger: 'change' }],

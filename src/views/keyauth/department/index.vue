@@ -49,11 +49,14 @@
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
+        <el-form-item label="上级部门" prop="parent_id">
+          <el-input v-model="form.parent_id" />
+        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" />
+        <el-form-item label="负责人" prop="manager_id">
+          <el-input v-model="form.manager_id" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -88,10 +91,11 @@ export default {
       dialogFormType: 'create',
       form: {
         name: '',
-        description: ''
+        parent_id: '',
+        manager_id: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
+        name: [{ required: true, message: '请输入部门名称!', trigger: 'change' }]
       }
     }
   },
