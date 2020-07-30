@@ -1,15 +1,39 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
-    </div>
+    <el-container>
+      <el-aside width="260px" style="background: #FFFFFF;">
+        <div>
+          <el-button class="filter-item" style="margin-left: 10px;" type="text" icon="el-icon-plus" @click="handleCreate">
+            顶级部门
+          </el-button>
+        </div>
+        <el-tree
+          ref="department_tree"
+          :data="departmentList"
+          :props="props"
+          :load="loadNode"
+          lazy
+          @current-change="handleChanged"
+        />
+      </el-aside>
+      <el-main>
+        <el-card class="box-card">
+          <div v-for="o in 4" :key="o" class="text item">
+            {{ '列表内容 ' + o }}
+          </div>
+        </el-card>
+        <el-card class="box-card" style="margin-top:12px;">
+          <div v-for="o in 4" :key="o" class="text item">
+            {{ '列表内容 ' + o }}
+          </div>
+        </el-card>
+      </el-main>
+    </el-container>
 
-    <el-table
+    <!-- <el-table
       :key="tableKey"
       v-loading="listLoading"
-      :data="roleList"
+      :data="departmentList"
       border
       fit
       highlight-current-row
@@ -45,13 +69,10 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" /> -->
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="上级部门" prop="parent_id">
-          <el-input v-model="form.parent_id" />
-        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
@@ -68,17 +89,21 @@
 </template>
 
 <script>
-import { queryDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
-import Pagination from '@/components/Pagination'
+import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
 
 export default {
   name: 'DepartmentList',
-  components: { Pagination },
+  components: { },
   directives: { },
   data() {
     return {
+      props: {
+        label: 'name',
+        children: 'zones',
+        isLeaf: 'leaf'
+      },
       tableKey: 0,
-      roleList: [],
+      departmentList: [],
       total: 0,
       createLoading: false,
       deleteLoading: '',
@@ -108,16 +133,24 @@ export default {
     this.getDepartmentList()
   },
   methods: {
-    getDepartmentList() {
+    async loadNode(node, resolve) {
+      // 获取子部门
+      if (node.level >= 1) {
+        const resp = await querySubDepartment(node.data.id, this.listQuery)
+        return resolve(resp.data.items)
+      }
+    },
+    async getDepartmentList() {
+      // 获取顶层部门
       this.listLoading = true
-      // 获取用户列表
-      queryDepartment(this.listQuery).then(response => {
-        this.roleList = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
-      }).catch(() => {
-        this.listLoading = false
-      })
+      const resp = await queryDepartment(this.listQuery)
+      this.departmentList = resp.data.items
+      this.total = resp.data.total
+      this.listLoading = false
+    },
+    handleChanged(data, node) {
+      console.log(this)
+      console.log(data, node)
     },
     resetForm() {
       this.form = {
@@ -139,6 +172,7 @@ export default {
           if (this.dialogFormType === 'create') {
             // 新建
             this.createDepartment()
+            this.getDepartmentList()
           } else {
             // 更新
           }
@@ -150,7 +184,7 @@ export default {
       // 创建请求
       createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
+        this.departmentList.unshift(resp.data)
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -179,7 +213,7 @@ export default {
           type: 'success',
           duration: 2000
         })
-        this.roleList.splice(index, 1)
+        this.departmentList.splice(index, 1)
         this.deleteLoading = ''
       }).catch(() => {
         this.deleteLoading = ''

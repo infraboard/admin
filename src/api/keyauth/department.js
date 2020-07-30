@@ -8,6 +8,14 @@ export function queryDepartment(query) {
   })
 }
 
+export function querySubDepartment(id, query) {
+  return request({
+    url: '/keyauth/v1/departments/' + id + '/subs',
+    method: 'get',
+    params: query
+  })
+}
+
 export function createDepartment(data) {
   return request({
     url: '/keyauth/v1/departments/',
