@@ -8,16 +8,20 @@
           </el-button>
         </div>
         <el-tree
-          ref="department_tree"
+          ref="tree"
+          node-key="id"
           :data="departmentList"
           :props="props"
           :load="loadNode"
           lazy
+          highlight-current
+          :expand-on-click-node="false"
           @current-change="handleChanged"
         />
       </el-aside>
       <el-main>
         <el-card class="box-card">
+          {{ current }}
           <div v-for="o in 4" :key="o" class="text item">
             {{ '列表内容 ' + o }}
           </div>
@@ -97,6 +101,7 @@ export default {
   directives: { },
   data() {
     return {
+      current: {},
       props: {
         label: 'name',
         children: 'zones',
@@ -147,10 +152,14 @@ export default {
       this.departmentList = resp.data.items
       this.total = resp.data.total
       this.listLoading = false
+      // 设置默认选择节点
+      this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.departmentList[0].id)
+        this.current = this.$refs.tree.getCurrentNode()
+      })
     },
-    handleChanged(data, node) {
-      console.log(this)
-      console.log(data, node)
+    handleChanged() {
+      this.current = this.$refs.tree.getCurrentNode()
     },
     resetForm() {
       this.form = {
