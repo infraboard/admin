@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-container>
-      <el-aside width="260px" style="background: #FFFFFF;">
+      <el-aside width="220px" style="background: #FFFFFF;">
         <div>
           <el-button class="filter-item" style="margin-left: 10px;" type="text" icon="el-icon-plus" @click="handleCreate">
             顶级部门
@@ -21,6 +21,15 @@
       </el-aside>
       <el-main>
         <el-card class="box-card f12">
+          <el-row :gutter="8">
+            <el-col :xs="12" :sm="12" :lg="12">
+              <span class="title">组信息</span>
+            </el-col>
+            <el-col :xs="12" :sm="12" :lg="12">
+              <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+            </el-col>
+
+          </el-row>
           <el-row :gutter="8" style="margin-bottom: 12px;">
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">名称: </span>
@@ -89,8 +98,8 @@
                   </el-table-column>
                   <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
                     <template slot-scope="{row,$index}">
-                      <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-                        移出用户
+                      <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+                        移出该组
                       </el-button>
                     </template>
                   </el-table-column>
@@ -109,8 +118,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="负责人" prop="manager_id">
-          <el-input v-model="form.manager_id" />
+        <el-form-item label="负责人" prop="manager">
+          <el-input v-model="form.manager" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -154,7 +163,7 @@ export default {
       form: {
         name: '',
         parent_id: '',
-        manager_id: ''
+        manager: ''
       },
       rules: {
         name: [{ required: true, message: '请输入部门名称!', trigger: 'change' }]
