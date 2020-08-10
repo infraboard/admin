@@ -130,7 +130,7 @@ aside {
 }
 
 .pagination-container {
-  margin-top: 30px;
+  margin-top: 12px;
 }
 
 .text-center {
@@ -188,4 +188,13 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+.f12 {
+  font-size: 12px;
+}
+
+.attr-key {
+  font-weight: 500;
+  color: #7d8591;
 }

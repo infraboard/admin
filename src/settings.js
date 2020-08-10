@@ -31,6 +31,6 @@ module.exports = {
      * @type {string}
      * @description app client credential
      */
-  client_id: 'N3JwQUM2YnI0WVN-fkJEcQ',
-  client_secret: 'RXI0ZDlwLVlITF8yekFYUU1SfjNvZzRuNy4uMi05LnU'
+  client_id: 'THRaM04uSHRvK2g0b1FSUQ',
+  client_secret: 'Yk5-UGhCSXRYLlBobjVrakR5K19XK09oMmlLeDYvZ1o'
 }

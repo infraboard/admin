@@ -20,60 +20,89 @@
         />
       </el-aside>
       <el-main>
-        <el-card class="box-card">
-          {{ current }}
-          <div v-for="o in 4" :key="o" class="text item">
-            {{ '列表内容 ' + o }}
-          </div>
+        <el-card class="box-card f12">
+          <el-row :gutter="8" style="margin-bottom: 12px;">
+            <el-col :xs="6" :sm="6" :lg="2">
+              <span class="attr-key">名称: </span>
+            </el-col>
+            <el-col :xs="18" :sm="18" :lg="6">
+              <span>{{ current.name }}</span>
+            </el-col>
+            <el-col :xs="6" :sm="6" :lg="2">
+              <span class="attr-key">上级部门: </span>
+            </el-col>
+            <el-col :xs="18" :sm="18" :lg="6">
+              <span>{{ current.parent_id }}</span>
+            </el-col>
+            <el-col :xs="6" :sm="6" :lg="2">
+              <span class="attr-key">创建时间: </span>
+            </el-col>
+            <el-col :xs="18" :sm="18" :lg="6">
+              <span>{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-col>
+          </el-row>
+          <el-row :gutter="8" style="margin-bottom: 12px;">
+            <el-col :xs="6" :sm="6" :lg="2">
+              <span class="attr-key">负责人: </span>
+            </el-col>
+            <el-col :xs="18" :sm="18" :lg="6">
+              <span>{{ current.manager }}</span>
+            </el-col>
+          </el-row>
         </el-card>
         <el-card class="box-card" style="margin-top:12px;">
-          <div v-for="o in 4" :key="o" class="text item">
-            {{ '列表内容 ' + o }}
-          </div>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="权限" name="first">权限</el-tab-pane>
+            <el-tab-pane label="用户" name="second">
+              <div>
+                <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
+              </div>
+              <div>
+                <el-table
+                  :key="tableKey"
+                  v-loading="listLoading"
+                  :data="departmentList"
+                  border
+                  fit
+                  highlight-current-row
+                  style="width: 100%;margin-top:12px;"
+                >
+                  <el-table-column label="名称" prop="name" align="center" min-width="110">
+                    <template slot-scope="{row}">
+                      <span>{{ row.name }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="创建时间" min-width="150px" align="center">
+                    <template slot-scope="{row}">
+                      <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="类型" prop="type" align="center" min-width="110">
+                    <template slot-scope="{row}">
+                      <span>{{ row.type }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="描述" prop="description" align="center" min-width="110">
+                    <template slot-scope="{row}">
+                      <span>{{ row.description }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
+                    <template slot-scope="{row,$index}">
+                      <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        移出用户
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+
+                <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" />
+              </div>
+            </el-tab-pane>
+          </el-tabs>
         </el-card>
       </el-main>
     </el-container>
-
-    <!-- <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="departmentList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-    >
-      <el-table-column label="名称" prop="name" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" prop="type" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" /> -->
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
@@ -94,13 +123,15 @@
 
 <script>
 import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'DepartmentList',
-  components: { },
+  components: { Pagination },
   directives: { },
   data() {
     return {
+      activeName: 'second',
       current: {},
       props: {
         label: 'name',
@@ -115,7 +146,8 @@ export default {
       listLoading: true,
       listQuery: {
         page_number: 1,
-        page_size: 20
+        page_size: 20,
+        parent_id: '/'
       },
       dialogFormVisible: false,
       dialogFormType: 'create',
@@ -181,7 +213,6 @@ export default {
           if (this.dialogFormType === 'create') {
             // 新建
             this.createDepartment()
-            this.getDepartmentList()
           } else {
             // 更新
           }
