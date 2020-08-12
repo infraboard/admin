@@ -156,7 +156,7 @@ export default {
       listQuery: {
         page_number: 1,
         page_size: 20,
-        parent_id: '/'
+        parent_id: ''
       },
       dialogFormVisible: false,
       dialogFormType: 'create',

@@ -115,7 +115,7 @@ const actions = {
   // refresh token
   refreshToken({ commit, state, dispatch }) {
     var req = {
-      grant_type: 'refresh',
+      grant_type: 'refresh_token',
       refresh_token: getRefreshToken()
     }
     return new Promise((resolve, reject) => {

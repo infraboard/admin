@@ -15,6 +15,15 @@
       highlight-current-row
       style="width: 100%;"
     >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="商品名称">
+              <span>{{ props.row.name }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column label="角色名" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
