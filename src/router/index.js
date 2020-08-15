@@ -115,6 +115,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/sub-account/index'),
         name: 'SubAccount',
         meta: {
+          noCache: true,
           title: '用户列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
@@ -124,6 +125,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/department'),
         name: 'DepartmentList',
         meta: {
+          noCache: true,
           title: '部门列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }

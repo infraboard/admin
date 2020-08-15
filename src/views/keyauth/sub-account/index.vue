@@ -44,9 +44,27 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 40px; margin-right: 50px">
+      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
+        <el-form-item label="部门" prop="department_id">
+          <el-select
+            v-model="form.department_id"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入部门名称搜索"
+            :remote-method="remoteSearchDepartment"
+            :loading="searchDepartmentLoading"
+          >
+            <el-option
+              v-for="item in departmentOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户名" prop="account">
-          <el-input v-model="form.account" />
+          <el-input v-model="form.account" maxlength="60" show-word-limit />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="form.password" show-password />
@@ -62,6 +80,7 @@
 
 <script>
 import { createSubAccount, querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
+import { queryDepartment } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -69,6 +88,8 @@ export default {
   components: { Pagination },
   data() {
     return {
+      searchDepartmentLoading: false,
+      departmentOptions: [],
       tableKey: 0,
       userList: null,
       total: 0,
@@ -87,8 +108,8 @@ export default {
       },
       rules: {
         account: [{ required: true, message: '请输入用户名！', trigger: 'change' }],
-        password: [{ required: true, message: '请输入密码！', trigger: 'blur' }]
-        // role: [{ required: true, message: '请选择角色', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码！', trigger: 'blur' }],
+        department_id: [{ required: true, message: '请选择部门', trigger: 'blur' }]
       }
     }
   },
@@ -189,7 +210,13 @@ export default {
       }).catch(() => {
         this.deleteLoading = ''
       })
+    },
+    remoteSearchDepartment(keywords) {
+      queryDepartment({ keywords }).then(resp => {
+        this.departmentOptions = resp.data.items
+      })
     }
   }
+
 }
 </script>
