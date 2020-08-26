@@ -189,6 +189,40 @@ export const asyncRoutes = [
       }
     ]
   },
+
+  {
+    path: '/audit',
+    component: Layout,
+    redirect: '/audit/login',
+    alwaysShow: true,
+    name: 'Audit',
+    meta: {
+      title: '安全审计',
+      icon: 'audit',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'login',
+        component: () => import('@/views/keyauth/audit/index'),
+        name: 'LoginAudit',
+        meta: {
+          title: '登录日志',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'namespace',
+        component: () => import('@/views/keyauth/namespace'),
+        name: 'OperateAudit',
+        meta: {
+          title: '操作日志',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

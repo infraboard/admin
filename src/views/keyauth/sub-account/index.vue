@@ -20,6 +20,12 @@
           <span>{{ row.account }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="部门" prop="account" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span v-if="row.department">{{ row.department.name }}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" min-width="150px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -98,7 +104,8 @@ export default {
       listLoading: true,
       listQuery: {
         page_number: 1,
-        page_size: 20
+        page_size: 20,
+        with_department: true
       },
       dialogFormVisible: false,
       dialogFormType: 'create',
