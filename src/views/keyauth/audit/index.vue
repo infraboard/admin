@@ -20,13 +20,15 @@
           <span>{{ row.logout_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="端" prop="type" align="center" min-width="110">
+      <el-table-column label="会话时长" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span>{{ row.application_name }}</span>
+          <span v-if="row.logout_at">{{ (row.logout_at - row.login_at) | formatDuration }} </span>
+          <span v-else> - </span>
         </template>
       </el-table-column>
-      <el-table-column label="授权方式" prop="description" align="center" min-width="110">
+      <el-table-column label="应用名称/授权方式" prop="description" align="center" min-width="110">
         <template slot-scope="{row}">
+          <span>{{ row.application_name }}</span><br>
           <span>{{ row.grant_type }}</span>
         </template>
       </el-table-column>

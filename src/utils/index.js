@@ -95,6 +95,38 @@ export function formatTime(time, option) {
 }
 
 /**
+   * @param {number} duration
+   * @returns {string}
+   */
+export function formatDuration(duration) {
+  const time = {
+    day: Math.floor(duration / 86400000),
+    hour: Math.floor(duration / 3600000) % 24,
+    minute: Math.floor(duration / 60000) % 60,
+    second: Math.floor(duration / 1000) % 60,
+    millisecond: Math.floor(duration) % 1000
+  }
+
+  if (time.day) {
+    return time.day + '天' + time.hour + '时'
+  }
+
+  if (time.hour) {
+    return time.hour + '时' + time.minute + '分'
+  }
+
+  if (time.minute) {
+    return time.minute + '分' + time.second + '秒'
+  }
+
+  if (time.second) {
+    return time.second + '秒'
+  }
+
+  return time.millisecond + '毫秒'
+}
+
+/**
    * @param {string} url
    * @returns {Object}
    */
