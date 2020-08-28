@@ -70,7 +70,7 @@
                 <el-table
                   :key="tableKey"
                   v-loading="listLoading"
-                  :data="departmentList"
+                  :data="currentUers"
                   border
                   fit
                   highlight-current-row
@@ -78,7 +78,7 @@
                 >
                   <el-table-column label="名称" prop="name" align="center" min-width="110">
                     <template slot-scope="{row}">
-                      <span>{{ row.name }}</span>
+                      <span>{{ row.account }}</span>
                     </template>
                   </el-table-column>
                   <el-table-column label="创建时间" min-width="150px" align="center">
@@ -99,7 +99,7 @@
                   <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
                     <template slot-scope="{row,$index}">
                       <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
-                        移出该组
+                        迁移部门
                       </el-button>
                     </template>
                   </el-table-column>
@@ -132,6 +132,7 @@
 
 <script>
 import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
+import { querySubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -142,6 +143,7 @@ export default {
     return {
       activeName: 'second',
       current: {},
+      currentUers: [],
       props: {
         label: 'name',
         children: 'zones',
@@ -197,10 +199,18 @@ export default {
       this.$nextTick(() => {
         this.$refs.tree.setCurrentKey(this.departmentList[0].id)
         this.current = this.$refs.tree.getCurrentNode()
+        this.tableKey = this.current.id
+        this.getDepartmentUser()
       })
     },
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
+      this.tableKey = this.current.id
+      this.getDepartmentUser()
+    },
+    async getDepartmentUser() {
+      const resp = await querySubAccount({ department_id: this.current.id })
+      this.currentUers = resp.data.items
     },
     resetForm() {
       this.form = {

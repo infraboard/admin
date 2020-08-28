@@ -17,9 +17,7 @@
     >
       <el-table-column label="名称" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
-          <router-link :to="'/permission/namespace/'+row.id" class="link-type">
-            <span>{{ row.name }}</span>
-          </router-link>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" min-width="150px" align="center">

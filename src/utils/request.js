@@ -85,7 +85,7 @@ service.interceptors.response.use(
     var message = error
     if (error.response) {
       const res = error.response.data
-      message = res.reason || res.message
+      message = res.reason + ': ' + res.message
     }
 
     Message({

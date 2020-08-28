@@ -15,11 +15,9 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="名称" prop="name" align="center" min-width="110">
+      <el-table-column label="角色名" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
-          <router-link :to="'/permission/namespace/'+row.id" class="link-type">
-            <span>{{ row.name }}</span>
-          </router-link>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" min-width="150px" align="center">
@@ -27,12 +25,22 @@
           <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="创建人" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.creater }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="类型" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
           <span>{{ row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="110">
+      <el-table-column label="权限条目数" prop="description" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.permissions.length }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="描述" prop="description" align="center" min-width="220">
         <template slot-scope="{row}">
           <span>{{ row.description }}</span>
         </template>
@@ -47,11 +55,11 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getNamespaceList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getRoleList" />
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="名称" prop="name">
+        <el-form-item label="角色名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="描述" prop="description">
@@ -67,11 +75,11 @@
 </template>
 
 <script>
-import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
+import { queryRole, createRole } from '@/api/keyauth/role'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'NamespaceList',
+  name: 'RoleList',
   components: { Pagination },
   directives: { },
   data() {
@@ -99,17 +107,17 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
+      return this.dialogFormType === 'create' ? '新增角色' : '编辑角色'
     }
   },
   created() {
-    this.getNamespaceList()
+    this.getRoleList()
   },
   methods: {
-    getNamespaceList() {
+    getRoleList() {
       this.listLoading = true
       // 获取用户列表
-      queryNamespace(this.listQuery).then(response => {
+      queryRole(this.listQuery).then(response => {
         this.roleList = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -135,18 +143,17 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.dialogFormType === 'create') {
-            // 新建
-            this.createNamespace()
+            this.createRole()
           } else {
             // 更新
           }
         }
       })
     },
-    createNamespace() {
+    createRole() {
       this.createLoading = true
       // 创建请求
-      createNamespace(this.form).then(resp => {
+      createRole(this.form).then(resp => {
         this.dialogFormVisible = false
         this.roleList.unshift(resp.data)
         this.$notify({
@@ -170,18 +177,18 @@ export default {
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
-      deleteNamespace(row.id).then(resp => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.roleList.splice(index, 1)
-        this.deleteLoading = ''
-      }).catch(() => {
-        this.deleteLoading = ''
-      })
+      // deleteSubAccount(row.id).then(resp => {
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '删除成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.roleList.splice(index, 1)
+      //   this.deleteLoading = ''
+      // }).catch(() => {
+      //   this.deleteLoading = ''
+      // })
     }
   }
 }

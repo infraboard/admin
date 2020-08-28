@@ -15,18 +15,11 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="商品名称">
-              <span>{{ props.row.name }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
       <el-table-column label="角色名" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+          <router-link :to="'/permission/role/'+row.name" class="link-type">
+            <span>{{ row.name }}</span>
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" min-width="150px" align="center">
@@ -34,12 +27,22 @@
           <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="创建人" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.creater }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="类型" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
           <span>{{ row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="110">
+      <el-table-column label="权限条目数" prop="description" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.permissions.length }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="描述" prop="description" align="center" min-width="220">
         <template slot-scope="{row}">
           <span>{{ row.description }}</span>
         </template>
