@@ -187,7 +187,7 @@ export const asyncRoutes = [
   {
     path: '/service',
     component: Layout,
-    redirect: '/service/list',
+    redirect: '/service/',
     alwaysShow: true,
     name: 'Permission',
     meta: {
@@ -197,12 +197,21 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'list',
+        path: '',
         component: () => import('@/views/keyauth/service'),
         name: 'RoleList',
         meta: {
           title: '服务列表',
           roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        hidden: true,
+        path: ':name',
+        component: () => import('@/views/keyauth/service/detail'),
+        name: 'ServiceDetail',
+        meta: {
+          title: '服务详情'
         }
       }
     ]
