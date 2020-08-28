@@ -156,7 +156,7 @@ export const asyncRoutes = [
       },
       {
         hidden: true,
-        path: 'role/:name',
+        path: 'role/:id',
         component: () => import('@/views/keyauth/role/detail'),
         name: 'RoleDetail',
         meta: {

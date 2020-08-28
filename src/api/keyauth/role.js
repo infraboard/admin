@@ -8,6 +8,14 @@ export function queryRole(query) {
   })
 }
 
+export function descRole(id, query) {
+  return request({
+    url: '/keyauth/v1/roles/' + id,
+    method: 'get',
+    params: query
+  })
+}
+
 export function createRole(data) {
   return request({
     url: '/keyauth/v1/roles/',

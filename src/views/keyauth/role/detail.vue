@@ -1,99 +1,137 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
+      <el-card class="box-card f12">
+        <el-row :gutter="8">
+          <el-col :xs="12" :sm="12" :lg="12">
+            <span class="title">角色信息</span>
+          </el-col>
+          <el-col :xs="12" :sm="12" :lg="12">
+            <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          </el-col>
+
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">名称: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.name }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建人: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.creater }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">角色类型: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.type }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">角色ID: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.id }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">更新时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">角色描述: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ role.description }}</span>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="roleList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-    >
-      <el-table-column label="角色名" prop="name" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建人" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.creater }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" prop="type" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="权限条目数" prop="description" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.permissions.length }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="220">
-        <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card class="box-card" style="margin-top:12px;">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="权限条目" name="first">
+          {{ role.permissions }}
+        </el-tab-pane>
+        <el-tab-pane label="关联策略" name="second">
+          <div>
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
+          </div>
+          <div>
+            <el-table
+              :key="tableKey"
+              v-loading="listLoading"
+              :data="currentUers"
+              border
+              fit
+              highlight-current-row
+              style="width: 100%;margin-top:12px;"
+            >
+              <el-table-column label="名称" prop="name" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span>{{ row.account }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="创建时间" min-width="150px" align="center">
+                <template slot-scope="{row}">
+                  <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型" prop="type" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span>{{ row.type }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="描述" prop="description" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span>{{ row.description }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
+                <template slot-scope="{row,$index}">
+                  <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+                    迁移部门
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getRoleList" />
-
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
-      </div>
-    </el-dialog>
+            <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" /> -->
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
   </div>
 </template>
 
 <script>
-import { queryRole, createRole } from '@/api/keyauth/role'
-import Pagination from '@/components/Pagination'
+import { descRole } from '@/api/keyauth/role'
 
 export default {
-  name: 'RoleList',
-  components: { Pagination },
+  name: 'RoleDetail',
   directives: { },
   data() {
     return {
       tableKey: 0,
-      roleList: [],
+      role: {},
       total: 0,
-      createLoading: false,
-      deleteLoading: '',
-      listLoading: true,
-      listQuery: {
-        page_number: 1,
-        page_size: 20
-      },
+      activeName: 'first',
+      deleteLoading: false,
+      queryloading: false,
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
@@ -105,24 +143,18 @@ export default {
       }
     }
   },
-  computed: {
-    dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增角色' : '编辑角色'
-    }
-  },
   created() {
-    this.getRoleList()
+    this.getRole()
   },
   methods: {
-    getRoleList() {
-      this.listLoading = true
+    getRole() {
+      this.queryloading = true
       // 获取用户列表
-      queryRole(this.listQuery).then(response => {
-        this.roleList = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
+      descRole(this.$route.params.id).then(resp => {
+        this.role = resp.data
+        this.queryloading = false
       }).catch(() => {
-        this.listLoading = false
+        this.queryloading = false
       })
     },
     resetForm() {
@@ -150,23 +182,6 @@ export default {
         }
       })
     },
-    createRole() {
-      this.createLoading = true
-      // 创建请求
-      createRole(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
-    },
     handleUpdate(row) {
       this.dialogFormType = 'update'
       this.form = Object.assign({}, row) // copy obj
@@ -174,21 +189,6 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-    },
-    handleDelete(row, index) {
-      this.deleteLoading = row.name
-      // deleteSubAccount(row.id).then(resp => {
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '删除成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.roleList.splice(index, 1)
-      //   this.deleteLoading = ''
-      // }).catch(() => {
-      //   this.deleteLoading = ''
-      // })
     }
   }
 }
