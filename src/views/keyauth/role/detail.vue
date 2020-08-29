@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div>
       <el-card class="box-card f12">
         <el-row :gutter="8">
           <el-col :xs="12" :sm="12" :lg="12">
@@ -72,7 +72,7 @@
             <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
           </div>
           <div>
-            <el-table
+            <!-- <el-table
               :key="tableKey"
               v-loading="listLoading"
               :data="currentUers"
@@ -108,7 +108,7 @@
                   </el-button>
                 </template>
               </el-table-column>
-            </el-table>
+            </el-table> -->
 
             <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" /> -->
           </div>
@@ -150,7 +150,7 @@ export default {
     getRole() {
       this.queryloading = true
       // 获取用户列表
-      descRole(this.$route.params.id).then(resp => {
+      descRole(this.$route.params.id, { with_permissions: true }).then(resp => {
         this.role = resp.data
         this.queryloading = false
       }).catch(() => {

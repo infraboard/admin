@@ -69,7 +69,7 @@ import { queryService, createService, deleteService } from '@/api/keyauth/servic
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'ServiceList',
+  name: 'ServiceDetail',
   components: { Pagination },
   directives: { },
   data() {

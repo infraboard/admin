@@ -109,9 +109,9 @@ export default {
     getNamespaceList() {
       this.listLoading = true
       // 获取用户列表
-      queryNamespace(this.listQuery).then(response => {
-        this.roleList = response.data.items
-        this.total = response.data.total
+      queryNamespace(this.listQuery).then(resp => {
+        this.roleList = resp.data.items
+        this.total = resp.data.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false

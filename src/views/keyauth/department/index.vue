@@ -41,7 +41,8 @@
               <span class="attr-key">上级部门: </span>
             </el-col>
             <el-col :xs="18" :sm="18" :lg="6">
-              <span>{{ current.parent_id }}</span>
+              <span v-if="current.parent_id">{{ current.parent_id }}</span>
+              <span v-else>-</span>
             </el-col>
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">创建时间: </span>

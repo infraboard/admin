@@ -8,6 +8,14 @@ export function queryNamespace(query) {
   })
 }
 
+export function describeNamespace(id, query) {
+  return request({
+    url: '/keyauth/v1/namespaces/' + id,
+    method: 'get',
+    params: query
+  })
+}
+
 export function createNamespace(data) {
   return request({
     url: '/keyauth/v1/namespaces/',

@@ -113,7 +113,7 @@ export const asyncRoutes = [
       {
         path: 'sub',
         component: () => import('@/views/keyauth/sub-account/index'),
-        name: 'SubAccount',
+        name: 'SubAccountList',
         meta: {
           noCache: true,
           title: '用户列表',
@@ -189,7 +189,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/service/',
     alwaysShow: true,
-    name: 'Permission',
+    name: 'Service',
     meta: {
       title: '服务管理',
       icon: 'micro',
@@ -199,7 +199,7 @@ export const asyncRoutes = [
       {
         path: '',
         component: () => import('@/views/keyauth/service'),
-        name: 'RoleList',
+        name: 'ServiceList',
         meta: {
           title: '服务列表',
           roles: ['admin'] // or you can only set roles in sub nav

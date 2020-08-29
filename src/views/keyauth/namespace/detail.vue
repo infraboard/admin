@@ -1,51 +1,126 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
+    <div>
+      <el-card class="box-card f12">
+        <el-row :gutter="8">
+          <el-col :xs="12" :sm="12" :lg="12">
+            <span class="title">空间信息</span>
+          </el-col>
+          <el-col :xs="12" :sm="12" :lg="12">
+            <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          </el-col>
+
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">名称: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.name }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建人: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.creater }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间类型: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span v-if="namespace.type">{{ namespace.type }}</span>
+            <span v-else> - </span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间ID: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.id }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">更新时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间描述: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.description }}</span>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="roleList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-    >
-      <el-table-column label="名称" prop="name" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" prop="type" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card class="box-card" style="margin-top:12px;">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="成员管理" name="first">
+          <div>
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">添加成员</el-button>
+          </div>
+          <div>
+            <el-table
+              :key="tableKey"
+              v-loading="listPolicyLoading"
+              :data="policys"
+              border
+              fit
+              highlight-current-row
+              style="width: 100%;margin-top:12px;"
+            >
+              <el-table-column label="用户" prop="name" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span>{{ row.account }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="角色" prop="type" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <router-link :to="'/permission/role/'+row.role_id" class="link-type">
+                    <span>{{ row.role.name }}</span>
+                  </router-link>
+                </template>
+              </el-table-column>
+              <el-table-column label="过期时间" prop="description" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span v-if="row.expired_time">{{ row.expired_time }}</span>
+                  <span v-else> 永不过期 </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="加入时间" min-width="150px" align="center">
+                <template slot-scope="{row}">
+                  <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="添加人" prop="type" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span>{{ row.creater }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
+                <template slot-scope="{row,$index}">
+                  <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+                    移除成员
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getNamespaceList" />
+            <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getNamespacePolicy" />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
@@ -65,22 +140,28 @@
 </template>
 
 <script>
-import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
+import { describeNamespace } from '@/api/keyauth/namespace'
+import { queryPolicy } from '@/api/keyauth/policy'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'NamespaceList',
+  name: 'NamespaceDetail',
   components: { Pagination },
   directives: { },
   data() {
     return {
+      activeName: 'first',
       tableKey: 0,
-      roleList: [],
+      namespace: {},
+      policys: [],
       total: 0,
       createLoading: false,
+      listPolicyLoading: false,
       deleteLoading: '',
-      listLoading: true,
-      listQuery: {
+      queryLoading: true,
+      listPolicyQuery: {
+        namespace_id: this.namespaceId,
+        with_role: true,
         page_number: 1,
         page_size: 20
       },
@@ -98,21 +179,35 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
+    },
+    namespaceId() {
+      return this.$route.params.id
     }
   },
   created() {
-    this.getNamespaceList()
+    this.getNamespaceDetail()
+    this.getNamespacePolicy()
   },
   methods: {
-    getNamespaceList() {
-      this.listLoading = true
+    getNamespaceDetail() {
+      this.queryLoading = true
       // 获取用户列表
-      queryNamespace(this.listQuery).then(response => {
-        this.roleList = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
+      this.listPolicyQuery
+      describeNamespace(this.namespaceId).then(resp => {
+        this.namespace = resp.data
+        this.queryLoading = false
       }).catch(() => {
-        this.listLoading = false
+        this.queryLoading = false
+      })
+    },
+    getNamespacePolicy() {
+      this.listPolicyLoading = true
+      queryPolicy(this.listPolicyQuery).then(resp => {
+        this.policys = resp.data.items
+        this.total = resp.data.total
+        this.listPolicyLoading = false
+      }).catch(() => {
+        this.listPolicyLoading = false
       })
     },
     resetForm() {
@@ -144,19 +239,19 @@ export default {
     createNamespace() {
       this.createLoading = true
       // 创建请求
-      createNamespace(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
+      // createNamespace(this.form).then(resp => {
+      //   this.dialogFormVisible = false
+      //   this.roleList.unshift(resp.data)
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '创建成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.createLoading = false
+      // }).catch(() => {
+      //   this.createLoading = false
+      // })
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
@@ -168,18 +263,18 @@ export default {
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
-      deleteNamespace(row.id).then(resp => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.roleList.splice(index, 1)
-        this.deleteLoading = ''
-      }).catch(() => {
-        this.deleteLoading = ''
-      })
+      // deleteNamespace(row.id).then(resp => {
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '删除成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.roleList.splice(index, 1)
+      //   this.deleteLoading = ''
+      // }).catch(() => {
+      //   this.deleteLoading = ''
+      // })
     }
   }
 }
