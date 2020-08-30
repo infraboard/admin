@@ -65,9 +65,9 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="成员管理" name="first">
+        <el-tab-pane label="访问策略" name="first">
           <div>
-            <el-button type="primary" size="mini" @click="handleUpdate(row)">添加成员</el-button>
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">关联策略</el-button>
           </div>
           <div>
             <el-table
@@ -91,6 +91,12 @@
                   </router-link>
                 </template>
               </el-table-column>
+              <el-table-column label="范围" prop="name" align="center" min-width="110">
+                <template slot-scope="{row}">
+                  <span v-if="row.scope">{{ row.scope }}</span>
+                  <span v-else> 全部 </span>
+                </template>
+              </el-table-column>
               <el-table-column label="过期时间" prop="description" align="center" min-width="110">
                 <template slot-scope="{row}">
                   <span v-if="row.expired_time">{{ row.expired_time }}</span>
@@ -110,7 +116,7 @@
               <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
                 <template slot-scope="{row,$index}">
                   <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
-                    移除成员
+                    移除策略
                   </el-button>
                 </template>
               </el-table-column>

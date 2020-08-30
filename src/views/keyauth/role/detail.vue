@@ -67,51 +67,8 @@
         <el-tab-pane label="权限条目" name="first">
           {{ role.permissions }}
         </el-tab-pane>
-        <el-tab-pane label="关联策略" name="second">
-          <div>
-            <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
-          </div>
-          <div>
-            <!-- <el-table
-              :key="tableKey"
-              v-loading="listLoading"
-              :data="currentUers"
-              border
-              fit
-              highlight-current-row
-              style="width: 100%;margin-top:12px;"
-            >
-              <el-table-column label="名称" prop="name" align="center" min-width="110">
-                <template slot-scope="{row}">
-                  <span>{{ row.account }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="创建时间" min-width="150px" align="center">
-                <template slot-scope="{row}">
-                  <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="类型" prop="type" align="center" min-width="110">
-                <template slot-scope="{row}">
-                  <span>{{ row.type }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="描述" prop="description" align="center" min-width="110">
-                <template slot-scope="{row}">
-                  <span>{{ row.description }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
-                <template slot-scope="{row,$index}">
-                  <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
-                    迁移部门
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table> -->
-
-            <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" /> -->
-          </div>
+        <el-tab-pane label="关联策略" lazy name="second">
+          <role-policy :role_id="role.id" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -120,20 +77,21 @@
 
 <script>
 import { descRole } from '@/api/keyauth/role'
+import { queryPolicy } from '@/api/keyauth/policy'
+import RolePolicy from './components/RolePolicy'
 
 export default {
   name: 'RoleDetail',
+  components: { RolePolicy },
   directives: { },
   data() {
     return {
       tableKey: 0,
       role: {},
-      total: 0,
       activeName: 'first',
       deleteLoading: false,
       queryloading: false,
       dialogFormVisible: false,
-      dialogFormType: 'create',
       form: {
         name: '',
         description: ''
@@ -145,6 +103,7 @@ export default {
   },
   created() {
     this.getRole()
+    this.getRolePolicy()
   },
   methods: {
     getRole() {
@@ -155,6 +114,16 @@ export default {
         this.queryloading = false
       }).catch(() => {
         this.queryloading = false
+      })
+    },
+    getRolePolicy() {
+      this.listPolicyLoading = true
+      queryPolicy(this.listPolicyQuery).then(resp => {
+        this.policys = resp.data.items
+        this.total = resp.data.total
+        this.listPolicyLoading = false
+      }).catch(() => {
+        this.listPolicyLoading = false
       })
     },
     resetForm() {

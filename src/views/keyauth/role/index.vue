@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column label="权限条目数" prop="description" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span>{{ row.permissions.length }}</span>
+          <span>{{ row.type }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" prop="description" align="center" min-width="220">

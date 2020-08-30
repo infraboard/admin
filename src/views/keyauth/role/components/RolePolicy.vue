@@ -1,0 +1,143 @@
+<template>
+  <div>
+    <el-button type="primary" size="mini" @click="handleUpdate(row)">添加成员</el-button>
+
+    <el-table
+      :key="tableKey"
+      v-loading="listPolicyLoading"
+      :data="policys"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%;margin-top:12px;"
+    >
+      <el-table-column label="用户" prop="name" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.account }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="空间" prop="type" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <router-link :to="'/permission/namespace/'+row.namespace_id" class="link-type">
+            <span>{{ row.namespace.name }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="范围" prop="name" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span v-if="row.scope">{{ row.scope }}</span>
+          <span v-else> 全部 </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="过期时间" prop="description" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span v-if="row.expired_time">{{ row.expired_time }}</span>
+          <span v-else> 永不过期 </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="加入时间" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="添加人" prop="type" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.creater }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+            移除策略
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getRolePolicy" />
+  </div>
+</template>
+
+<script>
+import { queryPolicy } from '@/api/keyauth/policy'
+import Pagination from '@/components/Pagination'
+
+export default {
+  name: 'RolePolicy',
+  components: { Pagination },
+  directives: { },
+  data() {
+    return {
+      listPolicyQuery: {
+        namespace_id: this.namespaceId,
+        with_namespace: true,
+        page_number: 1,
+        page_size: 20
+      },
+      policys: [],
+      tableKey: 0,
+      total: 0,
+      activeName: 'first',
+      deleteLoading: false,
+      queryloading: false,
+      dialogFormVisible: false,
+      dialogFormType: 'create',
+      form: {
+        name: '',
+        description: ''
+      },
+      rules: {
+        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
+      }
+    }
+  },
+  created() {
+    this.getRolePolicy()
+  },
+  methods: {
+    getRolePolicy() {
+      this.listPolicyLoading = true
+      queryPolicy(this.listPolicyQuery).then(resp => {
+        this.policys = resp.data.items
+        this.total = resp.data.total
+        this.listPolicyLoading = false
+      }).catch(() => {
+        this.listPolicyLoading = false
+      })
+    },
+    resetForm() {
+      this.form = {
+        name: '',
+        description: ''
+      }
+    },
+    handleCreate() {
+      this.dialogFormType = 'create'
+      this.resetForm()
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    submit() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          if (this.dialogFormType === 'create') {
+            this.createRole()
+          } else {
+            // 更新
+          }
+        }
+      })
+    },
+    handleUpdate(row) {
+      this.dialogFormType = 'update'
+      this.form = Object.assign({}, row) // copy obj
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    }
+  }
+}
+</script>
