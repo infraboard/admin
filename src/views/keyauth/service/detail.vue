@@ -1,51 +1,75 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
+    <div>
+      <el-card class="box-card f12">
+        <el-row :gutter="8">
+          <el-col :xs="12" :sm="12" :lg="12">
+            <span class="title">服务信息</span>
+          </el-col>
+          <el-col :xs="12" :sm="12" :lg="12">
+            <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          </el-col>
+
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">名称: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.name }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建人: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.creater }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间类型: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span v-if="service.type">{{ namespace.type }}</span>
+            <span v-else> - </span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间ID: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.id }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">更新时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间描述: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ service.description }}</span>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="roleList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-    >
-      <el-table-column label="名称" prop="name" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" prop="type" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" prop="description" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getServiceList" />
+    <el-card class="box-card" style="margin-top:12px;">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="功能列表" name="first">
+          <service-endpoint :service-name="service.name" />
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
@@ -65,21 +89,23 @@
 </template>
 
 <script>
-import { queryService, createService, deleteService } from '@/api/keyauth/service'
-import Pagination from '@/components/Pagination'
+import { describeService } from '@/api/keyauth/service'
+import ServiceEndpoint from './components/ServiceEndpoint'
 
 export default {
   name: 'ServiceDetail',
-  components: { Pagination },
+  components: { ServiceEndpoint },
   directives: { },
   data() {
     return {
+      activeName: 'first',
       tableKey: 0,
-      roleList: [],
+      service: {},
+      endpoints: [],
       total: 0,
       createLoading: false,
       deleteLoading: '',
-      listLoading: true,
+      queryLoading: true,
       listQuery: {
         page_number: 1,
         page_size: 20
@@ -98,21 +124,23 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增服务' : '编辑服务'
+    },
+    serviceName() {
+      return this.$route.params.id
     }
   },
   created() {
-    this.getServiceList()
+    this.getServiceDetail()
   },
   methods: {
-    getServiceList() {
-      this.listLoading = true
+    getServiceDetail() {
+      this.queryLoading = true
       // 获取用户列表
-      queryService(this.listQuery).then(response => {
-        this.roleList = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
+      describeService(this.serviceName).then(resp => {
+        this.service = resp.data
+        this.queryLoading = false
       }).catch(() => {
-        this.listLoading = false
+        this.queryLoading = false
       })
     },
     resetForm() {
@@ -144,19 +172,19 @@ export default {
     createService() {
       this.createLoading = true
       // 创建请求
-      createService(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
+      // createService(this.form).then(resp => {
+      //   this.dialogFormVisible = false
+      //   this.roleList.unshift(resp.data)
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '创建成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.createLoading = false
+      // }).catch(() => {
+      //   this.createLoading = false
+      // })
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
@@ -168,18 +196,18 @@ export default {
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
-      deleteService(row.id).then(resp => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.roleList.splice(index, 1)
-        this.deleteLoading = ''
-      }).catch(() => {
-        this.deleteLoading = ''
-      })
+      // deleteService(row.id).then(resp => {
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '删除成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.roleList.splice(index, 1)
+      //   this.deleteLoading = ''
+      // }).catch(() => {
+      //   this.deleteLoading = ''
+      // })
     }
   }
 }

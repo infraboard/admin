@@ -8,6 +8,14 @@ export function queryService(query) {
   })
 }
 
+export function describeService(id, query) {
+  return request({
+    url: '/keyauth/v1/services/' + id,
+    method: 'get',
+    params: query
+  })
+}
+
 export function createService(data) {
   return request({
     url: '/keyauth/v1/services/',

@@ -65,7 +65,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="权限条目" name="first">
-          {{ role.permissions }}
+          <role-permission :permissions="role.permissions" />
         </el-tab-pane>
         <el-tab-pane label="关联策略" lazy name="second">
           <role-policy :role_id="role.id" />
@@ -79,10 +79,11 @@
 import { descRole } from '@/api/keyauth/role'
 import { queryPolicy } from '@/api/keyauth/policy'
 import RolePolicy from './components/RolePolicy'
+import RolePermission from './components/RolePermission'
 
 export default {
   name: 'RoleDetail',
-  components: { RolePolicy },
+  components: { RolePolicy, RolePermission },
   directives: { },
   data() {
     return {

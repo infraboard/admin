@@ -207,7 +207,7 @@ export const asyncRoutes = [
       },
       {
         hidden: true,
-        path: ':name',
+        path: ':id',
         component: () => import('@/views/keyauth/service/detail'),
         name: 'ServiceDetail',
         meta: {

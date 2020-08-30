@@ -17,7 +17,7 @@
     >
       <el-table-column label="名称" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
-          <router-link :to="'/service/'+row.name" class="link-type">
+          <router-link :to="'/service/'+row.id" class="link-type">
             <span>{{ row.name }}</span>
           </router-link>
         </template>
