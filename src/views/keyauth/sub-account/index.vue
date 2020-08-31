@@ -42,7 +42,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <el-button v-if="row.status.locked" type="primary" size="mini" @click="handleLock(row)">解冻</el-button>
           <el-button v-else type="warning" size="mini" @click="handleUnLock(row)">冻结</el-button>
-          <el-button :loading="deleteLoading === row.id" size="mini" type="danger" @click="handleDelete(row,$index)">删除</el-button>
+          <el-button :loading="deleteLoading === row.account" size="mini" type="danger" @click="handleDelete(row,$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -204,8 +204,8 @@ export default {
       // 解除冻结用户
     },
     handleDelete(row, index) {
-      this.deleteLoading = row.id
-      deleteSubAccount(row.id).then(resp => {
+      this.deleteLoading = row.account
+      deleteSubAccount(row.account).then(resp => {
         this.$notify({
           title: '成功',
           message: '删除成功',

@@ -19,14 +19,21 @@
           @current-change="handleChanged"
         />
       </el-aside>
-      <el-main>
+      <el-main style="padding:0px;">
         <el-card class="box-card f12">
           <el-row :gutter="8">
             <el-col :xs="12" :sm="12" :lg="12">
-              <span class="title">组信息</span>
+              <span class="title">部门信息</span>
             </el-col>
             <el-col :xs="12" :sm="12" :lg="12">
-              <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+              <div class="fr">
+                <el-button type="text" size="mini" @click="handleCreate">新增</el-button>
+                <el-divider direction="vertical" />
+                <el-button type="text" size="mini" @click="handleUpdate(row)">删除</el-button>
+                <el-divider direction="vertical" />
+                <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+              </div>
+
             </el-col>
 
           </el-row>
@@ -63,7 +70,7 @@
         <el-card class="box-card" style="margin-top:12px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="用户" name="first">
-              <department-user :department-id="current.id" />
+              <department-user />
             </el-tab-pane>
             <el-tab-pane label="权限" name="second">敬请期待</el-tab-pane>
           </el-tabs>
@@ -171,8 +178,9 @@ export default {
     },
     resetForm() {
       this.form = {
+        parent_id: '',
         name: '',
-        description: ''
+        manager: ''
       }
     },
     handleCreate() {
@@ -198,6 +206,7 @@ export default {
     createDepartment() {
       this.createLoading = true
       // 创建请求
+      this.form.parent_id = this.current.id
       createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
         this.departmentList.unshift(resp.data)

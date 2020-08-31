@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
+      <el-button type="primary" size="mini" @click="handleCreate()">添加用户</el-button>
     </div>
     <div>
       <el-table
@@ -43,24 +43,33 @@
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentUser" />
+
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
+        <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
+          <el-form-item label="用户名" prop="account">
+            <el-input v-model="form.account" maxlength="60" show-word-limit />
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" show-password />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { querySubAccount } from '@/api/keyauth/subAccount'
+import { createSubAccount, querySubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'DepartmentList',
+  name: 'DepartmentUser',
   components: { Pagination },
   directives: { },
-  props: {
-    departmentId: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
       currentUers: [],
@@ -77,28 +86,33 @@ export default {
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
-        name: '',
-        parent_id: '',
-        manager: ''
+        department_id: '',
+        account: '',
+        password: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入部门名称!', trigger: 'change' }]
+        account: [{ required: true, message: '请输入用户名称!', trigger: 'change' }],
+        password: [{ required: true, message: '请输入用户密码!', trigger: 'change' }]
       }
     }
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
+      return this.dialogFormType === 'create' ? '新增用户' : '编辑用户'
+    },
+    departmentId() {
+      const query = this.$route.query
+      if (query && query.id) {
+        return query.id
+      }
+      return ''
     }
   },
   watch: {
     $route: {
       handler: function(route) {
-        const query = route.query
-        if (query && query.id) {
-          this.listQuery.department_id = query.id
-          this.getDepartmentUser()
-        }
+        this.listQuery.department_id = this.departmentId
+        this.getDepartmentUser()
       },
       immediate: true
     }
@@ -108,6 +122,7 @@ export default {
   methods: {
     getDepartmentUser() {
       this.listUserLoading = true
+      this.listQuery.department_id = this.departmentId
       querySubAccount(this.listQuery).then(resp => {
         this.currentUers = resp.data.items
         this.total = resp.data.total
@@ -118,8 +133,9 @@ export default {
     },
     resetForm() {
       this.form = {
-        name: '',
-        description: ''
+        department_id: '',
+        account: '',
+        password: ''
       }
     },
     handleCreate() {
@@ -135,29 +151,31 @@ export default {
         if (valid) {
           if (this.dialogFormType === 'create') {
             // 新建
-            this.createDepartment()
+            this.createUser()
           } else {
             // 更新
           }
         }
       })
     },
-    createDepartment() {
+    createUser() {
       this.createLoading = true
       // 创建请求
-    //   createDepartment(this.form).then(resp => {
-    //     this.dialogFormVisible = false
-    //     this.departmentList.unshift(resp.data)
-    //     this.$notify({
-    //       title: '成功',
-    //       message: '创建成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //     this.createLoading = false
-    //   }).catch(() => {
-    //     this.createLoading = false
-    //   })
+      this.form.department_id = this.departmentId
+      console.log(this.form)
+      createSubAccount(this.form).then(resp => {
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '创建成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getDepartmentUser()
+        this.createLoading = false
+      }).catch(() => {
+        this.createLoading = false
+      })
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
