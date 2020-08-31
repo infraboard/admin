@@ -62,53 +62,10 @@
         </el-card>
         <el-card class="box-card" style="margin-top:12px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="权限" name="first">权限</el-tab-pane>
             <el-tab-pane label="用户" name="second">
-              <div>
-                <el-button type="primary" size="mini" @click="handleUpdate(row)">添加用户</el-button>
-              </div>
-              <div>
-                <el-table
-                  :key="tableKey"
-                  v-loading="listUserLoading"
-                  :data="currentUers"
-                  border
-                  fit
-                  highlight-current-row
-                  style="width: 100%;margin-top:12px;"
-                >
-                  <el-table-column label="名称" prop="name" align="center" min-width="110">
-                    <template slot-scope="{row}">
-                      <span>{{ row.account }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="创建时间" min-width="150px" align="center">
-                    <template slot-scope="{row}">
-                      <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="类型" prop="type" align="center" min-width="110">
-                    <template slot-scope="{row}">
-                      <span>{{ row.type }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="描述" prop="description" align="center" min-width="110">
-                    <template slot-scope="{row}">
-                      <span>{{ row.description }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
-                    <template slot-scope="{row,$index}">
-                      <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
-                        迁移部门
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-
-                <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getDepartmentList" />
-              </div>
+              <department-user :department-id="current.id" />
             </el-tab-pane>
+            <el-tab-pane label="权限" name="first">权限</el-tab-pane>
           </el-tabs>
         </el-card>
       </el-main>
@@ -133,18 +90,16 @@
 
 <script>
 import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
-import { querySubAccount } from '@/api/keyauth/subAccount'
-import Pagination from '@/components/Pagination'
+import DepartmentUser from './components/DepartmentUser'
 
 export default {
   name: 'DepartmentList',
-  components: { Pagination },
+  components: { DepartmentUser },
   directives: { },
   data() {
     return {
       activeName: 'second',
       current: {},
-      currentUers: [],
       props: {
         label: 'name',
         children: 'zones',
@@ -155,7 +110,6 @@ export default {
       total: 0,
       createLoading: false,
       deleteLoading: '',
-      listUserLoading: false,
       listDepartmentLoading: false,
       listQuery: {
         page_number: 1,
@@ -201,27 +155,19 @@ export default {
         // 设置默认选择节点
         this.$nextTick(() => {
           this.$refs.tree.setCurrentKey(this.departmentList[0].id)
-          this.current = this.$refs.tree.getCurrentNode()
-          this.tableKey = this.current.id
-          this.getDepartmentUser()
-        }).catch(() => {
-          this.listDepartmentLoading = false
+          this.handleChanged()
         })
+      }).catch(() => {
+        this.listDepartmentLoading = false
       })
     },
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
       this.tableKey = this.current.id
-      this.getDepartmentUser()
-    },
-    getDepartmentUser() {
-      this.listUserLoading = true
-      querySubAccount({ department_id: this.current.id }).then(resp => {
-        this.currentUers = resp.data.items
-        this.listUserLoading = false
-      }).catch(() => {
-        this.listUserLoading = false
-      })
+
+      const query = JSON.parse(JSON.stringify(this.$route.query))
+      query.id = this.current.id
+      this.$router.push({ path: this.$route.path, query })
     },
     resetForm() {
       this.form = {
