@@ -70,7 +70,7 @@
               <div>
                 <el-table
                   :key="tableKey"
-                  v-loading="listLoading"
+                  v-loading="listUserLoading"
                   :data="currentUers"
                   border
                   fit
@@ -155,7 +155,8 @@ export default {
       total: 0,
       createLoading: false,
       deleteLoading: '',
-      listLoading: true,
+      listUserLoading: false,
+      listDepartmentLoading: false,
       listQuery: {
         page_number: 1,
         page_size: 20,
@@ -189,19 +190,23 @@ export default {
         return resolve(resp.data.items)
       }
     },
-    async getDepartmentList() {
+    getDepartmentList() {
       // 获取顶层部门
-      this.listLoading = true
-      const resp = await queryDepartment(this.listQuery)
-      this.departmentList = resp.data.items
-      this.total = resp.data.total
-      this.listLoading = false
-      // 设置默认选择节点
-      this.$nextTick(() => {
-        this.$refs.tree.setCurrentKey(this.departmentList[0].id)
-        this.current = this.$refs.tree.getCurrentNode()
-        this.tableKey = this.current.id
-        this.getDepartmentUser()
+      this.listDepartmentLoading = true
+      queryDepartment(this.listQuery).then(resp => {
+        this.departmentList = resp.data.items
+        this.total = resp.data.total
+        this.listDepartmentLoading = false
+
+        // 设置默认选择节点
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.departmentList[0].id)
+          this.current = this.$refs.tree.getCurrentNode()
+          this.tableKey = this.current.id
+          this.getDepartmentUser()
+        }).catch(() => {
+          this.listDepartmentLoading = false
+        })
       })
     },
     handleChanged() {
@@ -209,9 +214,14 @@ export default {
       this.tableKey = this.current.id
       this.getDepartmentUser()
     },
-    async getDepartmentUser() {
-      const resp = await querySubAccount({ department_id: this.current.id })
-      this.currentUers = resp.data.items
+    getDepartmentUser() {
+      this.listUserLoading = true
+      querySubAccount({ department_id: this.current.id }).then(resp => {
+        this.currentUers = resp.data.items
+        this.listUserLoading = false
+      }).catch(() => {
+        this.listUserLoading = false
+      })
     },
     resetForm() {
       this.form = {
