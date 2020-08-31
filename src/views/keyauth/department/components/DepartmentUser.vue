@@ -72,7 +72,7 @@ export default {
       listQuery: {
         page_number: 1,
         page_size: 20,
-        parent_id: ''
+        department_id: ''
       },
       dialogFormVisible: false,
       dialogFormType: 'create',
@@ -91,13 +91,26 @@ export default {
       return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
     }
   },
+  watch: {
+    $route: {
+      handler: function(route) {
+        const query = route.query
+        if (query && query.id) {
+          this.listQuery.department_id = query.id
+          this.getDepartmentUser()
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
   },
   methods: {
     getDepartmentUser() {
       this.listUserLoading = true
-      querySubAccount({ department_id: this.departmentId }).then(resp => {
+      querySubAccount(this.listQuery).then(resp => {
         this.currentUers = resp.data.items
+        this.total = resp.data.total
         this.listUserLoading = false
       }).catch(() => {
         this.listUserLoading = false

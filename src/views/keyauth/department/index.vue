@@ -62,10 +62,10 @@
         </el-card>
         <el-card class="box-card" style="margin-top:12px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="用户" name="second">
+            <el-tab-pane label="用户" name="first">
               <department-user :department-id="current.id" />
             </el-tab-pane>
-            <el-tab-pane label="权限" name="first">权限</el-tab-pane>
+            <el-tab-pane label="权限" name="second">敬请期待</el-tab-pane>
           </el-tabs>
         </el-card>
       </el-main>
@@ -98,7 +98,7 @@ export default {
   directives: { },
   data() {
     return {
-      activeName: 'second',
+      activeName: 'first',
       current: {},
       props: {
         label: 'name',
