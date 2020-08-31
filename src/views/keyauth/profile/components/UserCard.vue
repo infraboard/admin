@@ -1,8 +1,5 @@
 <template>
-  <el-card style="margin-bottom:20px;">
-    <div slot="header" class="clearfix">
-      <span>基本信息</span>
-    </div>
+  <div style="margin-bottom:20px;">
 
     <div class="user-profile">
       <div class="box-center">
@@ -49,7 +46,7 @@
         </div>
       </div>
     </div>
-  </el-card>
+  </div>
 </template>
 
 <script>
