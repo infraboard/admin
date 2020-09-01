@@ -106,13 +106,13 @@ export default {
   data() {
     return {
       activeName: 'first',
-      tmpResolve: undefined,
       current: {},
       props: {
         label: 'name',
         children: 'children',
         isLeaf: 'leaf'
       },
+      nodeResolve: {},
       tableKey: 0,
       departmentList: [],
       total: 0,
@@ -149,12 +149,9 @@ export default {
   },
   methods: {
     async loadNode(node, resolve) {
-      // 保存resolve用于更新节点数据
-      node.childNodes = []
-      this.tmpResolve = resolve
-
       // 获取子部门
       if (node.level >= 1) {
+        this.nodeResolve.id = resolve
         const resp = await querySubDepartment(node.data.id, this.listQuery)
         return resolve(resp.data.items)
       }
@@ -212,15 +209,27 @@ export default {
         }
       })
     },
+    mergeChildrenData(data) {
+      const datas = [data]
+      this.currentNode.childNodes.forEach(v => {
+        datas.push(v.data)
+      })
+      return datas
+    },
     create() {
-      const currentNode = this.$refs.tree.getNode(this.current.id)
-
       // 创建请求
       this.createLoading = true
-      currentNode.loading = true
+      if (this.form.parent_id) {
+        this.currentNode.loading = true
+      }
       createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
-        this.loadNode(currentNode, this.tmpResolve)
+        if (!this.form.parent_id) {
+          this.departmentList.push(resp.data)
+        }
+
+        this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(resp.data))
+        console.log(this.currentNode)
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -229,11 +238,11 @@ export default {
         })
 
         this.createLoading = false
-        currentNode.loading = false
+        this.currentNode.loading = false
         // 如果当前节点没有展开则展开节点
       }).catch(() => {
         this.createLoading = false
-        currentNode.loading = false
+        this.currentNode.loading = false
       })
     },
     handleDelete() {
@@ -246,14 +255,22 @@ export default {
 
           // 设置下一个被选中的节点
           const parent = this.$refs.tree.getNode(this.current.parent_id)
-          const childCount = parent.childNodes.length
-          if (childCount > 0) {
-            this.current = parent.childNodes[childCount - 1].data
-            this.$refs.tree.setCurrentKey(this.current.id)
+          if (parent) {
+            const childCount = parent.childNodes.length
+            if (childCount > 0) {
+              this.current = parent.childNodes[childCount - 1].data
+            } else {
+              this.current = parent.data
+            }
           } else {
-            this.current = parent.data
-            this.$refs.tree.setCurrentKey(this.current.id)
+            // 顶层部门
+            const topCount = this.departmentList.length
+            if (topCount > 0) {
+              this.current = this.departmentList[topCount - 1]
+            }
           }
+          this.$refs.tree.setCurrentKey(this.current.id)
+
           // 设置替换后的URL
           const query = JSON.parse(JSON.stringify(this.$route.query))
           query.id = this.current.id
