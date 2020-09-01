@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="220px" style="background: #FFFFFF;">
         <div>
-          <el-button class="filter-item" style="margin-left: 10px;" type="text" icon="el-icon-plus" @click="handleCreate">
+          <el-button class="filter-item" style="margin-left: 10px;" type="text" icon="el-icon-plus" @click="handleCreate()">
             顶级部门
           </el-button>
         </div>
@@ -27,7 +27,7 @@
             </el-col>
             <el-col :xs="12" :sm="12" :lg="12">
               <div class="fr">
-                <el-button type="text" size="mini" @click="handleCreate">新增</el-button>
+                <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
                 <el-divider direction="vertical" />
                 <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
                 <el-divider direction="vertical" />
@@ -106,6 +106,7 @@ export default {
   data() {
     return {
       activeName: 'first',
+      tmpResolve: undefined,
       current: {},
       props: {
         label: 'name',
@@ -148,6 +149,10 @@ export default {
   },
   methods: {
     async loadNode(node, resolve) {
+      // 保存resolve用于更新节点数据
+      node.childNodes = []
+      this.tmpResolve = resolve
+
       // 获取子部门
       if (node.level >= 1) {
         const resp = await querySubDepartment(node.data.id, this.listQuery)
@@ -186,10 +191,10 @@ export default {
         manager: ''
       }
     },
-    handleCreate() {
-      console.log()
+    handleCreate(parentId) {
       this.dialogFormType = 'create'
       this.resetForm()
+      this.form.parent_id = parentId
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -200,56 +205,61 @@ export default {
         if (valid) {
           if (this.dialogFormType === 'create') {
             // 新建
-            this.createDepartment()
+            this.create()
           } else {
             // 更新
           }
         }
       })
     },
-    createDepartment() {
+    create() {
       const currentNode = this.$refs.tree.getNode(this.current.id)
 
       // 创建请求
       this.createLoading = true
-      this.form.parent_id = this.current.id
       currentNode.loading = true
       createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
-        this.$refs.tree.insertAfter(resp.data, this.current.id)
+        this.loadNode(currentNode, this.tmpResolve)
         this.$notify({
           title: '成功',
           message: '创建成功',
           type: 'success',
           duration: 2000
         })
+
         this.createLoading = false
         currentNode.loading = false
+        // 如果当前节点没有展开则展开节点
       }).catch(() => {
         this.createLoading = false
         currentNode.loading = false
       })
     },
     handleDelete() {
-      const currentNode = this.$refs.tree.getNode(this.current.id)
-
-      if (currentNode) {
-        currentNode.loading = true
+      if (this.currentNode) {
+        this.currentNode.loading = true
         deleteDepartment(this.current.id).then(resp => {
           // 从tree中清除当前节点
-          currentNode.loading = false
+          this.currentNode.loading = false
           this.$refs.tree.remove(this.current.id)
+
           // 设置下一个被选中的节点
-          if (this.current.parent_id) {
-            const parent = this.$refs.tree.getNode(this.current.parent_id)
-            console.log(parent)
+          const parent = this.$refs.tree.getNode(this.current.parent_id)
+          const childCount = parent.childNodes.length
+          if (childCount > 0) {
+            this.current = parent.childNodes[childCount - 1].data
+            this.$refs.tree.setCurrentKey(this.current.id)
+          } else {
+            this.current = parent.data
+            this.$refs.tree.setCurrentKey(this.current.id)
           }
-          // if (parent.childNodes) {
-          //   this.$refs.tree.setCurrentKey(this.departmentList[0].id)
-          // }
-          // this.$refs.tree.setCurrentKey(this.departmentList[0].id)
+          // 设置替换后的URL
+          const query = JSON.parse(JSON.stringify(this.$route.query))
+          query.id = this.current.id
+          this.$router.push({ path: this.$route.path, query })
         }).catch(() => {
-          currentNode.loading = false
+          this.currentNode.loading = false
         })
       }
     },
