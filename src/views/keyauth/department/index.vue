@@ -29,7 +29,7 @@
               <div class="fr">
                 <el-button type="text" size="mini" @click="handleCreate">新增</el-button>
                 <el-divider direction="vertical" />
-                <el-button type="text" size="mini" @click="handleUpdate(row)">删除</el-button>
+                <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
                 <el-divider direction="vertical" />
                 <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
               </div>
@@ -109,7 +109,7 @@ export default {
       current: {},
       props: {
         label: 'name',
-        children: 'zones',
+        children: 'children',
         isLeaf: 'leaf'
       },
       tableKey: 0,
@@ -138,6 +138,9 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
+    },
+    currentNode() {
+      return this.$refs.tree.getNode(this.current.id)
     }
   },
   created() {
@@ -184,6 +187,7 @@ export default {
       }
     },
     handleCreate() {
+      console.log()
       this.dialogFormType = 'create'
       this.resetForm()
       this.dialogFormVisible = true
@@ -204,12 +208,15 @@ export default {
       })
     },
     createDepartment() {
-      this.createLoading = true
+      const currentNode = this.$refs.tree.getNode(this.current.id)
+
       // 创建请求
+      this.createLoading = true
       this.form.parent_id = this.current.id
+      currentNode.loading = true
       createDepartment(this.form).then(resp => {
         this.dialogFormVisible = false
-        this.departmentList.unshift(resp.data)
+        this.$refs.tree.insertAfter(resp.data, this.current.id)
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -217,9 +224,34 @@ export default {
           duration: 2000
         })
         this.createLoading = false
+        currentNode.loading = false
       }).catch(() => {
         this.createLoading = false
+        currentNode.loading = false
       })
+    },
+    handleDelete() {
+      const currentNode = this.$refs.tree.getNode(this.current.id)
+
+      if (currentNode) {
+        currentNode.loading = true
+        deleteDepartment(this.current.id).then(resp => {
+          // 从tree中清除当前节点
+          currentNode.loading = false
+          this.$refs.tree.remove(this.current.id)
+          // 设置下一个被选中的节点
+          if (this.current.parent_id) {
+            const parent = this.$refs.tree.getNode(this.current.parent_id)
+            console.log(parent)
+          }
+          // if (parent.childNodes) {
+          //   this.$refs.tree.setCurrentKey(this.departmentList[0].id)
+          // }
+          // this.$refs.tree.setCurrentKey(this.departmentList[0].id)
+        }).catch(() => {
+          currentNode.loading = false
+        })
+      }
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
@@ -227,21 +259,6 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleDelete(row, index) {
-      this.deleteLoading = row.name
-      deleteDepartment(row.id).then(resp => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.departmentList.splice(index, 1)
-        this.deleteLoading = ''
-      }).catch(() => {
-        this.deleteLoading = ''
       })
     }
   }
