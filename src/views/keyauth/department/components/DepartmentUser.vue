@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { createSubAccount, querySubAccount } from '@/api/keyauth/subAccount'
+import { createSubAccount, querySubAccount, updateSubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -193,19 +193,22 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.deleteLoading = row.name
-    //   deleteDepartment(row.id).then(resp => {
-    //     this.$notify({
-    //       title: '成功',
-    //       message: '删除成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //     this.departmentList.splice(index, 1)
-    //     this.deleteLoading = ''
-    //   }).catch(() => {
-    //     this.deleteLoading = ''
-    //   })
+      const did = this.form.department_id
+      if (did) {
+        this.deleteLoading = row.name
+        updateSubAccount(row.name, { department_id: this.form.department_id }).then(resp => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.departmentList.splice(index, 1)
+          this.deleteLoading = ''
+        }).catch(() => {
+          this.deleteLoading = ''
+        })
+      }
     }
   }
 }

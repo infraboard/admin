@@ -52,7 +52,8 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
         <el-form-item label="部门" prop="department_id">
-          <el-select
+          <choice-department :department-id.sync="form.department_id" />
+          <!-- <el-select
             v-model="form.department_id"
             filterable
             remote
@@ -67,7 +68,7 @@
               :label="item.name"
               :value="item.id"
             />
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="用户名" prop="account">
           <el-input v-model="form.account" maxlength="60" show-word-limit />
@@ -88,10 +89,11 @@
 import { createSubAccount, querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
 import { queryDepartment } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
+import ChoiceDepartment from '@/components/ChoiceDepartment'
 
 export default {
   name: 'SubAccount',
-  components: { Pagination },
+  components: { Pagination, ChoiceDepartment },
   data() {
     return {
       searchDepartmentLoading: false,

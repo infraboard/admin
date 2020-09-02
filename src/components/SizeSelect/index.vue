@@ -38,6 +38,14 @@ export default {
         message: 'Switch Size Success',
         type: 'success'
       })
+    },
+    refreshView() {
+      const { fullPath } = this.$route
+      this.$nextTick(() => {
+        this.$router.replace({
+          path: '/redirect' + fullPath
+        })
+      })
     }
   }
 }
