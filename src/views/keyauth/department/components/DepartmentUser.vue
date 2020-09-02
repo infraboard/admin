@@ -70,6 +70,12 @@ export default {
   name: 'DepartmentUser',
   components: { Pagination },
   directives: { },
+  props: {
+    departmentId: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       currentUers: [],
@@ -99,20 +105,16 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增用户' : '编辑用户'
-    },
-    departmentId() {
-      const query = this.$route.query
-      if (query && query.id) {
-        return query.id
-      }
-      return ''
     }
   },
   watch: {
-    $route: {
-      handler: function(route) {
-        this.listQuery.department_id = this.departmentId
-        this.getDepartmentUser()
+    departmentId: {
+      handler: function(did) {
+        if (did) {
+          this.listQuery.department_id = this.departmentId
+          this.getDepartmentUser()
+          this.updateURL()
+        }
       },
       immediate: true
     }
@@ -120,6 +122,11 @@ export default {
   created() {
   },
   methods: {
+    updateURL() {
+      const query = JSON.parse(JSON.stringify(this.$route.query))
+      query.id = this.departmentId
+      this.$router.push({ path: this.$route.path, query })
+    },
     getDepartmentUser() {
       this.listUserLoading = true
       this.listQuery.department_id = this.departmentId

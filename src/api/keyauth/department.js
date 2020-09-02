@@ -24,6 +24,14 @@ export function createDepartment(data) {
   })
 }
 
+export function updateDepartment(id, data) {
+  return request({
+    url: '/keyauth/v1/departments/' + id,
+    method: 'patch',
+    data
+  })
+}
+
 export function deleteDepartment(id, query) {
   return request({
     url: '/keyauth/v1/departments/' + id,

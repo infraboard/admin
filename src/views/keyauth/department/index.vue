@@ -61,17 +61,8 @@
               <span class="attr-key">上级部门: </span>
             </el-col>
             <el-col :xs="18" :sm="18" :lg="6">
-              <div v-show="!isEdit">
-                <span v-if="current.parent_id">{{ current.parent_id }}</span>
-                <span v-else>-</span>
-              </div>
-              <el-input
-                v-show="isEdit"
-                v-model="form.parent_id"
-                placeholder="请输入部门负责人"
-                maxlength="60"
-                show-word-limit
-              />
+              <span v-if="current.parent_id">{{ current.parent_id }}</span>
+              <span v-else>-</span>
             </el-col>
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">创建时间: </span>
@@ -99,7 +90,7 @@
         <el-card class="box-card" style="margin-top:12px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="用户" name="first">
-              <department-user />
+              <department-user :department-id="current.id" />
             </el-tab-pane>
             <el-tab-pane label="权限" name="second">敬请期待</el-tab-pane>
           </el-tabs>
@@ -125,7 +116,7 @@
 </template>
 
 <script>
-import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment } from '@/api/keyauth/department'
+import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
 import DepartmentUser from './components/DepartmentUser'
 
 export default {
@@ -206,10 +197,7 @@ export default {
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
       this.tableKey = this.current.id
-
-      const query = JSON.parse(JSON.stringify(this.$route.query))
-      query.id = this.current.id
-      this.$router.push({ path: this.$route.path, query })
+      this.isEdit = false
     },
     resetForm() {
       this.form = {
@@ -302,11 +290,6 @@ export default {
             }
           }
           this.$refs.tree.setCurrentKey(this.current.id)
-
-          // 设置替换后的URL
-          const query = JSON.parse(JSON.stringify(this.$route.query))
-          query.id = this.current.id
-          this.$router.push({ path: this.$route.path, query })
         }).catch(() => {
           this.currentNode.loading = false
         })
@@ -323,7 +306,12 @@ export default {
       this.isEdit = false
     },
     handleSave() {
-      this.isEdit = false
+      updateDepartment(this.current.id, this.form).then(resp => {
+        // 更新视图
+        this.current = resp.data
+        this.currentNode.data = resp.data
+        this.isEdit = false
+      })
     }
   }
 }
