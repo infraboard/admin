@@ -27,29 +27,51 @@
             </el-col>
             <el-col :xs="12" :sm="12" :lg="12">
               <div class="fr">
-                <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
-                <el-divider direction="vertical" />
-                <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
-                <el-divider direction="vertical" />
-                <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+                <div v-show="isEdit">
+                  <el-button type="text" size="mini" @click="handleSave">保存</el-button>
+                  <el-button type="text" size="mini" @click="handleCancel">取消</el-button>
+                </div>
+                <div v-show="!isEdit">
+                  <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
+                  <el-divider direction="vertical" />
+                  <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
+                  <el-divider direction="vertical" />
+                  <el-button type="text" size="mini" @click="handleUpdate">编辑</el-button>
+                </div>
               </div>
 
             </el-col>
 
           </el-row>
-          <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-row :gutter="8" class="center" style="margin-bottom: 12px;">
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">名称: </span>
             </el-col>
             <el-col :xs="18" :sm="18" :lg="6">
-              <span>{{ current.name }}</span>
+              <span v-show="!isEdit">{{ current.name }}</span>
+              <el-input
+                v-show="isEdit"
+                v-model="form.name"
+                placeholder="请输入部门名称"
+                maxlength="60"
+                show-word-limit
+              />
             </el-col>
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">上级部门: </span>
             </el-col>
             <el-col :xs="18" :sm="18" :lg="6">
-              <span v-if="current.parent_id">{{ current.parent_id }}</span>
-              <span v-else>-</span>
+              <div v-show="!isEdit">
+                <span v-if="current.parent_id">{{ current.parent_id }}</span>
+                <span v-else>-</span>
+              </div>
+              <el-input
+                v-show="isEdit"
+                v-model="form.parent_id"
+                placeholder="请输入部门负责人"
+                maxlength="60"
+                show-word-limit
+              />
             </el-col>
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">创建时间: </span>
@@ -58,12 +80,19 @@
               <span>{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </el-col>
           </el-row>
-          <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-row :gutter="8" style="margin-bottom: 12px;" class="center">
             <el-col :xs="6" :sm="6" :lg="2">
               <span class="attr-key">负责人: </span>
             </el-col>
             <el-col :xs="18" :sm="18" :lg="6">
-              <span>{{ current.manager }}</span>
+              <span v-show="!isEdit">{{ current.manager }}</span>
+              <el-input
+                v-show="isEdit"
+                v-model="form.manager"
+                placeholder="请输入部门负责人"
+                maxlength="60"
+                show-word-limit
+              />
             </el-col>
           </el-row>
         </el-card>
@@ -126,6 +155,7 @@ export default {
       },
       dialogFormVisible: false,
       dialogFormType: 'create',
+      isEdit: false,
       form: {
         name: '',
         parent_id: '',
@@ -239,7 +269,9 @@ export default {
 
         this.createLoading = false
         this.currentNode.loading = false
-        // 如果当前节点没有展开则展开节点
+        // 设置创建节点为当前节点
+        this.$refs.tree.setCurrentKey(resp.data.id)
+        this.handleChanged()
       }).catch(() => {
         this.createLoading = false
         this.currentNode.loading = false
@@ -280,13 +312,18 @@ export default {
         })
       }
     },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    handleUpdate() {
+      this.isEdit = true
+      this.form = Object.assign({}, this.current) // copy obj
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
+    },
+    handleCancel() {
+      this.isEdit = false
+    },
+    handleSave() {
+      this.isEdit = false
     }
   }
 }
