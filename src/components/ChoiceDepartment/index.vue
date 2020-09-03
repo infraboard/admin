@@ -23,6 +23,7 @@ export default {
         label: 'name',
         value: 'id',
         lazyLoad(node, resolve) {
+          listQuery.parent_id = ''
           if (!node.root) {
             listQuery.parent_id = node.data.id
           }
@@ -46,6 +47,7 @@ export default {
       },
       set(val) {
         this.$emit('update:departmentId', val[val.length - 1])
+        this.$emit('change', val[val.length - 1])
       }
     }
   }

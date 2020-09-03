@@ -35,9 +35,10 @@
         </el-table-column>
         <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
           <template slot-scope="{row,$index}">
-            <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+            <el-button v-show="deleteLoading !== row.account" size="mini" type="text" @click="handleDelete(row,$index)">
               迁移部门
             </el-button>
+            <choice-department v-if="deleteLoading === row.account" :key="row.account" :department-id.sync="form.department_id" @change="departmentChanged" />
           </template>
         </el-table-column>
       </el-table>
@@ -65,10 +66,11 @@
 <script>
 import { createSubAccount, querySubAccount, updateSubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
+import ChoiceDepartment from '@/components/ChoiceDepartment'
 
 export default {
   name: 'DepartmentUser',
-  components: { Pagination },
+  components: { Pagination, ChoiceDepartment },
   directives: { },
   props: {
     departmentId: {
@@ -184,31 +186,25 @@ export default {
         this.createLoading = false
       })
     },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleDelete(row, index) {
-      const did = this.form.department_id
-      if (did) {
-        this.deleteLoading = row.name
-        updateSubAccount(row.name, { department_id: this.form.department_id }).then(resp => {
+    departmentChanged() {
+      if (this.form.department_id !== this.departmentId && this.deleteLoading !== '') {
+        updateSubAccount(this.deleteLoading, { department_id: this.form.department_id }).then(resp => {
           this.$notify({
             title: '成功',
             message: '删除成功',
             type: 'success',
             duration: 2000
           })
-          this.departmentList.splice(index, 1)
+          this.currentUers.splice(0, 1)
           this.deleteLoading = ''
         }).catch(() => {
           this.deleteLoading = ''
         })
       }
+    },
+    handleDelete(row, index) {
+      this.deleteLoading = row.account
+      this.form.department_id = row.department_id
     }
   }
 }

@@ -53,22 +53,6 @@
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
         <el-form-item label="部门" prop="department_id">
           <choice-department :department-id.sync="form.department_id" />
-          <!-- <el-select
-            v-model="form.department_id"
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入部门名称搜索"
-            :remote-method="remoteSearchDepartment"
-            :loading="searchDepartmentLoading"
-          >
-            <el-option
-              v-for="item in departmentOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select> -->
         </el-form-item>
         <el-form-item label="用户名" prop="account">
           <el-input v-model="form.account" maxlength="60" show-word-limit />

@@ -165,7 +165,7 @@ export default {
       return this.$refs.tree.getNode(this.current.id)
     }
   },
-  created() {
+  mounted() {
     this.getDepartmentList()
   },
   methods: {
@@ -179,19 +179,16 @@ export default {
     },
     getDepartmentList() {
       // 获取顶层部门
-      this.listDepartmentLoading = true
+      console.log()
       queryDepartment(this.listQuery).then(resp => {
         this.departmentList = resp.data.items
         this.total = resp.data.total
-        this.listDepartmentLoading = false
 
         // 设置默认选择节点
         this.$nextTick(() => {
           this.$refs.tree.setCurrentKey(this.departmentList[0].id)
           this.handleChanged()
         })
-      }).catch(() => {
-        this.listDepartmentLoading = false
       })
     },
     handleChanged() {
