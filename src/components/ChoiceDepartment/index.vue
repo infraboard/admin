@@ -1,5 +1,5 @@
 <template>
-  <el-cascader v-model="currentDepartmentId" :props="props" :show-all-levels="false" style="width:100%" />
+  <el-cascader v-model="currentDepartmentId" :props="props" :show-all-levels="false" />
 </template>
 
 <script>

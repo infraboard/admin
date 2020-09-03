@@ -39,6 +39,9 @@
               迁移部门
             </el-button>
             <choice-department v-if="deleteLoading === row.account" :key="row.account" :department-id.sync="form.department_id" @change="departmentChanged" />
+            <el-button v-show="deleteLoading === row.account" size="mini" type="text" @click="handleCancel(row)">
+              取消
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -205,6 +208,9 @@ export default {
     handleDelete(row, index) {
       this.deleteLoading = row.account
       this.form.department_id = row.department_id
+    },
+    handleCancel(row) {
+      this.deleteLoading = ''
     }
   }
 }
