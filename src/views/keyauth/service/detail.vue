@@ -33,14 +33,14 @@
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
           <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间类型: </span>
+            <span class="attr-key">服务类型: </span>
           </el-col>
           <el-col :xs="18" :sm="18" :lg="6">
-            <span v-if="service.type">{{ namespace.type }}</span>
+            <span v-if="service.type">{{ service.type }}</span>
             <span v-else> - </span>
           </el-col>
           <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间ID: </span>
+            <span class="attr-key">服务ID: </span>
           </el-col>
           <el-col :xs="18" :sm="18" :lg="6">
             <span>{{ service.id }}</span>

@@ -249,6 +249,22 @@ export const asyncRoutes = [
     ]
   },
 
+  {
+    path: '/setting',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/keyauth/setting'),
+        name: 'Setting',
+        meta: {
+          title: '系统设置',
+          icon: 'setting',
+          affix: true }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
