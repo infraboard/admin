@@ -17,7 +17,11 @@
           highlight-current
           :expand-on-click-node="false"
           @current-change="handleChanged"
-        />
+        >
+          <span slot-scope="{ data }" class="f12">
+            <span>{{ data.name + ' (' + data.user_count + ')' }}</span>
+          </span>
+        </el-tree>
       </el-aside>
       <el-main style="padding:0px;">
         <el-card class="box-card f12">
@@ -128,7 +132,6 @@ export default {
       activeName: 'first',
       current: {},
       props: {
-        label: 'name',
         children: 'children',
         isLeaf: 'leaf'
       },
@@ -142,7 +145,9 @@ export default {
       listQuery: {
         page_number: 1,
         page_size: 20,
-        parent_id: ''
+        parent_id: '',
+        with_sub_count: true,
+        with_user_count: true
       },
       dialogFormVisible: false,
       dialogFormType: 'create',
@@ -174,16 +179,23 @@ export default {
       if (node.level >= 1) {
         this.nodeResolve.id = resolve
         const resp = await querySubDepartment(node.data.id, this.listQuery)
-        return resolve(resp.data.items)
+        const list = []
+        resp.data.items.forEach(item => {
+          item.leaf = item.sub_count === 0
+          list.push(item)
+        })
+        return resolve(list)
       }
     },
     getDepartmentList() {
       // 获取顶层部门
-      console.log()
       queryDepartment(this.listQuery).then(resp => {
-        this.departmentList = resp.data.items
+        this.departmentList = []
+        resp.data.items.forEach(item => {
+          item.leaf = item.sub_count === 0
+          this.departmentList.push(item)
+        })
         this.total = resp.data.total
-
         // 设置默认选择节点
         this.$nextTick(() => {
           this.$refs.tree.setCurrentKey(this.departmentList[0].id)
