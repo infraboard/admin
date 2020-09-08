@@ -105,7 +105,7 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" />
+          <el-input v-model="form.name" maxlength="60" show-word-limit />
         </el-form-item>
         <el-form-item label="负责人" prop="manager">
           <el-input v-model="form.manager" />
@@ -158,7 +158,8 @@ export default {
         manager: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入部门名称!', trigger: 'change' }]
+        name: [{ required: true, message: '请输入部门名称!', trigger: 'change' }],
+        manager: [{ required: true, message: '请选择部门负责人!', trigger: 'change' }]
       }
     }
   },
