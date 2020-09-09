@@ -96,8 +96,8 @@
             <el-tab-pane label="用户" name="first">
               <department-user :department-id="current.id" />
             </el-tab-pane>
-            <el-tab-pane label="空间" name="second">
-              <department-namespace />
+            <el-tab-pane lazy label="空间" name="second">
+              <department-namespace :department-name="current.name" />
             </el-tab-pane>
           </el-tabs>
         </el-card>

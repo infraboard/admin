@@ -1,8 +1,8 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
+  <div>
+    <div>
+      <el-button size="mini" class="filter-item" type="primary" @click="handleCreate">
+        添加空间
       </el-button>
     </div>
 
@@ -13,7 +13,7 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%;margin-top:12px;"
     >
       <el-table-column label="名称" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
@@ -74,6 +74,12 @@ export default {
   name: 'DepartmentNamespace',
   components: { Pagination },
   directives: { },
+  props: {
+    departmentName: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableKey: 0,
@@ -83,6 +89,7 @@ export default {
       deleteLoading: '',
       listLoading: true,
       listQuery: {
+        department: '',
         page_number: 1,
         page_size: 20
       },
@@ -102,8 +109,16 @@ export default {
       return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
     }
   },
-  created() {
-    this.getNamespaceList()
+  watch: {
+    departmentName: {
+      handler: function(name) {
+        if (name) {
+          this.listQuery.department = name
+          this.getNamespaceList()
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     getNamespaceList() {
