@@ -54,6 +54,18 @@
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
           <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">负责人: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.owner }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">所属部门: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ namespace.department }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
             <span class="attr-key">空间描述: </span>
           </el-col>
           <el-col :xs="18" :sm="18" :lg="6">
