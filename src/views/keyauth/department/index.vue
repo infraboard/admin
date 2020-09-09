@@ -96,7 +96,9 @@
             <el-tab-pane label="用户" name="first">
               <department-user :department-id="current.id" />
             </el-tab-pane>
-            <el-tab-pane label="空间" name="second">敬请期待</el-tab-pane>
+            <el-tab-pane label="空间" name="second">
+              <department-namespace />
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-main>
@@ -122,10 +124,11 @@
 <script>
 import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
 import DepartmentUser from './components/DepartmentUser'
+import DepartmentNamespace from './components/DepartmentNamespace'
 
 export default {
   name: 'DepartmentList',
-  components: { DepartmentUser },
+  components: { DepartmentUser, DepartmentNamespace },
   directives: { },
   data() {
     return {
