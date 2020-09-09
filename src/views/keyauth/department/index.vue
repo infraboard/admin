@@ -96,7 +96,7 @@
             <el-tab-pane label="用户" name="first">
               <department-user :department-id="current.id" />
             </el-tab-pane>
-            <el-tab-pane label="权限" name="second">敬请期待</el-tab-pane>
+            <el-tab-pane label="空间" name="second">敬请期待</el-tab-pane>
           </el-tabs>
         </el-card>
       </el-main>

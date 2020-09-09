@@ -84,6 +84,12 @@ export default {
   name: 'NamespacePolicy',
   components: { Pagination },
   directives: { },
+  props: {
+    namespaceId: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       activeName: 'first',
@@ -96,7 +102,7 @@ export default {
       deleteLoading: '',
       queryLoading: true,
       listPolicyQuery: {
-        namespace_id: this.namespaceId,
+        namespace_id: '',
         with_role: true,
         page_number: 1,
         page_size: 20
@@ -115,17 +121,23 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
-    },
-    namespaceId() {
-      return this.$route.params.id
     }
   },
-  created() {
-    this.getNamespacePolicy()
+  watch: {
+    namespaceId: {
+      handler: function(did) {
+        if (did) {
+          this.listPolicyQuery.namespace_id = did
+          this.getNamespacePolicy()
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     getNamespacePolicy() {
       this.listPolicyLoading = true
+      this.namespace_id = this.namespaceId
       queryPolicy(this.listPolicyQuery).then(resp => {
         this.policys = resp.data.items
         this.total = resp.data.total

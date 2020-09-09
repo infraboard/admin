@@ -66,7 +66,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="访问策略" name="first">
-          <namespace-policy />
+          <namespace-policy :namespace-id="namespaceId" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
