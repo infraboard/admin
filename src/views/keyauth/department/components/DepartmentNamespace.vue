@@ -96,6 +96,7 @@ export default {
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
+        department: '',
         name: '',
         description: ''
       },
@@ -142,6 +143,7 @@ export default {
       this.dialogFormType = 'create'
       this.resetForm()
       this.dialogFormVisible = true
+      this.form.department = this.departmentName
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })

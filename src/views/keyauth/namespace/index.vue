@@ -22,14 +22,24 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
+      <el-table-column label="所属部门" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.department }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负责人" prop="type" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.department }}</span>
         </template>
       </el-table-column>
       <el-table-column label="类型" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
           <span>{{ row.type }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" prop="description" align="center" min-width="110">
@@ -51,6 +61,9 @@
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
+        <el-form-item label="部门" prop="department">
+          <choice-department :department.sync="form.department" value-attr="name" />
+        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
@@ -69,10 +82,11 @@
 <script>
 import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
 import Pagination from '@/components/Pagination'
+import ChoiceDepartment from '@/components/ChoiceDepartment'
 
 export default {
   name: 'NamespaceList',
-  components: { Pagination },
+  components: { Pagination, ChoiceDepartment },
   directives: { },
   data() {
     return {
@@ -89,11 +103,13 @@ export default {
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
+        department: '',
         name: '',
         description: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
+        department: [{ required: true, message: '请输入空间所属部门!', trigger: 'change' }],
+        name: [{ required: true, message: '请输入空间名称!', trigger: 'change' }]
       }
     }
   },

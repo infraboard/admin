@@ -38,7 +38,7 @@
             <el-button v-show="deleteLoading !== row.account" size="mini" type="text" @click="handleDelete(row,$index)">
               迁移部门
             </el-button>
-            <choice-department v-if="deleteLoading === row.account" :key="row.account" :department-id.sync="form.department_id" @change="departmentChanged" />
+            <choice-department v-if="deleteLoading === row.account" :key="row.account" :department.sync="form.department_id" @change="departmentChanged" />
             <el-button v-show="deleteLoading === row.account" size="mini" type="text" @click="handleCancel(row)">
               取消
             </el-button>

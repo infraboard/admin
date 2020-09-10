@@ -52,7 +52,7 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
         <el-form-item label="部门" prop="department_id">
-          <choice-department :department-id.sync="form.department_id" />
+          <choice-department :department.sync="form.department_id" />
         </el-form-item>
         <el-form-item label="用户名" prop="account">
           <el-input v-model="form.account" maxlength="60" show-word-limit />

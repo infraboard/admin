@@ -1,17 +1,21 @@
 <template>
-  <el-cascader v-model="currentDepartmentId" :props="props" :show-all-levels="false" />
+  <el-cascader v-model="currentdepartment" :props="props" :show-all-levels="false" />
 </template>
 
 <script>
 import { queryDepartment } from '@/api/keyauth/department'
 
-const listQuery = { parent_id: '', page_number: 1, page_size: 2000 }
+const listQuery = { parent_id: '', with_sub_count: true, page_number: 1, page_size: 2000 }
 
 export default {
   name: 'ChoiceDepartment',
   props: {
-    departmentId: {
+    department: {
       default: '',
+      type: String
+    },
+    valueAttr: {
+      default: 'id',
       type: String
     }
   },
@@ -21,17 +25,21 @@ export default {
       props: {
         lazy: true,
         label: 'name',
-        value: 'id',
+        value: this.$props.valueAttr,
         lazyLoad(node, resolve) {
           listQuery.parent_id = ''
           if (!node.root) {
             listQuery.parent_id = node.data.id
           }
-
           node.loading = true
           queryDepartment(listQuery).then(resp => {
             this.total = resp.data.total
-            resolve(resp.data.items)
+            const list = []
+            resp.data.items.forEach(item => {
+              item.leaf = item.sub_count === 0
+              list.push(item)
+            })
+            resolve(list)
             node.loading = false
           }).catch(() => {
             node.loading = false
@@ -41,12 +49,12 @@ export default {
     }
   },
   computed: {
-    currentDepartmentId: {
+    currentdepartment: {
       get() {
-        return this.departmentId
+        return this.department
       },
       set(val) {
-        this.$emit('update:departmentId', val[val.length - 1])
+        this.$emit('update:department', val[val.length - 1])
         this.$emit('change', val[val.length - 1])
       }
     }

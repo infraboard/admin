@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { getMyDomain } from '@/api/keyauth/profile'
 import { mapGetters } from 'vuex'
 import PanThumb from '@/components/PanThumb'
 export default {
@@ -33,6 +34,16 @@ export default {
       'avatar',
       'roles'
     ])
+  },
+  created() {
+    this.getDomain()
+  },
+  methods: {
+    getDomain() {
+      getMyDomain().then(resp => {
+        console.log(resp)
+      })
+    }
   }
 }
 </script>
