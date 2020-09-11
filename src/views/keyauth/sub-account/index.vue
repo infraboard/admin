@@ -1,54 +1,54 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">
+      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
     </div>
+    <el-card class="box-card">
+      <el-table
+        :key="tableKey"
+        v-loading="listLoading"
+        :data="userList"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%;"
+      >
+        <el-table-column label="用户名" prop="account" align="center" min-width="110">
+          <template slot-scope="{row}">
+            <span>{{ row.account }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="部门" prop="account" align="center" min-width="110">
+          <template slot-scope="{row}">
+            <span v-if="row.department">{{ row.department.name }}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="150px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" prop="status" align="center" min-width="110">
+          <template slot-scope="{row}">
+            <span v-if="row.status.locked"><svg-icon icon-class="locked" /></span>
+            <span v-else><svg-icon icon-class="normal" /></span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
+          <template slot-scope="{row,$index}">
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
+            <el-button v-if="row.status.locked" type="primary" size="mini" @click="handleLock(row)">解冻</el-button>
+            <el-button v-else type="warning" size="mini" @click="handleUnLock(row)">冻结</el-button>
+            <el-button :loading="deleteLoading === row.account" size="mini" type="danger" @click="handleDelete(row,$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="userList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-    >
-      <el-table-column label="用户名" prop="account" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.account }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="部门" prop="account" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span v-if="row.department">{{ row.department.name }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" prop="status" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span v-if="row.status.locked"><svg-icon icon-class="locked" /></span>
-          <span v-else><svg-icon icon-class="normal" /></span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.status.locked" type="primary" size="mini" @click="handleLock(row)">解冻</el-button>
-          <el-button v-else type="warning" size="mini" @click="handleUnLock(row)">冻结</el-button>
-          <el-button :loading="deleteLoading === row.account" size="mini" type="danger" @click="handleDelete(row,$index)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
-
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
+    </el-card>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
         <el-form-item label="部门" prop="department_id">

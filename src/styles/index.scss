@@ -123,6 +123,7 @@ aside {
 //main-container全局样式
 .app-container {
   padding: 20px;
+  background-color: #f2f2f2;
 }
 
 .components-container {
@@ -173,8 +174,6 @@ aside {
 }
 
 .filter-container {
-  padding-bottom: 10px;
-
   .filter-item {
     display: inline-block;
     vertical-align: middle;

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-container>
-      <el-aside width="220px" style="background: #FFFFFF;">
+      <el-aside width="220px" style="background: #FFFFFF;margin-bottom: 0px;">
         <div>
           <el-button class="filter-item" style="margin-left: 10px;" type="text" icon="el-icon-plus" @click="handleCreate()">
             顶级部门
@@ -23,7 +23,7 @@
           </span>
         </el-tree>
       </el-aside>
-      <el-main style="padding:0px;">
+      <el-main style="padding:0px 0px 0px 10px;">
         <el-card class="box-card f12">
           <el-row :gutter="8">
             <el-col :xs="12" :sm="12" :lg="12">

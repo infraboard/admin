@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <div>
       <el-button type="primary" size="mini" @click="handleUpdate(row)">关联策略</el-button>
     </div>
