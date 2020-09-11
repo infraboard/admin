@@ -1,81 +1,215 @@
 <template>
-  <div class="dashboard-editor-container">
-    <div class=" clearfix">
-      <pan-thumb :image="avatar" style="float: left">
-        Your roles:
-        <span v-for="item in roles" :key="item" class="pan-info-roles">{{ item }}</span>
-      </pan-thumb>
-      <div class="info-container">
-        <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
-      </div>
-    </div>
+  <div class="app-container">
     <div>
-      <img :src="emptyGif" class="emptyGif">
+      <el-card class="box-card f12">
+        <el-row :gutter="8">
+          <el-col :xs="12" :sm="12" :lg="12">
+            <span class="title">域信息</span>
+          </el-col>
+          <el-col :xs="12" :sm="12" :lg="12">
+            <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          </el-col>
+
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">名称: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span v-if="domain.display_name">{{ domain.display_name }}</span>
+            <span>{{ domain.name }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">管理员: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ domain.owner }}</span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">创建时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ domain.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">LOGO: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span v-if="domain.logo">{{ domain.logo }}</span>
+            <span v-else> 上传 </span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">状态: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span v-if="domain.enabled"><svg-icon icon-class="normal" /></span>
+            <span v-else><svg-icon icon-class="locked" /></span>
+          </el-col>
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">更新时间: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ domain.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 12px;">
+          <el-col :xs="6" :sm="6" :lg="2">
+            <span class="attr-key">空间描述: </span>
+          </el-col>
+          <el-col :xs="18" :sm="18" :lg="6">
+            <span>{{ domain.description }}</span>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
+
+    <el-card class="box-card" style="margin-top:12px;">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="LDAP设置" name="first">
+          测试
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
+      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="form.description" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getMyDomain } from '@/api/keyauth/profile'
-import { mapGetters } from 'vuex'
-import PanThumb from '@/components/PanThumb'
+
 export default {
-  name: 'DashboardEditor',
-  components: { PanThumb },
+  name: 'DomainSetting',
+  components: { },
+  directives: { },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+      activeName: 'first',
+      tableKey: 0,
+      domain: {},
+      endpoints: [],
+      total: 0,
+      createLoading: false,
+      deleteLoading: '',
+      queryLoading: true,
+      listQuery: {
+        page_number: 1,
+        page_size: 20
+      },
+      dialogFormVisible: false,
+      dialogFormType: 'create',
+      form: {
+        name: '',
+        description: ''
+      },
+      rules: {
+        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
+      }
     }
   },
   computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
-    ])
+    dialogTitle() {
+      return this.dialogFormType === 'create' ? '新增服务' : '编辑服务'
+    },
+    serviceName() {
+      return this.$route.params.id
+    }
   },
   created() {
-    this.getDomain()
+    this.getServiceDetail()
   },
   methods: {
-    getDomain() {
+    getServiceDetail() {
+      this.queryLoading = true
+      // 获取用户列表
       getMyDomain().then(resp => {
-        console.log(resp)
+        this.domain = resp.data
+        this.queryLoading = false
+      }).catch(() => {
+        this.queryLoading = false
       })
+    },
+    resetForm() {
+      this.form = {
+        name: '',
+        description: ''
+      }
+    },
+    handleCreate() {
+      this.dialogFormType = 'create'
+      this.resetForm()
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    submit() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          if (this.dialogFormType === 'create') {
+            // 新建
+            this.createService()
+          } else {
+            // 更新
+          }
+        }
+      })
+    },
+    createService() {
+      this.createLoading = true
+      // 创建请求
+      // createService(this.form).then(resp => {
+      //   this.dialogFormVisible = false
+      //   this.roleList.unshift(resp.data)
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '创建成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.createLoading = false
+      // }).catch(() => {
+      //   this.createLoading = false
+      // })
+    },
+    handleUpdate(row) {
+      this.dialogFormType = 'update'
+      this.form = Object.assign({}, row) // copy obj
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleDelete(row, index) {
+      this.deleteLoading = row.name
+      // deleteService(row.id).then(resp => {
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '删除成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.roleList.splice(index, 1)
+      //   this.deleteLoading = ''
+      // }).catch(() => {
+      //   this.deleteLoading = ''
+      // })
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .emptyGif {
-    display: block;
-    width: 45%;
-    margin: 0 auto;
-  }
-  .dashboard-editor-container {
-    background-color: #e3e3e3;
-    min-height: 100vh;
-    padding: 50px 60px 0px;
-    .pan-info-roles {
-      font-size: 12px;
-      font-weight: 700;
-      color: #333;
-      display: block;
-    }
-    .info-container {
-      position: relative;
-      margin-left: 190px;
-      height: 150px;
-      line-height: 200px;
-      .display_name {
-        font-size: 48px;
-        line-height: 48px;
-        color: #212121;
-        position: absolute;
-        top: 25px;
-      }
-    }
-  }
-</style>
