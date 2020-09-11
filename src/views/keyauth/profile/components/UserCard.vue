@@ -1,6 +1,5 @@
 <template>
-  <div style="margin-bottom:20px;">
-
+  <div class="app-container">
     <div class="user-profile">
       <div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">

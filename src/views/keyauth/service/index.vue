@@ -6,50 +6,47 @@
       </el-button>
     </div>
 
-    <el-card class="box-card">
-      <el-table
-        :key="tableKey"
-        v-loading="listLoading"
-        :data="roleList"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%;"
-      >
-        <el-table-column label="名称" prop="name" align="center" min-width="110">
-          <template slot-scope="{row}">
-            <router-link :to="'/service/'+row.id" class="link-type">
-              <span>{{ row.name }}</span>
-            </router-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" min-width="150px" align="center">
-          <template slot-scope="{row}">
-            <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="类型" prop="type" align="center" min-width="110">
-          <template slot-scope="{row}">
-            <span>{{ row.type }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="描述" prop="description" align="center" min-width="110">
-          <template slot-scope="{row}">
-            <span>{{ row.description }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
-          <template slot-scope="{row,$index}">
-            <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-            <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="roleList"
+      fit
+      highlight-current-row
+      style="width: 100%;"
+    >
+      <el-table-column label="名称" prop="name" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <router-link :to="'/service/'+row.id" class="link-type">
+            <span>{{ row.name }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" min-width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" prop="type" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.type }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="描述" prop="description" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.description }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getServiceList" />
-    </el-card>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getServiceList" />
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
