@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <div class="filter-item">
-        <el-input v-model="input3" class="input-with-select" style="width:400px;" placeholder="按回车进行搜索">
+        <el-input v-model="input3" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索">
           <el-select slot="prepend" v-model="select" placeholder="请选择">
             <el-option label="用户" value="account" />
             <el-option label="登录IP" value="2" />
@@ -119,7 +119,7 @@ export default {
 
 <style lang="scss" scoped>
   .app-container ::v-deep .el-select {
-    width: 128px;
+    width: 102px;
   }
   .app-container ::v-deep .input-with-select .el-input-group__prepend {
     background-color: #fff;
