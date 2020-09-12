@@ -1,5 +1,19 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <div class="filter-item">
+        <el-input v-model="input3" class="input-with-select" style="width:400px;" placeholder="按回车进行搜索">
+          <el-select slot="prepend" v-model="select" placeholder="请选择">
+            <el-option label="用户" value="account" />
+            <el-option label="登录IP" value="2" />
+            <el-option label="登录城市" value="3" />
+            <el-option label="应用名称" value="4" />
+            <el-option label="授权方式" value="5" />
+          </el-select>
+        </el-input>
+      </div>
+
+    </div>
     <div class="box-shadow">
       <el-table
         :key="tableKey"
@@ -72,6 +86,8 @@ export default {
   directives: { },
   data() {
     return {
+      input3: '',
+      select: 'account',
       tableKey: 0,
       roleList: [],
       total: 0,
@@ -100,3 +116,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .app-container ::v-deep .el-select {
+    width: 128px;
+  }
+  .app-container ::v-deep .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  // .app-container ::v-deep .el-input__inner {
+  //     width: 272px;
+  // }
+</style>

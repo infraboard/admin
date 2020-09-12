@@ -46,7 +46,7 @@
         </el-table-column>
       </el-table>
 
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
+      <pagination v-show="total>listQuery.page_size" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
     </div>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
