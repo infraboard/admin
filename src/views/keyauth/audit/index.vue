@@ -2,15 +2,18 @@
   <div class="app-container">
     <div class="filter-container">
       <div class="filter-item">
-        <el-input v-model="input3" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索">
-          <el-select slot="prepend" v-model="select" placeholder="请选择">
+        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
             <el-option label="用户" value="account" />
-            <el-option label="登录IP" value="2" />
-            <el-option label="登录城市" value="3" />
-            <el-option label="应用名称" value="4" />
-            <el-option label="授权方式" value="5" />
+            <el-option label="登录IP" value="login_ip" />
+            <el-option label="登录城市" value="login_city" />
+            <el-option label="授权方式" value="grant_type" />
           </el-select>
         </el-input>
+      </div>
+
+      <div class="filter-item" style="margin-left:8px;">
+        <date-time-picker :choiced-time.sync="choicedTime" @change="choicedTimeChanged" />
       </div>
 
     </div>
@@ -79,20 +82,29 @@
 <script>
 import { queryLoginLog } from '@/api/keyauth/audit'
 import Pagination from '@/components/Pagination'
+import DateTimePicker from '@/components/DateTimePicker'
 
 export default {
   name: 'LoginLog',
-  components: { Pagination },
+  components: { Pagination, DateTimePicker },
   directives: { },
   data() {
     return {
-      input3: '',
-      select: 'account',
+      filterKey: 'account',
+      filterValue: '',
       tableKey: 0,
       roleList: [],
       total: 0,
       listLoading: false,
+      choicedTime: [],
       listQuery: {
+        account: '',
+        application_id: '',
+        login_ip: '',
+        login_city: '',
+        grant_type: '',
+        start_time: 0,
+        end_time: 0,
         page_number: 1,
         page_size: 10
       }
@@ -112,6 +124,30 @@ export default {
       }).catch(() => {
         this.listLoading = false
       })
+    },
+    choicedTimeChanged(val) {
+      if (val.length === 2) {
+        this.listQuery.start_time = val[0].getTime()
+        this.listQuery.end_time = val[1].getTime()
+      }
+      this.getLoginLogList()
+    },
+    handleSearch() {
+      switch (this.filterKey) {
+        case 'account':
+          this.listQuery.account = this.filterValue
+          break
+        case 'login_ip':
+          this.listQuery.login_ip = this.filterValue
+          break
+        case 'login_city':
+          this.listQuery.login_city = this.filterValue
+          break
+        case 'grant_type':
+          this.listQuery.grant_type = this.filterValue
+          break
+      }
+      this.getLoginLogList()
     }
   }
 }
@@ -124,7 +160,4 @@ export default {
   .app-container ::v-deep .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }
-  // .app-container ::v-deep .el-input__inner {
-  //     width: 272px;
-  // }
 </style>
