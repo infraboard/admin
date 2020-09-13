@@ -5,12 +5,7 @@
     </div>
     <div class="el-alert__content tips-content">
       <span class="el-alert__title is-bold">温馨提示</span>
-
-      <li class="el-alert__description">文字说明文字说明文字说明文字说明文字说明文字说明</li>
-      <li class="el-alert__description">文字说明文字说明文字说明文字说明文字说明文字说明</li>
-      <li class="el-alert__description">文字说明文字说明文字说明文字说明文字说明文字说明</li>
-      <li class="el-alert__description">文字说明文字说明文字说明文字说明文字说明文字说明</li>
-
+      <li v-for="(item, i) in tips" :key="i" class="el-alert__description">{{ item }}</li>
       <i class="el-alert__closebtn el-icon-close" @click="handleClose" />
     </div>
   </div>
@@ -20,9 +15,11 @@
 export default {
   name: 'Tips',
   props: {
-    department: {
-      default: '',
-      type: String
+    tips: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   data() {

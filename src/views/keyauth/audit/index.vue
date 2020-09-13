@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div>
-      <tips />
+      <tips :tips="tips" />
     </div>
     <div class="filter-container">
       <div class="filter-item">
@@ -88,12 +88,19 @@ import Pagination from '@/components/Pagination'
 import DateTimePicker from '@/components/DateTimePicker'
 import Tips from '@/components/Tips'
 
+const tips = [
+  '移动端登录，由于运营商是随机分配IP，往往存在与实际登录地不符的情况',
+  '若使用VPN或代理联网的，登录地点无法准确记录',
+  '部分网络代理商的服务，存在IP地址不稳定的问题'
+]
+
 export default {
   name: 'LoginLog',
   components: { Pagination, DateTimePicker, Tips },
   directives: { },
   data() {
     return {
+      tips,
       filterKey: 'account',
       filterValue: '',
       tableKey: 0,
