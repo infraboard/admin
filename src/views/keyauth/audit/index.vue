@@ -1,8 +1,11 @@
 <template>
   <div class="app-container">
+    <div>
+      <tips />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
-        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @keyup.enter.native="handleSearch">
+        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
           <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
             <el-option label="用户" value="account" />
             <el-option label="登录IP" value="login_ip" />
@@ -83,10 +86,11 @@
 import { queryLoginLog } from '@/api/keyauth/audit'
 import Pagination from '@/components/Pagination'
 import DateTimePicker from '@/components/DateTimePicker'
+import Tips from '@/components/Tips'
 
 export default {
   name: 'LoginLog',
-  components: { Pagination, DateTimePicker },
+  components: { Pagination, DateTimePicker, Tips },
   directives: { },
   data() {
     return {
@@ -106,7 +110,7 @@ export default {
         start_time: 0,
         end_time: 0,
         page_number: 1,
-        page_size: 10
+        page_size: 20
       }
     }
   },
@@ -114,6 +118,9 @@ export default {
     this.getLoginLogList()
   },
   methods: {
+    resetQuery() {
+      this.listQuery = {}
+    },
     getLoginLogList() {
       this.listLoading = true
       // 获取用户列表
@@ -126,9 +133,12 @@ export default {
       })
     },
     choicedTimeChanged(val) {
-      if (val.length === 2) {
+      if (Array.isArray(val) && val.length === 2) {
         this.listQuery.start_time = val[0].getTime()
         this.listQuery.end_time = val[1].getTime()
+      } else {
+        this.listQuery.start_time = 0
+        this.listQuery.end_time = 0
       }
       this.getLoginLogList()
     },
@@ -147,6 +157,10 @@ export default {
           this.listQuery.grant_type = this.filterValue
           break
       }
+      this.getLoginLogList()
+    },
+    clearSearch() {
+      this.resetQuery()
       this.getLoginLogList()
     }
   }
