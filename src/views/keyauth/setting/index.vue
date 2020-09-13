@@ -68,34 +68,21 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="LDAP设置" name="first">
-          测试
+          <ldap-setting />
         </el-tab-pane>
       </el-tabs>
     </el-card>
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getMyDomain } from '@/api/keyauth/profile'
+import LdapSetting from './components/LdapSetting'
 
 export default {
   name: 'DomainSetting',
-  components: { },
+  components: { LdapSetting },
   directives: { },
   data() {
     return {
@@ -104,21 +91,10 @@ export default {
       domain: {},
       endpoints: [],
       total: 0,
-      createLoading: false,
-      deleteLoading: '',
       queryLoading: true,
       listQuery: {
         page_number: 1,
         page_size: 20
-      },
-      dialogFormVisible: false,
-      dialogFormType: 'create',
-      form: {
-        name: '',
-        description: ''
-      },
-      rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
       }
     }
   },

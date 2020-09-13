@@ -51,7 +51,7 @@
     </div>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
+      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 50px; margin-right: 50px">
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>

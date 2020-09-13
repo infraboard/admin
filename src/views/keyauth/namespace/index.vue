@@ -61,7 +61,7 @@
     </div>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="right" label-width="90px" style="margin-left: 50px; margin-right: 50px">
+      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 50px; margin-right: 50px">
         <el-form-item label="部门" prop="department">
           <choice-department :department.sync="form.department" value-attr="name" />
         </el-form-item>
