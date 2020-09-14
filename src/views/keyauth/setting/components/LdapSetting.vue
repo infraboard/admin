@@ -18,8 +18,11 @@
       </el-form-item>
       <el-form-item label="启用">
         <el-checkbox v-model="form.enabled" />
+        <div class="input-tips">启动后允许用户通过LDAP账号登录</div>
       </el-form-item>
       <el-form-item>
+        <el-button>测试连接</el-button>
+        <el-button>测试登录</el-button>
         <el-button>取消</el-button>
         <el-button type="primary">保存</el-button>
       </el-form-item>
