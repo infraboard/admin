@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form label-position="left" :rules="rules" label-width="110px" :model="form" @validate="handleValidate">
+    <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
       <el-form-item label="服务地址" prop="url">
         <el-input v-model="form.url" />
         <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
