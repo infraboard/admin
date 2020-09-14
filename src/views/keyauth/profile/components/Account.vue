@@ -1,37 +1,18 @@
 <template>
-  <el-form>
-    <el-form-item label="Name">
-      <el-input v-model.trim="user.name" />
-    </el-form-item>
-    <el-form-item label="Email">
-      <el-input v-model.trim="user.email" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="submit">Update</el-button>
-    </el-form-item>
-  </el-form>
+  <div class="app-container">
+    <tips :tips="tips" />
+  </div>
 </template>
 
 <script>
+import Tips from '@/components/Tips'
+
 export default {
-  props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {
-          name: '',
-          email: ''
-        }
-      }
-    }
-  },
-  methods: {
-    submit() {
-      this.$message({
-        message: 'User information has been updated successfully',
-        type: 'success',
-        duration: 5 * 1000
-      })
+  name: 'DashboardEditor',
+  components: { Tips },
+  data() {
+    return {
+      tips: ['功能开发中, 敬请期待']
     }
   }
 }

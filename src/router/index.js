@@ -230,7 +230,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'login',
-        component: () => import('@/views/keyauth/audit/index'),
+        component: () => import('@/views/keyauth/audit/login'),
         name: 'LoginAudit',
         meta: {
           title: '登录日志',
@@ -238,8 +238,8 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'namespace',
-        component: () => import('@/views/keyauth/namespace'),
+        path: 'operate',
+        component: () => import('@/views/keyauth/audit/operate'),
         name: 'OperateAudit',
         meta: {
           title: '操作日志',
