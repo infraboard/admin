@@ -63,13 +63,13 @@
 import Tips from '@/components/Tips'
 
 const tips = [
-  '移动端登录，由于运营商是随机分配IP，往往存在与实际登录地不符的情况',
-  '若使用VPN或代理联网的，登录地点无法准确记录',
-  '部分网络代理商的服务，存在IP地址不稳定的问题'
+  '您在该模块所设定的密码规则仅适用于使用登录密码的子用户',
+  '登录密码失效后子用户将无法通过其他登录方式进行登录，须重置登录密码',
+  '为了您的账户安全，我们不会在子用户重置密码时提示您设置的密码规则细则'
 ]
 
 export default {
-  name: 'LdapSetting',
+  name: 'UserSetting',
   components: { Tips },
   props: {
     namespaceId: {

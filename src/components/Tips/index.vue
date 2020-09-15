@@ -4,8 +4,8 @@
       <svg-icon icon-class="tip" />
     </div>
     <div class="el-alert__content tips-content">
-      <span class="el-alert__title is-bold">温馨提示</span>
-      <li v-for="(item, i) in tips" :key="i" class="el-alert__description">{{ item }}</li>
+      <span class="el-alert__title is-bold">{{ title }}</span>
+      <li v-for="(item, i) in tips" :key="i" class="el-alert__description tip-item">{{ item }}</li>
       <i class="el-alert__closebtn el-icon-close" @click="handleClose" />
     </div>
   </div>
@@ -20,6 +20,10 @@ export default {
       default() {
         return []
       }
+    },
+    title: {
+      type: String,
+      default: '温馨提示'
     }
   },
   data() {
@@ -51,4 +55,9 @@ export default {
     margin-left: 12px;
     margin-top: 3px;
 }
+
+.tip-item {
+  margin-top: 8px;;
+}
+
 </style>

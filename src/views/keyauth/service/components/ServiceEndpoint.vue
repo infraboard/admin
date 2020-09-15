@@ -9,12 +9,12 @@
       highlight-current-row
       style="width: 100%;margin-top:12px;"
     >
-      <el-table-column label="资源名称" prop="description" align="center" min-width="80">
+      <el-table-column label="资源名称" prop="description" min-width="80">
         <template slot-scope="{row}">
           <span>{{ row.resource }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="访问标签" min-width="110px" align="center">
+      <el-table-column label="访问标签" min-width="110px">
         <template slot-scope="{row}">
           <div v-if="row.labels">
             <div v-for="(value,name) in row.labels" :key="name" class="github-badge">
@@ -24,27 +24,27 @@
           <span v-else> - </span>
         </template>
       </el-table-column>
-      <el-table-column label="访问方法" min-width="60px" align="center">
+      <el-table-column label="访问方法" min-width="60px">
         <template slot-scope="{row}">
           <el-tag effect="plain" :style="methodColer(row.method)">{{ row.method }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="访问路径" prop="name" align="center" min-width="180">
+      <el-table-column label="访问路径" prop="name" min-width="180">
         <template slot-scope="{row}">
           <span>{{ row.path }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="函数名称" prop="type" align="center" min-width="80">
+      <el-table-column label="函数名称" prop="type" min-width="80">
         <template slot-scope="{row}">
           <span>{{ row.function_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="身份认证" align="center" min-width="60">
+      <el-table-column label="身份认证" min-width="60">
         <template slot-scope="{row}">
           <span>{{ row.auth_enable }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="权限认证" align="center" min-width="60">
+      <el-table-column label="权限认证" min-width="60">
         <template slot-scope="{row}">
           <span>{{ row.auth_enable }}</span>
         </template>

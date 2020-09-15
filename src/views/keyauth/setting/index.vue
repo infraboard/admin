@@ -67,7 +67,10 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="LDAP设置" name="first">
+        <el-tab-pane label="登录安全" name="first">
+          <user-setting />
+        </el-tab-pane>
+        <el-tab-pane lazy label="LDAP设置" name="second">
           <ldap-setting />
         </el-tab-pane>
       </el-tabs>
@@ -79,10 +82,11 @@
 <script>
 import { getMyDomain } from '@/api/keyauth/profile'
 import LdapSetting from './components/LdapSetting'
+import UserSetting from './components/UserSetting'
 
 export default {
   name: 'DomainSetting',
-  components: { LdapSetting },
+  components: { LdapSetting, UserSetting },
   directives: { },
   data() {
     return {
