@@ -5,7 +5,7 @@
         <tips :tips="tips" title="须知" />
       </div>
       <div class="setting-form">
-        <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
+        <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
           <el-form-item label="服务地址" prop="url">
             <el-input v-model="form.url" />
             <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
@@ -51,8 +51,8 @@
           <el-form-item>
             <el-button>测试连接</el-button>
             <el-button>测试登录</el-button>
-            <el-button>取消</el-button>
-            <el-button type="primary">保存</el-button>
+            <el-button @click="cancel">取消修改</el-button>
+            <el-button type="primary" :loading="saveLoading" @click="saveLDAPConfig">保 存</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -73,9 +73,7 @@ import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
 import Tips from '@/components/Tips'
 
 const tips = [
-  '移动端登录，由于运营商是随机分配IP，往往存在与实际登录地不符的情况',
-  '若使用VPN或代理联网的，登录地点无法准确记录',
-  '部分网络代理商的服务，存在IP地址不稳定的问题'
+  '配置并开启了LDAP后, 子用户可以通过LDAP账号进行登录'
 ]
 
 export default {
@@ -89,10 +87,12 @@ export default {
   },
   data() {
     return {
+      saveLoading: false,
       loading: undefined,
       tips,
       hasConfig: true,
       showAttrMap: false,
+      ldap: {},
       form: {
         url: 'ldap://127.0.0.1:389',
         user: 'cn=admin,dc=example,dc=org',
@@ -122,24 +122,45 @@ export default {
     this.getLDAPConfig()
   },
   methods: {
-    getLDAPConfig() {
-      queryDomainLDAP().then(resp => {
-        console.log(resp)
-      }).catch(err => {
-        this.loading.close()
-        if (err.response.status === 404) {
+    async getLDAPConfig() {
+      try {
+        var resp = await queryDomainLDAP()
+        this.ldap = resp.data
+        this.form = Object.assign({}, this.ldap)
+      } catch (e) {
+        if (e.response.status === 404) {
           this.hasConfig = false
         } else {
           this.$message({
-            message: err.response.data,
+            message: e.response.data,
             type: 'error',
             duration: 5 * 1000
           })
         }
-      })
+      } finally {
+        this.loading.close()
+      }
+    },
+    cancel() {
+      this.form = Object.assign({}, this.ldap)
     },
     saveLDAPConfig() {
-      saveDomainLDAP()
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.saveLoading = true
+          saveDomainLDAP(this.form).then(resp => {
+            this.form = resp.data
+            this.saveLoading = false
+            this.$message({
+              message: 'ldap配置保存成功',
+              type: 'success',
+              duration: 3 * 1000
+            })
+          }).catch(() => {
+            this.saveLoading = false
+          })
+        }
+      })
     }
   }
 }

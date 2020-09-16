@@ -3,55 +3,53 @@
     <div>
       <tips :tips="tips" title="须知" />
     </div>
+    <el-divider content-position="left">密码规则</el-divider>
     <div class="setting-form">
       <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
-        <el-form-item label="服务地址" prop="url">
-          <el-input v-model="form.url" />
-          <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
+        <el-form-item label="至少包含" prop="url">
+          <el-checkbox v-model="checked">数字</el-checkbox>
+          <el-checkbox v-model="checked">小写字母</el-checkbox>
+          <el-checkbox v-model="checked">大写字母</el-checkbox>
+          <el-checkbox v-model="checked">特殊字符(除空格)</el-checkbox>
         </el-form-item>
-        <el-form-item label="绑定DN" prop="user">
-          <el-input v-model="form.user" />
+        <el-form-item label="最短密码长度" prop="user">
+          <el-input-number v-model="num" :min="8" :max="32" />
+          <span class="f12"> 个字符</span>
           <div class="input-tips">
-            <span>用于验证账号的管理员用户</span>
+            <span>限制密码长度。默认 8 个字符，最大长度可设置 32 个字符</span>
           </div>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" show-password />
-          <div class="input-tips">用于验证账号的管理员密码</div>
+        <el-form-item label="定期失效" prop="password">
+          <el-input-number v-model="num" :min="0" :max="365" />
+          <span class="f12"> 个字符</span>
+          <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
         </el-form-item>
-        <el-form-item label="属性映射">
-          <el-checkbox v-model="showAttrMap" />
+        <el-form-item label="重复限制" prop="password">
+          <el-input-number v-model="num" :min="1" :max="24" />
+          <span class="f12"> 个字符</span>
+          <div class="input-tips">限制新密码与历史密码的重复。默认与前 1 次密码不重复，最多可限制与前 24 次密码不重复</div>
+        </el-form-item>
+        <el-form-item label="重复限制" prop="password">
+          <el-input-number v-model="num" :min="1" :max="10" />
+          <span class="f12"> 个字符</span>
+          <div class="input-tips">限制密码重试错误次数。默认为10次/小时，最小可设置1次/小时。密码重试超过约束次数将自动锁定 1 小时</div>
+        </el-form-item>
+        <el-divider content-position="left">登录限制</el-divider>
+        <el-form-item label="异常登录限制" prop="user">
+          <el-checkbox v-model="checked" />
           <div class="input-tips">
-            <span>当前系统子用户属性和LDAP中用户属性的映射关系</span>
-          </div>
-          <div v-show="showAttrMap">
-            <div class="attr-item">
-              <span class="f12 attr-key">用户组名称</span>
-              <el-input v-model="form.group_name_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">用户名称</span>
-              <el-input v-model="form.username_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">用户邮箱</span>
-              <el-input v-model="form.mail_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">显示名称</span>
-              <el-input v-model="form.display_name_attribute" class="attr-value" />
-            </div>
+            <span>异地登录、30天未登录, 将要求用户进行二次身份校验，有效保障账号资产安全</span>
           </div>
         </el-form-item>
-        <el-form-item label="启用">
-          <el-checkbox v-model="form.enabled" />
-          <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
+        <el-form-item label="IP登录限制" prop="user">
+          <el-checkbox v-model="checked" />
+          <div class="input-tips">
+            <span>开启后，子账号（子用户和协作者）仅在限制条件下允许登录</span>
+          </div>
         </el-form-item>
         <el-form-item>
-          <el-button>测试连接</el-button>
-          <el-button>测试登录</el-button>
-          <el-button>取消</el-button>
-          <el-button type="primary">保存</el-button>
+          <el-button>取 消</el-button>
+          <el-button type="primary">保 存</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -92,6 +90,8 @@ export default {
         display_name_attribute: 'displayname',
         enabled: true
       },
+      checked: true,
+      num: 0,
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
         user: [{ required: true, message: '请输入admin用户', trigger: 'blur' }],
