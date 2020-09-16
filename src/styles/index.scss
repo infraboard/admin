@@ -194,9 +194,18 @@ aside {
   font-size: 12px;
 }
 
+.detail-col {
+  display: flex;
+}
+
 .attr-key {
+  width: 20%;
   font-weight: 500;
   color: #7d8591;
+}
+
+.attr-value {
+  width: 80%;
 }
 
 .title {

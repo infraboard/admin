@@ -12,54 +12,46 @@
 
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">名称: </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">名称</span>
+            <div class="attr-value">
+              <span v-if="domain.display_name">{{ domain.display_name }}</span>
+              <span>{{ domain.name }}</span>
+            </div>
           </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span v-if="domain.display_name">{{ domain.display_name }}</span>
-            <span>{{ domain.name }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">管理员</span>
+            <span class="attr-value">{{ domain.owner }}</span>
           </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">管理员: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ domain.owner }}</span>
-          </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">创建时间: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ domain.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ domain.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">LOGO: </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">LOGO</span>
+            <div class="attr-value">
+              <span v-if="domain.logo">{{ domain.logo }}</span>
+              <span v-else> 上传 </span>
+            </div>
           </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span v-if="domain.logo">{{ domain.logo }}</span>
-            <span v-else> 上传 </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">状态</span>
+            <div class="attr-value">
+              <span v-if="domain.enabled"><svg-icon icon-class="normal" /></span>
+              <span v-else><svg-icon icon-class="locked" /></span>
+            </div>
           </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">状态: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span v-if="domain.enabled"><svg-icon icon-class="normal" /></span>
-            <span v-else><svg-icon icon-class="locked" /></span>
-          </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">更新时间: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ domain.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">更新时间</span>
+            <span class="attr-value">{{ domain.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间描述: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ domain.description }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">空间描述</span>
+            <span class="attr-value">{{ domain.description }}</span>
           </el-col>
         </el-row>
       </el-card>

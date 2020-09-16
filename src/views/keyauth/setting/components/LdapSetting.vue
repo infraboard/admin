@@ -104,7 +104,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .attr-item {
   margin-bottom:12px;
   margin-top:12px;

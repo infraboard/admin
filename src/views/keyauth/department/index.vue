@@ -43,51 +43,48 @@
                   <el-button type="text" size="mini" @click="handleUpdate">编辑</el-button>
                 </div>
               </div>
-
             </el-col>
 
           </el-row>
           <el-row :gutter="8" class="center" style="margin-bottom: 12px;">
-            <el-col :xs="6" :sm="6" :lg="2">
-              <span class="attr-key">名称: </span>
+            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+              <span class="attr-key">名称</span>
+              <div class="attr-value">
+                <span v-show="!isEdit">{{ current.name }}</span>
+                <el-input
+                  v-show="isEdit"
+                  v-model="form.name"
+                  placeholder="请输入部门名称"
+                  maxlength="60"
+                  show-word-limit
+                />
+              </div>
             </el-col>
-            <el-col :xs="18" :sm="18" :lg="6">
-              <span v-show="!isEdit">{{ current.name }}</span>
-              <el-input
-                v-show="isEdit"
-                v-model="form.name"
-                placeholder="请输入部门名称"
-                maxlength="60"
-                show-word-limit
-              />
+            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+              <span class="attr-key">上级部门</span>
+              <div class="attr-value">
+                <span v-if="current.parent_id">{{ current.parent_id }}</span>
+                <span v-else>-</span>
+              </div>
             </el-col>
-            <el-col :xs="6" :sm="6" :lg="2">
-              <span class="attr-key">上级部门: </span>
-            </el-col>
-            <el-col :xs="18" :sm="18" :lg="6">
-              <span v-if="current.parent_id">{{ current.parent_id }}</span>
-              <span v-else>-</span>
-            </el-col>
-            <el-col :xs="6" :sm="6" :lg="2">
-              <span class="attr-key">创建时间: </span>
-            </el-col>
-            <el-col :xs="18" :sm="18" :lg="6">
-              <span>{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+              <span class="attr-key">创建时间</span>
+              <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </el-col>
           </el-row>
           <el-row :gutter="8" style="margin-bottom: 12px;" class="center">
-            <el-col :xs="6" :sm="6" :lg="2">
-              <span class="attr-key">负责人: </span>
-            </el-col>
-            <el-col :xs="18" :sm="18" :lg="6">
-              <span v-show="!isEdit">{{ current.manager }}</span>
-              <el-input
-                v-show="isEdit"
-                v-model="form.manager"
-                placeholder="请输入部门负责人"
-                maxlength="60"
-                show-word-limit
-              />
+            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+              <span class="attr-key">负责人</span>
+              <div class="attr-value">
+                <span v-show="!isEdit">{{ current.manager }}</span>
+                <el-input
+                  v-show="isEdit"
+                  v-model="form.manager"
+                  placeholder="请输入部门负责人"
+                  maxlength="60"
+                  show-word-limit
+                />
+              </div>
             </el-col>
           </el-row>
         </el-card>

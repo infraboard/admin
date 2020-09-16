@@ -12,64 +12,48 @@
 
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">名称: </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">名称</span>
+            <span class="attr-value">{{ namespace.name }}</span>
           </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.name }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">创建人</span>
+            <span class="attr-value">{{ namespace.creater }}</span>
           </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">创建人: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.creater }}</span>
-          </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">创建时间: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间类型: </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">空间类型</span>
+            <div class="attr-value">
+              <span v-if="namespace.type">{{ namespace.type }}</span>
+              <span v-else> - </span>
+            </div>
           </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span v-if="namespace.type">{{ namespace.type }}</span>
-            <span v-else> - </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">空间ID</span>
+            <span class="attr-value">{{ namespace.id }}</span>
           </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间ID: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.id }}</span>
-          </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">更新时间: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">更新时间</span>
+            <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">负责人: </span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">负责人</span>
+            <span class="attr-value">{{ namespace.owner }}</span>
           </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.owner }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">所属部门</span>
+            <span class="attr-value">{{ namespace.department }}</span>
           </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">所属部门: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.department }}</span>
-          </el-col>
-          <el-col :xs="6" :sm="6" :lg="2">
-            <span class="attr-key">空间描述: </span>
-          </el-col>
-          <el-col :xs="18" :sm="18" :lg="6">
-            <span>{{ namespace.description }}</span>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <span class="attr-key">空间描述</span>
+            <span class="attr-value">{{ namespace.description }}</span>
           </el-col>
         </el-row>
       </el-card>
