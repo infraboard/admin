@@ -5,34 +5,41 @@
     </div>
     <el-divider content-position="left">密码规则</el-divider>
     <div class="setting-form">
-      <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
-        <el-form-item label="至少包含" prop="url">
-          <el-checkbox v-model="checked">数字</el-checkbox>
-          <el-checkbox v-model="checked">小写字母</el-checkbox>
-          <el-checkbox v-model="checked">大写字母</el-checkbox>
-          <el-checkbox v-model="checked">特殊字符(除空格)</el-checkbox>
+      <el-form label-position="left" :rules="rules" label-width="110px" :model="passRule">
+        <el-form-item label="至少包含" prop="contains">
+          <el-checkbox-group v-model="passRule.contains" :min="1">
+            <el-checkbox key="num" label="数字" />
+            <el-checkbox key="small_alpha" label="小写字母" />
+            <el-checkbox key="caps_alpha" label="大写字母" />
+            <el-checkbox key="special_char" label="特殊字符(除空格)" />
+          </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="最短密码长度" prop="user">
-          <el-input-number v-model="num" :min="8" :max="32" />
-          <span class="f12"> 个字符</span>
+        <el-form-item label="最短密码长度" prop="min_length">
+          <el-input-number v-model="passRule.min_length" :min="8" :max="32" />
+          <span class="f12 append-text"> 个字符</span>
           <div class="input-tips">
             <span>限制密码长度。默认 8 个字符，最大长度可设置 32 个字符</span>
           </div>
         </el-form-item>
-        <el-form-item label="定期失效" prop="password">
-          <el-input-number v-model="num" :min="0" :max="365" />
-          <span class="f12"> 个字符</span>
+        <el-form-item label="定期失效" prop="expire_days">
+          <el-input-number v-model="passRule.expire_days" :min="0" :max="365" />
+          <span class="f12 append-text"> 天</span>
           <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
         </el-form-item>
-        <el-form-item label="重复限制" prop="password">
-          <el-input-number v-model="num" :min="1" :max="24" />
-          <span class="f12"> 个字符</span>
+        <el-form-item label="重复限制" prop="repeate">
+          <el-input-number v-model="passRule.repeate" :min="1" :max="24" />
+          <span class="f12 append-text"> 次</span>
           <div class="input-tips">限制新密码与历史密码的重复。默认与前 1 次密码不重复，最多可限制与前 24 次密码不重复</div>
         </el-form-item>
-        <el-form-item label="重复限制" prop="password">
-          <el-input-number v-model="num" :min="1" :max="10" />
-          <span class="f12"> 个字符</span>
-          <div class="input-tips">限制密码重试错误次数。默认为10次/小时，最小可设置1次/小时。密码重试超过约束次数将自动锁定 1 小时</div>
+        <el-form-item label="重试限制" prop="max_retry">
+          <el-input-number v-model="passRule.max_retry" :min="1" :max="10" />
+          <span class="f12 append-text"> 次</span>
+          <div class="input-tips">限制密码重试错误次数。默认为5次，最小可设置1次</div>
+        </el-form-item>
+        <el-form-item label="锁定时间" prop="lock_time">
+          <el-input-number v-model="passRule.lock_time" :min="1" :max="60" />
+          <span class="f12 append-text"> 分钟</span>
+          <div class="input-tips">密码重试超过约束次数将自动锁定的时间, 默认锁定30分钟</div>
         </el-form-item>
         <el-divider content-position="left">登录限制</el-divider>
         <el-form-item label="异常登录限制" prop="user">
@@ -79,19 +86,15 @@ export default {
     return {
       tips,
       showAttrMap: false,
-      form: {
-        url: 'ldap://127.0.0.1:389',
-        user: 'cn=admin,dc=example,dc=org',
-        password: '',
-        base_dn: '',
-        group_name_attribute: 'cn',
-        username_attribute: 'uid',
-        mail_attribute: 'mail',
-        display_name_attribute: 'displayname',
-        enabled: true
+      passRule: {
+        min_length: 8,
+        expire_days: 0,
+        repeate: 1,
+        max_retry: 5,
+        lock_time: 30,
+        contains: ['数字', '小写字母', '大写字母', '特殊字符(除空格)']
       },
       checked: true,
-      num: 0,
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
         user: [{ required: true, message: '请输入admin用户', trigger: 'blur' }],
@@ -122,6 +125,10 @@ export default {
 
 .setting-form {
   margin-top: 12px;
+}
+
+.append-text {
+  margin-left: 4px;
 }
 
 </style>
