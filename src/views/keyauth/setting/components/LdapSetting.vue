@@ -1,65 +1,75 @@
 <template>
-  <div>
-    <div>
-      <tips :tips="tips" title="须知" />
+  <div class="sub-main">
+    <div v-if="hasConfig">
+      <div>
+        <tips :tips="tips" title="须知" />
+      </div>
+      <div class="setting-form">
+        <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
+          <el-form-item label="服务地址" prop="url">
+            <el-input v-model="form.url" />
+            <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
+          </el-form-item>
+          <el-form-item label="绑定DN" prop="user">
+            <el-input v-model="form.user" />
+            <div class="input-tips">
+              <span>用于验证账号的管理员用户</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" show-password />
+            <div class="input-tips">用于验证账号的管理员密码</div>
+          </el-form-item>
+          <el-form-item label="属性映射">
+            <el-checkbox v-model="showAttrMap" />
+            <div class="input-tips">
+              <span>当前系统子用户属性和LDAP中用户属性的映射关系</span>
+            </div>
+            <div v-show="showAttrMap">
+              <div class="attr-item">
+                <span class="f12 attr-key">用户组名称</span>
+                <el-input v-model="form.group_name_attribute" class="attr-value" />
+              </div>
+              <div class="attr-item">
+                <span class="f12 attr-key">用户名称</span>
+                <el-input v-model="form.username_attribute" class="attr-value" />
+              </div>
+              <div class="attr-item">
+                <span class="f12 attr-key">用户邮箱</span>
+                <el-input v-model="form.mail_attribute" class="attr-value" />
+              </div>
+              <div class="attr-item">
+                <span class="f12 attr-key">显示名称</span>
+                <el-input v-model="form.display_name_attribute" class="attr-value" />
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="启用">
+            <el-checkbox v-model="form.enabled" />
+            <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
+          </el-form-item>
+          <el-form-item>
+            <el-button>测试连接</el-button>
+            <el-button>测试登录</el-button>
+            <el-button>取消</el-button>
+            <el-button type="primary">保存</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-    <div class="setting-form">
-      <el-form label-position="left" :rules="rules" label-width="110px" :model="form">
-        <el-form-item label="服务地址" prop="url">
-          <el-input v-model="form.url" />
-          <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
-        </el-form-item>
-        <el-form-item label="绑定DN" prop="user">
-          <el-input v-model="form.user" />
-          <div class="input-tips">
-            <span>用于验证账号的管理员用户</span>
-          </div>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" show-password />
-          <div class="input-tips">用于验证账号的管理员密码</div>
-        </el-form-item>
-        <el-form-item label="属性映射">
-          <el-checkbox v-model="showAttrMap" />
-          <div class="input-tips">
-            <span>当前系统子用户属性和LDAP中用户属性的映射关系</span>
-          </div>
-          <div v-show="showAttrMap">
-            <div class="attr-item">
-              <span class="f12 attr-key">用户组名称</span>
-              <el-input v-model="form.group_name_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">用户名称</span>
-              <el-input v-model="form.username_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">用户邮箱</span>
-              <el-input v-model="form.mail_attribute" class="attr-value" />
-            </div>
-            <div class="attr-item">
-              <span class="f12 attr-key">显示名称</span>
-              <el-input v-model="form.display_name_attribute" class="attr-value" />
-            </div>
-          </div>
-        </el-form-item>
-        <el-form-item label="启用">
-          <el-checkbox v-model="form.enabled" />
-          <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
-        </el-form-item>
-        <el-form-item>
-          <el-button>测试连接</el-button>
-          <el-button>测试登录</el-button>
-          <el-button>取消</el-button>
-          <el-button type="primary">保存</el-button>
-        </el-form-item>
-      </el-form>
+    <div v-else>
+      <div class="f12 el-main">
+        <span>你当前还没有配置LDAP, 点击配置</span>
+        <br>
+        <el-button type="primary" @click="hasConfig = true">配置LDAP</el-button>
+      </div>
     </div>
   </div>
 
 </template>
 
 <script>
+import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
 import Tips from '@/components/Tips'
 
 const tips = [
@@ -79,7 +89,9 @@ export default {
   },
   data() {
     return {
+      loading: undefined,
       tips,
+      hasConfig: true,
       showAttrMap: false,
       form: {
         url: 'ldap://127.0.0.1:389',
@@ -99,7 +111,36 @@ export default {
       }
     }
   },
+  mounted() {
+    this.loading = this.$loading({
+      lock: true,
+      text: '加载中...',
+      spinner: 'el-icon-loading',
+      target: '.sub-main',
+      body: true
+    })
+    this.getLDAPConfig()
+  },
   methods: {
+    getLDAPConfig() {
+      queryDomainLDAP().then(resp => {
+        console.log(resp)
+      }).catch(err => {
+        this.loading.close()
+        if (err.response.status === 404) {
+          this.hasConfig = false
+        } else {
+          this.$message({
+            message: err.response.data,
+            type: 'error',
+            duration: 5 * 1000
+          })
+        }
+      })
+    },
+    saveLDAPConfig() {
+      saveDomainLDAP()
+    }
   }
 }
 </script>
@@ -122,6 +163,14 @@ export default {
 
 .setting-form {
   margin-top: 12px;
+}
+
+.el-main {
+  // background-color: #E9EEF3;
+  display: flexbox;
+  color: #333;
+  text-align: center;
+  line-height: 40px;
 }
 
 </style>

@@ -88,11 +88,15 @@ service.interceptors.response.use(
       message = res.reason + ': ' + res.message
     }
 
-    Message({
-      message: message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    // 对于特定的请求专门放行, 让页面逻辑处理
+    if (!error.response.config.headers.Skip404) {
+      Message({
+        message: message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
+
     return Promise.reject(error)
   }
 )
