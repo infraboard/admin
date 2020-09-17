@@ -18,25 +18,22 @@
         <lang-select class="right-menu-item hover-effect" />
       </template>
       <el-dropdown class="avatar-container right-menu-item hover-effect">
-        <span class="f12">
+        <el-button type="text">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          喻茂峻
-          <i class="el-icon-arrow-down el-icon--right" />
-        </span>
+          <span class="user-name-text"> 喻茂峻</span>
+          <i class="el-icon-arrow-down el-icon--right dropdown-color" />
+        </el-button>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
             <el-dropdown-item>
-              {{ $t('navbar.profile') }}
-            </el-dropdown-item>
-          </router-link>
-          <router-link to="/">
-            <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
+              <svg-icon icon-class="person" />
+              <span class="dropdown-item-text">{{ $t('navbar.profile') }}</span>
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/infraboard/keyauth">
             <el-dropdown-item>
-              {{ $t('navbar.github') }}
+              <svg-icon icon-class="github" />
+              <span class="dropdown-item-text">{{ $t('navbar.github') }}</span>
             </el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
@@ -140,17 +137,32 @@ export default {
     line-height: 20;
     vertical-align: middle;
     border-radius: 50%!important;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     margin-bottom: 6px;
   }
 
 .el-dropdown-link {
     cursor: pointer;
-    color: #409EFF;
+    color: #888
   }
 
 .el-icon-arrow-down {
     font-size: 12px;
   }
+
+.user-name-text {
+  margin-left: 4px;
+  color: #5a5e66
+}
+
+.dropdown-color {
+    color: #5a5e66
+}
+
+.dropdown-item-text {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
 </style>
