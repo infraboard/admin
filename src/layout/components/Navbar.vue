@@ -6,24 +6,23 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        <!-- 错误日志 -->
         <error-log class="right-menu-item" />
-
+        <!-- 全屏插件 -->
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
+        <!-- 尺寸控制 -->
         <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-
+        <!-- 语言选择 -->
         <lang-select class="right-menu-item hover-effect" />
-
       </template>
-
       <el-dropdown class="avatar-container right-menu-item hover-effect">
-        <div class="avatar-wrapper">
+        <span class="f12">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <span class="f12">喻茂峻</span>
+          喻茂峻
           <i class="el-icon-arrow-down el-icon--right" />
-        </div>
+        </span>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
             <el-dropdown-item>
@@ -132,22 +131,19 @@ export default {
         }
       }
     }
-    .avatar-container {
-      .avatar-wrapper {
-        padding: 0 12px 0 0px;
-        display: inline-block;
-        margin-top: 8px;
-        position: relative;
-        .user-avatar {
-          cursor: pointer;
-          width: 30px;
-          height: 30px;
-          border-radius: 20px;
-        }
-      }
-    }
   }
 }
+
+.user-avatar {
+    display: inline-block;
+    overflow: hidden;
+    line-height: 20;
+    vertical-align: middle;
+    border-radius: 50%!important;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 6px;
+  }
 
 .el-dropdown-link {
     cursor: pointer;
