@@ -53,9 +53,13 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="功能列表" name="first">
-          <service-endpoint :service-name="service.name" />
+        <el-tab-pane label="接入凭证" name="first">
+          <service-credential :service-name="service.name" />
         </el-tab-pane>
+        <el-tab-pane label="功能列表" name="second">
+          <service-endpoint lazy :service-name="service.name" />
+        </el-tab-pane>
+
       </el-tabs>
     </el-card>
 
@@ -79,10 +83,11 @@
 <script>
 import { describeService } from '@/api/keyauth/service'
 import ServiceEndpoint from './components/ServiceEndpoint'
+import ServiceCredential from './components/ServiceCredential'
 
 export default {
   name: 'ServiceDetail',
-  components: { ServiceEndpoint },
+  components: { ServiceEndpoint, ServiceCredential },
   directives: { },
   data() {
     return {

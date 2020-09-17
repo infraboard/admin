@@ -7,9 +7,9 @@
     <div class="setting-form">
       <el-form label-position="left" :rules="rules" label-width="110px" :model="passRule">
         <el-form-item label="至少包含" prop="contains">
-          <el-checkbox-group v-model="passRule.contains" :min="1">
-            <el-checkbox key="num" label="数字" />
-            <el-checkbox key="small_alpha" label="小写字母" />
+          <el-checkbox-group v-model="passRule.contains">
+            <el-checkbox key="num" label="数字" disabled />
+            <el-checkbox key="small_alpha" label="小写字母" disabled />
             <el-checkbox key="caps_alpha" label="大写字母" />
             <el-checkbox key="special_char" label="特殊字符(除空格)" />
           </el-checkbox-group>
