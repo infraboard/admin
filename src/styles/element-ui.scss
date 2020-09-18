@@ -139,6 +139,10 @@
   border-radius: 0px;
 }
 
+.el-dropdown-menu {
+  border-radius: 0px;
+}
+
 .el-message-box {
   border-radius: 0px;
 }
@@ -158,3 +162,31 @@
 .el-icon-info {
   color: #42cece;
 }
+
+.el-dropdown-menu__item {
+  font-size: 12px;
+  min-width: 120px;
+} 
+
+.el-select-dropdown__item {
+  font-size: 12px;
+}
+
+.el-picker-panel__shortcut {
+  font-size: 12px;
+}
+
+.el-input__inner {
+  font-size: 12px;
+}
+
+// .el-dropdown-menu__item {
+//   margin-bottom: 0;
+//   font-size: 12px;
+//   padding: 6px 10px;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   display: block;
+//   cursor: pointer;
+// }

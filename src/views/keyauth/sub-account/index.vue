@@ -1,9 +1,29 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
+      <el-button class="filter-item" type="primary" @click="handleCreate">
+        新建用户
       </el-button>
+      <el-dropdown trigger="click" class="filter-item mall-actions">
+        <el-button>
+          更多操作<i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item><span class="dropdown-menu-text">迁移部门</span> </el-dropdown-item>
+          <el-dropdown-item><span class="dropdown-menu-text">删除</span></el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
+      <div class="filter-item fr">
+        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
+            <el-option label="用户名" value="account" />
+            <el-option label="部门" value="login_ip" />
+            <el-option label="状态" value="login_city" />
+          </el-select>
+        </el-input>
+      </div>
+
     </div>
     <div class="box-shadow">
       <el-table
@@ -14,6 +34,10 @@
         highlight-current-row
         style="width: 100%;"
       >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
         <el-table-column label="用户名" prop="account" align="center" min-width="110">
           <template slot-scope="{row}">
             <router-link :to="'/user/sub/'+row.account" class="link-type">
@@ -82,6 +106,8 @@ export default {
   components: { Pagination, ChoiceDepartment },
   data() {
     return {
+      filterKey: 'account',
+      filterValue: '',
       searchDepartmentLoading: false,
       departmentOptions: [],
       tableKey: 0,
@@ -215,3 +241,18 @@ export default {
 
 }
 </script>
+
+<style lang="scss" scoped>
+
+.mall-actions {
+  margin-left: 12px;
+}
+
+.app-container ::v-deep .el-select {
+  width: 102px;
+}
+.app-container ::v-deep .input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+
+</style>

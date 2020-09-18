@@ -111,21 +111,21 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'department',
+        component: () => import('@/views/keyauth/department'),
+        name: 'DepartmentList',
+        meta: {
+          title: '部门列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
         path: 'sub',
         component: () => import('@/views/keyauth/sub-account/index'),
         name: 'SubAccountList',
         meta: {
           noCache: true,
           title: '用户列表',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'department',
-        component: () => import('@/views/keyauth/department'),
-        name: 'DepartmentList',
-        meta: {
-          title: '部门列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
