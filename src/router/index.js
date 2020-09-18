@@ -128,6 +128,15 @@ export const asyncRoutes = [
           title: '部门列表',
           roles: ['admin'] // or you can only set roles in sub nav
         }
+      },
+      {
+        hidden: true,
+        path: 'sub/:account',
+        component: () => import('@/views/keyauth/sub-account/detail'),
+        name: 'SubAccountDetail',
+        meta: {
+          title: '用户详情'
+        }
       }
     ]
   },

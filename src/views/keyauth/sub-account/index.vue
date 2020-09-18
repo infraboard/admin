@@ -16,7 +16,9 @@
       >
         <el-table-column label="用户名" prop="account" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.account }}</span>
+            <router-link :to="'/user/sub/'+row.account" class="link-type">
+              <span>{{ row.account }}</span>
+            </router-link>
           </template>
         </el-table-column>
         <el-table-column label="部门" prop="account" align="center" min-width="110">
