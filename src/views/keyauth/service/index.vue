@@ -15,6 +15,11 @@
         highlight-current-row
         style="width: 100%;"
       >
+        <el-table-column
+          type="selection"
+          width="45"
+          align="center"
+        />
         <el-table-column label="名称" prop="name" align="center" min-width="110">
           <template slot-scope="{row}">
             <router-link :to="'/service/'+row.id" class="link-type">

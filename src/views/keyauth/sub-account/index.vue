@@ -36,7 +36,8 @@
       >
         <el-table-column
           type="selection"
-          width="55"
+          width="45"
+          align="center"
         />
         <el-table-column label="用户名" prop="account" align="center" min-width="110">
           <template slot-scope="{row}">
