@@ -16,17 +16,25 @@ export function querySubAccount(query) {
   })
 }
 
-export function updateSubAccount(id, data) {
+export function describeSubAccount(account, query) {
   return request({
-    url: '/keyauth/v1/sub_users/' + id,
+    url: '/keyauth/v1/sub_users/' + account,
+    method: 'get',
+    params: query
+  })
+}
+
+export function updateSubAccount(account, data) {
+  return request({
+    url: '/keyauth/v1/sub_users/' + account,
     method: 'patch',
     data: data
   })
 }
 
-export function deleteSubAccount(id, query) {
+export function deleteSubAccount(account, query) {
   return request({
-    url: '/keyauth/v1/sub_users/' + id,
+    url: '/keyauth/v1/sub_users/' + account,
     method: 'delete',
     params: query
   })

@@ -14,46 +14,46 @@
         <el-row :gutter="8" style="margin-bottom: 12px;">
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">名称</span>
-            <span class="attr-value">{{ namespace.name }}</span>
+            <span class="attr-value">{{ user.account }}</span>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建人</span>
-            <span class="attr-value">{{ namespace.creater }}</span>
+            <span class="attr-key">部门</span>
+            <span class="attr-value">{{ user.department_id }}</span>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            <span class="attr-value">{{ user.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">空间类型</span>
             <div class="attr-value">
-              <span v-if="namespace.type">{{ namespace.type }}</span>
+              <span v-if="user.type">{{ user.type }}</span>
               <span v-else> - </span>
             </div>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">空间ID</span>
-            <span class="attr-value">{{ namespace.id }}</span>
+            <span class="attr-value">{{ user.id }}</span>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            <span class="attr-value">{{ user.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-col>
         </el-row>
         <el-row :gutter="8" style="margin-bottom: 12px;">
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">负责人</span>
-            <span class="attr-value">{{ namespace.owner }}</span>
+            <span class="attr-value">{{ user.owner }}</span>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">所属部门</span>
-            <span class="attr-value">{{ namespace.department }}</span>
+            <span class="attr-value">{{ user.department }}</span>
           </el-col>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
             <span class="attr-key">空间描述</span>
-            <span class="attr-value">{{ namespace.description }}</span>
+            <span class="attr-value">{{ user.description }}</span>
           </el-col>
         </el-row>
       </el-card>
@@ -62,7 +62,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="访问策略" name="first">
-          <user-policy :namespace-id="namespaceId" />
+          <user-policy :namespace-id="account" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -85,18 +85,18 @@
 </template>
 
 <script>
-import { describeNamespace } from '@/api/keyauth/namespace'
+import { describeSubAccount } from '@/api/keyauth/subAccount'
 import UserPolicy from './components/UserPolicy'
 
 export default {
-  name: 'NamespaceDetail',
+  name: 'SubAccountDetail',
   components: { UserPolicy },
   directives: { },
   data() {
     return {
       activeName: 'first',
       tableKey: 0,
-      namespace: {},
+      user: {},
       createLoading: false,
       queryLoading: true,
       dialogFormVisible: false,
@@ -114,20 +114,20 @@ export default {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
     },
-    namespaceId() {
-      return this.$route.params.id
+    account() {
+      return this.$route.params.account
     }
   },
   created() {
-    this.getNamespaceDetail()
+    this.getSubAccountDetail()
   },
   methods: {
-    getNamespaceDetail() {
+    getSubAccountDetail() {
       this.queryLoading = true
       // 获取用户列表
       this.listPolicyQuery
-      describeNamespace(this.namespaceId).then(resp => {
-        this.namespace = resp.data
+      describeSubAccount(this.account).then(resp => {
+        this.user = resp.data
         this.queryLoading = false
       }).catch(() => {
         this.queryLoading = false
