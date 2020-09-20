@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         添加
@@ -84,13 +87,19 @@
 <script>
 import { queryRole, createRole } from '@/api/keyauth/role'
 import Pagination from '@/components/Pagination'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '角色负责控制用户访问的功能, 比如能否创建资源A, 能否删除资源A'
+]
 
 export default {
   name: 'RoleList',
-  components: { Pagination },
+  components: { Pagination, Tips },
   directives: { },
   data() {
     return {
+      tips,
       tableKey: 0,
       roleList: [],
       total: 0,

@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         添加
@@ -89,13 +92,19 @@
 import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
 import Pagination from '@/components/Pagination'
 import ChoiceDepartment from '@/components/ChoiceDepartment'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '空间负责控制用户访问的范围, 用户只能授权访问的空间'
+]
 
 export default {
   name: 'NamespaceList',
-  components: { Pagination, ChoiceDepartment },
+  components: { Pagination, ChoiceDepartment, Tips },
   directives: { },
   data() {
     return {
+      tips,
       tableKey: 0,
       roleList: [],
       total: 0,
