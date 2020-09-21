@@ -246,15 +246,12 @@ export default {
 <style lang="scss" scoped>
 .title-row {
   display: flex;
-  overflow:hidden;
 }
 .detail-left {
   width: 74%;
 }
 .detail-right {
-  // position: absolute;
   margin-left: 1%;
   width: 25%
 }
-
 </style>
