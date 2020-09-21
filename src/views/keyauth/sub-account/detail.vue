@@ -1,62 +1,102 @@
 <template>
   <div class="app-container">
-    <div>
-      <el-card class="box-card f12">
-        <el-row :gutter="8">
-          <el-col :xs="12" :sm="12" :lg="12">
-            <span class="title">用户详情</span>
+    <div class="title-row">
+      <div id="left" class="detail-left">
+        <el-card class="box-card f12">
+          <el-row :gutter="8">
+            <el-col :xs="12" :sm="12" :lg="12">
+              <span class="title">用户详情</span>
+            </el-col>
+            <el-col :xs="12" :sm="12" :lg="12">
+              <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+            </el-col>
+          </el-row>
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="12">
+            <el-row class="attr-row">
+              <span class="attr-key">名称</span>
+              <span class="attr-value">{{ user.account }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">性别</span>
+              <div class="attr-value">
+                <span v-if="user.gender">{{ user.gender }}</span>
+                <span v-else> 未知 </span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">头像</span>
+              <div class="attr-value">
+                <span v-if="user.avatar">{{ user.avatar }}</span>
+                <span v-else> 上传 </span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">昵称</span>
+              <div class="attr-value">
+                <span>{{ user.nick_name }}</span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">姓名</span>
+              <div class="attr-value">
+                <span>{{ user.real_name }}</span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">电话</span>
+              <span class="attr-value">{{ user.mobile }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">邮箱</span>
+              <span class="attr-value">{{ user.email }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">城市</span>
+              <span class="attr-value">{{ user.province }} {{ user.city }}</span>
+            </el-row>
           </el-col>
-          <el-col :xs="12" :sm="12" :lg="12">
-            <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-col :offset="2" class="detail-col" :xs="18" :sm="18" :lg="10">
+            <el-row class="attr-row">
+              <span class="attr-key">类型</span>
+              <div class="attr-value">
+                <span>{{ user.type }}</span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">状态</span>
+              <span v-if="user.status" class="attr-value">{{ user.status.locked }}</span>
+              <span v-else>未知</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">部门</span>
+              <span class="attr-value">{{ user.department_id }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">过期时间</span>
+              <span v-if="user.expires_days" class="attr-value">{{ user.expires_days }}</span>
+              <span v-else class="attr-value">永不过期</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">创建时间</span>
+              <span class="attr-value">{{ user.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">更新时间</span>
+              <span class="attr-value">{{ user.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
           </el-col>
-
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">名称</span>
-            <span class="attr-value">{{ user.account }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">部门</span>
-            <span class="attr-value">{{ user.department_id }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ user.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">空间类型</span>
-            <div class="attr-value">
-              <span v-if="user.type">{{ user.type }}</span>
-              <span v-else> - </span>
-            </div>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">空间ID</span>
-            <span class="attr-value">{{ user.id }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ user.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">负责人</span>
-            <span class="attr-value">{{ user.owner }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">所属部门</span>
-            <span class="attr-value">{{ user.department }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">空间描述</span>
-            <span class="attr-value">{{ user.description }}</span>
-          </el-col>
-        </el-row>
-      </el-card>
+        </el-card>
+      </div>
+      <div id="right" class="detail-right">
+        <el-card class="box-card f12" :style="rightStyle">
+          <el-row :gutter="8">
+            <span class="title">快捷操作</span>
+          </el-row>
+          <el-row :gutter="8" style="margin-top:8px;">
+            <el-button style="margin-left:22px;">修改密码</el-button>
+          </el-row>
+        </el-card>
+      </div>
     </div>
 
     <el-card class="box-card" style="margin-top:12px;">
@@ -107,6 +147,8 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
+      },
+      rightStyle: {
       }
     }
   },
@@ -121,7 +163,20 @@ export default {
   created() {
     this.getSubAccountDetail()
   },
+  mounted() {
+    this.rightStyle.height = this.adjustHeight()
+  },
   methods: {
+    adjustHeight() {
+      var left = document.getElementById('left')
+      var right = document.getElementById('right')
+      if (left && right) {
+        if (left.offsetHeight >= right.offsetHeight) {
+          return left.offsetHeight + 'px'
+        }
+        return right.offsetHeight + 'px'
+      }
+    },
     getSubAccountDetail() {
       this.queryLoading = true
       // 获取用户列表
@@ -187,3 +242,19 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.title-row {
+  display: flex;
+  overflow:hidden;
+}
+.detail-left {
+  width: 74%;
+}
+.detail-right {
+  // position: absolute;
+  margin-left: 1%;
+  width: 25%
+}
+
+</style>

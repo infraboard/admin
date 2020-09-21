@@ -200,6 +200,9 @@ export default {
         this.createLoading = false
       })
     },
+    clearSearch() {
+
+    },
     updateUser() {
 
     },

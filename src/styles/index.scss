@@ -195,7 +195,11 @@ aside {
 }
 
 .detail-col {
-  display: flex;
+  padding: 0 8px;;
+}
+
+.attr-row {
+  margin-bottom: 12px;;
 }
 
 .attr-key {
@@ -205,6 +209,7 @@ aside {
 }
 
 .attr-value {
+  float: right;
   width: 80%;
 }
 
