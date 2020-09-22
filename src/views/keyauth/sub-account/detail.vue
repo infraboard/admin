@@ -10,7 +10,7 @@
             </el-col>
             <el-col :xs="12" :sm="12" :lg="12">
               <div v-show="isEdit" class="fr">
-                <el-button type="text" size="mini" @click="save">保存</el-button>
+                <el-button type="text" :loading="saveLoading" size="mini" @click="save">保存</el-button>
                 <el-button type="text" size="mini" @click="cancel">取消</el-button>
               </div>
               <div v-show="!isEdit">
@@ -34,9 +34,9 @@
               <span class="attr-key">性别</span>
               <div class="attr-value">
                 <div v-show="isEdit">
-                  <el-radio v-model="user.gender" label="1">男</el-radio>
-                  <el-radio v-model="user.gender" label="2">女</el-radio>
-                  <el-radio v-model="user.gender" label="">保密</el-radio>
+                  <el-radio v-model="form.gender" label="male">男</el-radio>
+                  <el-radio v-model="form.gender" label="female">女</el-radio>
+                  <el-radio v-model="form.gender" label="unknown">保密</el-radio>
                 </div>
                 <div v-show="!isEdit">
                   <span v-if="user.gender">{{ user.gender }}</span>
@@ -127,7 +127,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="访问策略" name="first">
-          <user-policy :namespace-id="account" />
+          <user-policy :account="account" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -150,7 +150,7 @@
 </template>
 
 <script>
-import { describeSubAccount } from '@/api/keyauth/subAccount'
+import { describeSubAccount, updateSubAccount } from '@/api/keyauth/subAccount'
 import UserPolicy from './components/UserPolicy'
 
 export default {
@@ -159,6 +159,7 @@ export default {
   directives: { },
   data() {
     return {
+      saveLoading: false,
       isEdit: false,
       activeName: 'first',
       tableKey: 0,
@@ -168,8 +169,7 @@ export default {
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
-        name: '',
-        description: ''
+        gender: ''
       },
       rules: {
         name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
@@ -213,20 +213,19 @@ export default {
       this.isEdit = true
     },
     save() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-          // 新建
-            this.createNamespace()
-          } else {
-          // 更新
-          }
-        }
+      this.saveLoading = true
+      console.log(this.form)
+      updateSubAccount(this.account, this.form).then(resp => {
+        this.user = resp.data
+        this.saveLoading = false
+        this.isEdit = false
+      }).catch(() => {
+      }).finally(() => {
+        this.saveLoading = false
       })
     },
     cancel() {
       this.isEdit = false
-      console.log('xxx')
     }
   }
 

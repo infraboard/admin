@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-button type="primary" size="mini" @click="handleUpdate(row)">关联策略</el-button>
+      <el-button type="primary" size="mini" @click="handleUpdate()">关联策略</el-button>
     </div>
     <div>
       <el-table
@@ -85,7 +85,7 @@ export default {
   components: { Pagination },
   directives: { },
   props: {
-    namespaceId: {
+    account: {
       type: String,
       default: ''
     }
@@ -102,7 +102,7 @@ export default {
       deleteLoading: '',
       queryLoading: true,
       listPolicyQuery: {
-        namespace_id: '',
+        account: '',
         with_role: true,
         page_number: 1,
         page_size: 20
@@ -124,10 +124,10 @@ export default {
     }
   },
   watch: {
-    namespaceId: {
-      handler: function(did) {
-        if (did) {
-          this.listPolicyQuery.namespace_id = did
+    account: {
+      handler: function(acc) {
+        if (acc) {
+          this.listPolicyQuery.account = acc
           this.getNamespacePolicy()
         }
       },
@@ -137,7 +137,6 @@ export default {
   methods: {
     getNamespacePolicy() {
       this.listPolicyLoading = true
-      this.namespace_id = this.namespaceId
       queryPolicy(this.listPolicyQuery).then(resp => {
         this.policys = resp.data.items
         this.total = resp.data.total
