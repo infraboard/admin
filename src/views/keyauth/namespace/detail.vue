@@ -11,53 +11,56 @@
           </el-col>
         </el-row>
 
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">名称</span>
-            <span class="attr-value">{{ namespace.name }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">空间类型</span>
-            <div class="attr-value">
-              <span v-if="namespace.type">{{ namespace.type }}</span>
-              <span v-else> - </span>
-            </div>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">负责人</span>
-            <span class="attr-value">{{ namespace.owner }}</span>
-          </el-row>
-        </el-col>
-
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">空间ID</span>
-            <span class="attr-value">{{ namespace.id }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">创建人</span>
-            <span class="attr-value">{{ namespace.creater }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">所属部门</span>
-            <span class="attr-value">{{ namespace.department }}</span>
-          </el-row>
-        </el-col>
-
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">空间描述</span>
-            <span class="attr-value">{{ namespace.description }}</span>
-          </el-row>
-        </el-col>
+        <el-row>
+          <!-- 第一列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">名称</span>
+              <span class="attr-value">{{ namespace.name }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">空间类型</span>
+              <div class="attr-value">
+                <span v-if="namespace.type">{{ namespace.type }}</span>
+                <span v-else> - </span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">负责人</span>
+              <span class="attr-value">{{ namespace.owner }}</span>
+            </el-row>
+          </el-col>
+          <!-- 第二列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">空间ID</span>
+              <span class="attr-value">{{ namespace.id }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">创建人</span>
+              <span class="attr-value">{{ namespace.creater }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">所属部门</span>
+              <span class="attr-value">{{ namespace.department }}</span>
+            </el-row>
+          </el-col>
+          <!-- 第三列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">创建时间</span>
+              <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">更新时间</span>
+              <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">空间描述</span>
+              <span class="attr-value">{{ namespace.description }}</span>
+            </el-row>
+          </el-col>
+        </el-row>
       </el-card>
     </div>
 

@@ -11,51 +11,56 @@
           </el-col>
         </el-row>
 
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">名称</span>
-            <div class="attr-value">
-              <span v-if="domain.display_name">{{ domain.display_name }}</span>
-              <span>{{ domain.name }}</span>
-            </div>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">LOGO</span>
-            <div class="attr-value">
-              <span v-if="domain.logo">{{ domain.logo }}</span>
-              <span v-else> 上传 </span>
-            </div>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">空间描述</span>
-            <span class="attr-value">{{ domain.description }}</span>
-          </el-row>
-        </el-col>
+        <el-row>
+          <!-- 第一列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">名称</span>
+              <div class="attr-value">
+                <span v-if="domain.display_name">{{ domain.display_name }}</span>
+                <span>{{ domain.name }}</span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">LOGO</span>
+              <div class="attr-value">
+                <span v-if="domain.logo">{{ domain.logo }}</span>
+                <span v-else> 上传 </span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">空间描述</span>
+              <span class="attr-value">{{ domain.description }}</span>
+            </el-row>
+          </el-col>
 
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">状态</span>
-            <div class="attr-value">
-              <span v-if="domain.enabled"><svg-icon icon-class="normal" /></span>
-              <span v-else><svg-icon icon-class="locked" /></span>
-            </div>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">管理员</span>
-            <span class="attr-value">{{ domain.owner }}</span>
-          </el-row>
-        </el-col>
+          <!-- 第二列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">状态</span>
+              <div class="attr-value">
+                <span v-if="domain.enabled"><svg-icon icon-class="normal" /></span>
+                <span v-else><svg-icon icon-class="locked" /></span>
+              </div>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">管理员</span>
+              <span class="attr-value">{{ domain.owner }}</span>
+            </el-row>
+          </el-col>
 
-        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ domain.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ domain.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-row>
-        </el-col>
+          <!-- 第三列 -->
+          <el-col :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">创建时间</span>
+              <span class="attr-value">{{ domain.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+            <el-row class="attr-row">
+              <span class="attr-key">更新时间</span>
+              <span class="attr-value">{{ domain.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+          </el-col>
+        </el-row>
       </el-card>
     </div>
 
