@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container" :style="bg">
+  <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
         <h3 class="title">
@@ -88,11 +88,6 @@ export default {
       }
     }
     return {
-      bg: {
-        // backgroundImage: 'url(' + require('@/../public/images/Abstract-Envelope.svg') + ')',
-        // backgroundRepeat: 'no-repeat',
-        // backgroundSize: '100%'
-      },
       loginForm: {
         username: '',
         password: ''

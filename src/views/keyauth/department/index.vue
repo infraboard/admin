@@ -57,7 +57,6 @@
                   placeholder="请输入部门名称"
                   maxlength="60"
                   show-word-limit
-                  class="input-full-width"
                 />
               </div>
             </el-row>
@@ -71,7 +70,6 @@
                   placeholder="请输入部门负责人"
                   maxlength="60"
                   show-word-limit
-                  class="input-full-width"
                 />
               </div>
             </el-row>
