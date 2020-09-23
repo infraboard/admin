@@ -11,40 +11,40 @@
           </el-col>
 
         </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
             <span class="attr-key">名称</span>
             <span class="attr-value">{{ role.name }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建人</span>
-            <span class="attr-value">{{ role.creater }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ role.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">角色类型</span>
             <span class="attr-value">{{ role.type }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">角色ID</span>
-            <span class="attr-value">{{ role.id }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ role.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">角色描述</span>
             <span class="attr-value">{{ role.description }}</span>
-          </el-col>
-        </el-row>
+          </el-row>
+        </el-col>
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建人</span>
+            <span class="attr-value">{{ role.creater }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">角色ID</span>
+            <span class="attr-value">{{ role.id }}</span>
+          </el-row>
+        </el-col>
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ role.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">更新时间</span>
+            <span class="attr-value">{{ role.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+        </el-col>
       </el-card>
     </div>
 

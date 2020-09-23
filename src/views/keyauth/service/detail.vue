@@ -9,45 +9,47 @@
           <el-col :xs="12" :sm="12" :lg="12">
             <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
           </el-col>
-
         </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
             <span class="attr-key">名称</span>
             <span class="attr-value">{{ service.name }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建人</span>
-            <span class="attr-value">{{ service.creater }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ service.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">服务类型</span>
             <div class="attr-value">
               <span v-if="service.type">{{ service.type }}</span>
               <span v-else> - </span>
             </div>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">服务ID</span>
-            <span class="attr-value">{{ service.id }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ service.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">空间描述</span>
             <span class="attr-value">{{ service.description }}</span>
-          </el-col>
-        </el-row>
+          </el-row>
+        </el-col>
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建人</span>
+            <span class="attr-value">{{ service.creater }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">服务ID</span>
+            <span class="attr-value">{{ service.id }}</span>
+          </el-row>
+        </el-col>
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ service.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">更新时间</span>
+            <span class="attr-value">{{ service.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+        </el-col>
       </el-card>
     </div>
 

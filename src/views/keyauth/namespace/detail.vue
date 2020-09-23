@@ -9,53 +9,55 @@
           <el-col :xs="12" :sm="12" :lg="12">
             <el-button class="fr" type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
           </el-col>
-
         </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
             <span class="attr-key">名称</span>
             <span class="attr-value">{{ namespace.name }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建人</span>
-            <span class="attr-value">{{ namespace.creater }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">空间类型</span>
             <div class="attr-value">
               <span v-if="namespace.type">{{ namespace.type }}</span>
               <span v-else> - </span>
             </div>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">空间ID</span>
-            <span class="attr-value">{{ namespace.id }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-            <span class="attr-key">更新时间</span>
-            <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-col>
-        </el-row>
-        <el-row :gutter="8" style="margin-bottom: 12px;">
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">负责人</span>
             <span class="attr-value">{{ namespace.owner }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+        </el-col>
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">空间ID</span>
+            <span class="attr-value">{{ namespace.id }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">创建人</span>
+            <span class="attr-value">{{ namespace.creater }}</span>
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">所属部门</span>
             <span class="attr-value">{{ namespace.department }}</span>
-          </el-col>
-          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          </el-row>
+        </el-col>
+
+        <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ namespace.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">更新时间</span>
+            <span class="attr-value">{{ namespace.update_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+          <el-row class="attr-row">
             <span class="attr-key">空间描述</span>
             <span class="attr-value">{{ namespace.description }}</span>
-          </el-col>
-        </el-row>
+          </el-row>
+        </el-col>
       </el-card>
     </div>
 
