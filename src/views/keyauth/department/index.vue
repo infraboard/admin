@@ -44,10 +44,10 @@
                 </div>
               </div>
             </el-col>
-
           </el-row>
-          <el-row :gutter="8" class="center" style="margin-bottom: 12px;">
-            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
               <span class="attr-key">名称</span>
               <div class="attr-value">
                 <span v-show="!isEdit">{{ current.name }}</span>
@@ -57,23 +57,11 @@
                   placeholder="请输入部门名称"
                   maxlength="60"
                   show-word-limit
+                  class="input-full-width"
                 />
               </div>
-            </el-col>
-            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-              <span class="attr-key">上级部门</span>
-              <div class="attr-value">
-                <span v-if="current.parent_id">{{ current.parent_id }}</span>
-                <span v-else>-</span>
-              </div>
-            </el-col>
-            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
-              <span class="attr-key">创建时间</span>
-              <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-            </el-col>
-          </el-row>
-          <el-row :gutter="8" style="margin-bottom: 12px;" class="center">
-            <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            </el-row>
+            <el-row class="attr-row">
               <span class="attr-key">负责人</span>
               <div class="attr-value">
                 <span v-show="!isEdit">{{ current.manager }}</span>
@@ -83,10 +71,28 @@
                   placeholder="请输入部门负责人"
                   maxlength="60"
                   show-word-limit
+                  class="input-full-width"
                 />
               </div>
-            </el-col>
-          </el-row>
+            </el-row>
+          </el-col>
+
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">上级部门</span>
+              <div class="attr-value">
+                <span v-if="current.parent_id">{{ current.parent_id }}</span>
+                <span v-else>-</span>
+              </div>
+            </el-row>
+          </el-col>
+
+          <el-col class="detail-col" :xs="18" :sm="18" :lg="8">
+            <el-row class="attr-row">
+              <span class="attr-key">创建时间</span>
+              <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            </el-row>
+          </el-col>
         </el-card>
         <el-card class="box-card" style="margin-top:12px;">
           <el-tabs v-model="activeName">
