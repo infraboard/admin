@@ -12,7 +12,7 @@
       </div>
 
       <div class="filter-item fr">
-        <el-button type="primary" @click="handleCreate">
+        <el-button type="primary" size="mini" @click="handleCreate">
           新建用户
         </el-button>
       </div>
@@ -56,12 +56,14 @@
             <span v-else><svg-icon icon-class="normal" /></span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" min-width="230">
           <template slot-scope="{row,$index}">
-            <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-            <el-button v-if="row.status.locked" type="primary" size="mini" @click="handleLock(row)">解冻</el-button>
-            <el-button v-else type="warning" size="mini" @click="handleUnLock(row)">冻结</el-button>
-            <el-button :loading="deleteLoading === row.account" size="mini" type="danger" @click="handleDelete(row,$index)">删除</el-button>
+            <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+            <el-divider direction="vertical" />
+            <el-button v-if="row.status.locked" type="text" size="mini" @click="handleLock(row)">解冻</el-button>
+            <el-button v-else type="text" size="mini" @click="handleUnLock(row)">冻结</el-button>
+            <el-divider direction="vertical" />
+            <el-button type="text" :loading="deleteLoading === row.account" size="mini" @click="handleDelete(row,$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -243,7 +245,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .mall-actions {
   margin-left: 12px;
 }
@@ -254,5 +255,4 @@ export default {
 .app-container ::v-deep .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }
-
 </style>

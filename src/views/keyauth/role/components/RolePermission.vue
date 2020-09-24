@@ -1,6 +1,19 @@
 <template>
-  <div>
-    <el-button type="primary" size="mini" @click="handleUpdate(row)">添加权限</el-button>
+  <div class="container-wrapper">
+    <div class="filter-container">
+      <div class="filter-item">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
+            <el-option label="用户" value="account" />
+            <el-option label="角色" value="login_ip" />
+          </el-select>
+        </el-input>
+      </div>
+
+      <div class="filter-item fr">
+        <el-button type="primary" size="mini" @click="handleCreatePolicy()">添加权限</el-button>
+      </div>
+    </div>
 
     <el-table
       :key="tableKey"
@@ -62,6 +75,8 @@ export default {
   },
   data() {
     return {
+      filterKey: 'account',
+      filterValue: '',
       listPermissionQuery: {
         page_number: 1,
         page_size: 20
@@ -124,7 +139,24 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+    },
+    clearSearch() {
+
+    },
+    handleSearch() {
+
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.container-wrapper ::v-deep .el-select {
+  width: 102px;
+}
+
+.container-wrapper ::v-deep .input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+</style>
+

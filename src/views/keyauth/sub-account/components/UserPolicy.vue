@@ -1,8 +1,19 @@
 <template>
-  <div>
-    <div>
-      <el-button type="primary" size="mini" @click="handleUpdate()">关联策略</el-button>
+  <div class="container-wrapper">
+    <div class="filter-container">
+      <div class="filter-item">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
+            <el-option label="用户名称" value="account" />
+          </el-select>
+        </el-input>
+      </div>
+
+      <div class="filter-item fr">
+        <el-button type="primary" size="mini" @click="handleCreatePolicy()">添加策略</el-button>
+      </div>
     </div>
+
     <div>
       <el-table
         :key="tableKey"
@@ -11,7 +22,7 @@
         border
         fit
         highlight-current-row
-        style="width: 100%;margin-top:12px;"
+        style="width: 100%;"
       >
         <el-table-column label="用户" prop="name" align="center" min-width="110">
           <template slot-scope="{row}">
@@ -92,7 +103,8 @@ export default {
   },
   data() {
     return {
-      activeName: 'first',
+      filterKey: 'account',
+      filterValue: '',
       tableKey: 0,
       namespace: {},
       policys: [],
@@ -210,7 +222,23 @@ export default {
       // }).catch(() => {
       //   this.deleteLoading = ''
       // })
+    },
+    clearSearch() {
+
+    },
+    handleSearch() {
+
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.container-wrapper ::v-deep .el-select {
+  width: 102px;
+}
+
+.container-wrapper ::v-deep .input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+</style>
