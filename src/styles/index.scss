@@ -241,3 +241,20 @@ aside {
 .input-full-width {
   width: 220px;
 }
+
+.filter-search-input {
+  width:344px;
+}
+
+.more {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #FFFFFF;
+  border: 1px solid #DCDFE6;
+  color: #FFFFFF;
+  background-color: #13C2C2;
+  border-color: #13C2C2;
+  padding: 8px 2px;
+}

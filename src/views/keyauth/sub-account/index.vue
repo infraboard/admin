@@ -1,21 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" @click="handleCreate">
-        新建用户
-      </el-button>
-      <el-dropdown trigger="click" class="filter-item mall-actions">
-        <el-button>
-          更多操作<i class="el-icon-arrow-down el-icon--right" />
-        </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item><span class="dropdown-menu-text">迁移部门</span> </el-dropdown-item>
-          <el-dropdown-item><span class="dropdown-menu-text">删除</span></el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-
-      <div class="filter-item fr">
-        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+      <div class="filter-item">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
           <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
             <el-option label="用户名" value="account" />
             <el-option label="部门" value="login_ip" />
@@ -24,7 +11,22 @@
         </el-input>
       </div>
 
+      <div class="filter-item fr">
+        <el-button type="primary" @click="handleCreate">
+          新建用户
+        </el-button>
+        <el-dropdown trigger="click" class="mall-actions">
+          <div class="more" @click="more">
+            <svg-icon icon-class="more" />
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item><span class="dropdown-menu-text">迁移部门</span> </el-dropdown-item>
+            <el-dropdown-item><span class="dropdown-menu-text">删除</span></el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
+
     <div class="box-shadow">
       <el-table
         :key="tableKey"
@@ -144,6 +146,9 @@ export default {
     this.getUserList()
   },
   methods: {
+    more() {
+
+    },
     getUserList() {
       this.listLoading = true
       // 获取用户列表

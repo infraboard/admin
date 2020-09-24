@@ -85,6 +85,27 @@ export default {
             date.setTime(date.getTime() + 3600 * 1000 * 24)
             picker.$emit('pick', date)
           }
+        }, {
+          text: '一周',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一月',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一年',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 365)
+            picker.$emit('pick', date)
+          }
         }]
       },
       neverExpire: true,
@@ -99,8 +120,7 @@ export default {
         resource: '',
         desc: ''
       },
-      formLabelWidth: '80px',
-      timer: null
+      formLabelWidth: '80px'
     }
   },
   watch: {
@@ -116,24 +136,14 @@ export default {
       if (this.loading) {
         return
       }
-      // this.$confirm('确定要提交表单吗？')
-      //   .then(_ => {
-      //     this.loading = true
-      //     this.timer = setTimeout(() => {
-      //       done()
-      //       // 动画关闭需要一定的时间
-      //       setTimeout(() => {
-      //         this.loading = false
-      //       }, 400)
-      //     }, 2000)
-      //   })
-      //   .catch(_ => {})
+      this.loading = false
+      this.dialog = false
+      this.$emit('update:visible', false)
     },
     cancelForm() {
       this.loading = false
       this.dialog = false
       this.$emit('update:visible', false)
-      clearTimeout(this.timer)
     }
   }
 }

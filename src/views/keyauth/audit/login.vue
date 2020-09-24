@@ -5,7 +5,7 @@
     </div>
     <div class="filter-container">
       <div class="filter-item">
-        <el-input v-model="filterValue" class="input-with-select" clearable style="width:294px;" placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
           <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
             <el-option label="用户" value="account" />
             <el-option label="登录IP" value="login_ip" />
