@@ -192,3 +192,12 @@
   width: 12px;
   height: 12px;
 }
+
+.el-drawer__header > :first-child {
+  text-align: center;
+}
+
+/*去掉打开抽屉时自动选中标题时的蓝色边框*/
+.el-drawer__header span:focus {
+  outline: 0;
+}
