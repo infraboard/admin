@@ -1,9 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
-        添加
-      </el-button>
+      <div class="filter-item">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
+            <el-option label="服务名称" value="account" />
+          </el-select>
+        </el-input>
+      </div>
+
+      <div class="filter-item fr">
+        <el-button type="primary" @click="handleCreate">
+          新建服务
+        </el-button>
+      </div>
     </div>
 
     <div class="box-shadow">
@@ -20,7 +30,7 @@
           width="45"
           align="center"
         />
-        <el-table-column label="名称" prop="name" align="center" min-width="110">
+        <el-table-column label="服务名称" prop="name" align="center" min-width="110">
           <template slot-scope="{row}">
             <router-link :to="'/service/'+row.id" class="link-type">
               <span>{{ row.name }}</span>
@@ -82,6 +92,8 @@ export default {
   directives: { },
   data() {
     return {
+      filterKey: 'account',
+      filterValue: '',
       tableKey: 0,
       roleList: [],
       total: 0,
@@ -188,7 +200,26 @@ export default {
       }).catch(() => {
         this.deleteLoading = ''
       })
+    },
+    handleLock(row) {
+      // 冻结用户
+    },
+    handleUnLock(row) {
+      // 解除冻结用户
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.mall-actions {
+  margin-left: 12px;
+}
+
+.app-container ::v-deep .el-select {
+  width: 102px;
+}
+.app-container ::v-deep .input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+</style>

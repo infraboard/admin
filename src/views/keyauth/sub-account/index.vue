@@ -15,15 +15,6 @@
         <el-button type="primary" @click="handleCreate">
           新建用户
         </el-button>
-        <el-dropdown trigger="click" class="mall-actions">
-          <div class="more" @click="more">
-            <svg-icon icon-class="more" />
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><span class="dropdown-menu-text">迁移部门</span> </el-dropdown-item>
-            <el-dropdown-item><span class="dropdown-menu-text">删除</span></el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </div>
 
