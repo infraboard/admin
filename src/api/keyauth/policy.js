@@ -7,3 +7,11 @@ export function queryPolicy(query) {
     params: query
   })
 }
+
+export function createPolicy(data) {
+  return request({
+    url: '/keyauth/v1/policies/',
+    method: 'post',
+    data
+  })
+}

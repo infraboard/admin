@@ -8,10 +8,10 @@
     size="32%"
   >
     <div class="drawer-content">
-      <el-form :model="form">
-        <el-form-item label="用户" :label-width="formLabelWidth">
+      <el-form ref="policyForm" :model="form" :rules="rules">
+        <el-form-item label="用户" prop="account" :label-width="formLabelWidth">
           <el-select
-            v-model="form.name"
+            v-model="form.account"
             filterable
             remote
             reserve-keyword
@@ -35,8 +35,8 @@
             <span>请输入用户名,用户邮箱或者用户手机号码进行搜索</span>
           </div>
         </el-form-item>
-        <el-form-item label="角色" :label-width="formLabelWidth">
-          <el-select v-model="form.region" style="width:100%" placeholder="请选择授权角色" :loading="queryRoleLoading" @visible-change="showRoleList">
+        <el-form-item label="角色" prop="role_id" :label-width="formLabelWidth">
+          <el-select v-model="form.role_id" style="width:100%" placeholder="请选择授权角色" :loading="queryRoleLoading" @visible-change="showRoleList">
             <el-option
               v-for="item in roleList"
               :key="item.id"
@@ -49,7 +49,7 @@
           </div>
         </el-form-item>
         <el-form-item label="范围" :label-width="formLabelWidth">
-          <el-input v-model="form.name" />
+          <el-input v-model="form.scope" />
           <div class="input-tips">
             <span>用于对空间内做更细粒度的访问范围控制</span>
           </div>
@@ -70,7 +70,7 @@
       </el-form>
       <div class="drawer-footer">
         <el-button @click="cancelForm">取 消</el-button>
-        <el-button type="primary" :loading="loading" @click="$refs.drawer.closeDrawer()">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        <el-button type="primary" :loading="createPolicyLoading" @click="submit">{{ createPolicyLoading ? '提交中 ...' : '确 定' }}</el-button>
       </div>
     </div>
   </el-drawer>
@@ -79,6 +79,7 @@
 <script>
 import { queryRole } from '@/api/keyauth/role'
 import { querySubAccount } from '@/api/keyauth/subAccount'
+import { createPolicy } from '@/api/keyauth/policy'
 
 export default {
   name: 'CreatePolicyDrawer',
@@ -86,6 +87,10 @@ export default {
     visible: {
       default: false,
       type: Boolean
+    },
+    namespaceId: {
+      default: '',
+      type: String
     }
   },
   data() {
@@ -98,24 +103,7 @@ export default {
       roleList: [],
       table: false,
       dialog: false,
-      loading: false,
-      gridData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
+      createPolicyLoading: false,
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < Date.now()
@@ -153,16 +141,15 @@ export default {
       neverExpire: true,
       expireDatetime: '',
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        namespace_id: '',
+        account: '',
+        role_id: ''
       },
-      formLabelWidth: '80px'
+      formLabelWidth: '80px',
+      rules: {
+        account: [{ required: true, message: '请选择用户', trigger: 'change' }],
+        role_id: [{ required: true, message: '请选择角色', trigger: 'change' }]
+      }
     }
   },
   watch: {
@@ -201,17 +188,33 @@ export default {
       })
     },
     handleClose(done) {
-      if (this.loading) {
+      if (this.createPolicyLoading) {
         return
       }
-      this.loading = false
+      this.createPolicyLoading = false
       this.dialog = false
       this.$emit('update:visible', false)
     },
     cancelForm() {
-      this.loading = false
+      this.createPolicyLoading = false
       this.dialog = false
       this.$emit('update:visible', false)
+    },
+    submit() {
+      this.$refs['policyForm'].validate((valid) => {
+        if (valid) {
+          this.createPolicyLoading = true
+          this.form.namespace_id = this.namespaceId
+          createPolicy(this.form).then(resp => {
+            console.log(resp)
+            this.$refs.drawer.closeDrawer()
+            this.$emit('update:visible', false)
+            this.$emit('change', resp.data)
+          }).finally(() => {
+            this.createPolicyLoading = false
+          })
+        }
+      })
     }
   }
 }

@@ -64,7 +64,7 @@ service.interceptors.response.use(
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          await store.dispatch('user/logout')
+          await store.dispatch('user/resetToken')
           location.reload()
         })
       }

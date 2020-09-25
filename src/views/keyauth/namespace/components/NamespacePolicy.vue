@@ -70,7 +70,7 @@
       <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getNamespacePolicy" />
     </div>
 
-    <create-policy-drawer :visible.sync="dialogFormVisible" />
+    <create-policy-drawer :visible.sync="dialogFormVisible" :namespace-id="namespaceId" @change="updatePolicy" />
   </div>
 </template>
 
@@ -107,20 +107,7 @@ export default {
         page_number: 1,
         page_size: 20
       },
-      dialogFormVisible: false,
-      dialogFormType: 'create',
-      form: {
-        name: '',
-        description: ''
-      },
-      rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
-      }
-    }
-  },
-  computed: {
-    dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增空间' : '编辑空间'
+      dialogFormVisible: false
     }
   },
   watch: {
@@ -146,51 +133,11 @@ export default {
         this.listPolicyLoading = false
       })
     },
-    resetForm() {
-      this.form = {
-        name: '',
-        description: ''
-      }
-    },
-    handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-            // 新建
-            this.createNamespace()
-          } else {
-            // 更新
-          }
-        }
-      })
-    },
-    createNamespace() {
-      this.createLoading = true
-      // 创建请求
-      // createNamespace(this.form).then(resp => {
-      //   this.dialogFormVisible = false
-      //   this.roleList.unshift(resp.data)
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '创建成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.createLoading = false
-      // }).catch(() => {
-      //   this.createLoading = false
-      // })
-    },
     handleCreatePolicy() {
       this.dialogFormVisible = true
+    },
+    updatePolicy(val) {
+      this.getNamespacePolicy()
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
