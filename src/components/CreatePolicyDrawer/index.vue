@@ -10,7 +10,27 @@
     <div class="drawer-content">
       <el-form :model="form">
         <el-form-item label="用户" :label-width="formLabelWidth">
-          <el-input v-model="form.name" />
+          <el-select
+            v-model="form.name"
+            filterable
+            remote
+            reserve-keyword
+            :remote-method="searchSubAccount"
+            :loading="queryUserLoading"
+            placeholder=""
+            style="width:100%"
+          >
+            <el-option
+              v-for="item in subAccountList"
+              :key="item.account"
+              :label="item.account"
+              :value="item.account"
+            >
+              <span style="float: left">{{ item.account }}</span>
+              <span v-if="item.department" style="float: right; color: #8492a6; font-size: 12px">{{ item.department.name }}</span>
+              <span v-else style="float: right; color: #8492a6; font-size: 12px">无部门</span>
+            </el-option>
+          </el-select>
           <div class="input-tips">
             <span>请输入用户名,用户邮箱或者用户手机号码进行搜索</span>
           </div>
@@ -58,6 +78,7 @@
 
 <script>
 import { queryRole } from '@/api/keyauth/role'
+import { querySubAccount } from '@/api/keyauth/subAccount'
 
 export default {
   name: 'CreatePolicyDrawer',
@@ -69,9 +90,12 @@ export default {
   },
   data() {
     return {
+      subAccountQuery: { with_department: true },
+      queryUserLoading: false,
+      subAccountList: [],
+      roleListQuery: {},
       queryRoleLoading: false,
       roleList: [],
-      roleTotal: 0,
       table: false,
       dialog: false,
       loading: false,
@@ -150,6 +174,17 @@ export default {
     }
   },
   methods: {
+    searchSubAccount(keywords) {
+      this.queryUserLoading = true
+      // 获取用户列表
+      this.subAccountQuery.keywords = keywords
+      querySubAccount(this.subAccountQuery).then(response => {
+        this.subAccountList = response.data.items
+        this.queryUserLoading = false
+      }).catch(() => {
+        this.queryUserLoading = false
+      })
+    },
     showRoleList(visible) {
       if (visible && this.roleList.length === 0) {
         this.getRoleList()
@@ -158,9 +193,8 @@ export default {
     getRoleList() {
       this.queryRoleLoading = true
       // 获取用户列表
-      queryRole(this.listQuery).then(response => {
+      queryRole(this.roleListQuery).then(response => {
         this.roleList = response.data.items
-        this.roleTotal = response.data.total
         this.queryRoleLoading = false
       }).catch(() => {
         this.queryRoleLoading = false
