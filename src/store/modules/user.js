@@ -102,16 +102,6 @@ const actions = {
     })
   },
 
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_ACCESS_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeAccessToken()
-      resolve()
-    })
-  },
-
   // refresh token
   refreshToken({ commit, state, dispatch }) {
     var req = {

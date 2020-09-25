@@ -10,16 +10,29 @@
     <div class="drawer-content">
       <el-form :model="form">
         <el-form-item label="用户" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" />
+          <el-input v-model="form.name" />
+          <div class="input-tips">
+            <span>请输入用户名,用户邮箱或者用户手机号码进行搜索</span>
+          </div>
         </el-form-item>
         <el-form-item label="角色" :label-width="formLabelWidth">
-          <el-select v-model="form.region" style="width:100%" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+          <el-select v-model="form.region" style="width:100%" placeholder="请选择授权角色" :loading="queryRoleLoading" @visible-change="showRoleList">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
           </el-select>
+          <div class="input-tips">
+            <span>只能选择一个角色, 如果想授权更多功能, 请新建更强的角色</span>
+          </div>
         </el-form-item>
         <el-form-item label="范围" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" />
+          <el-input v-model="form.name" />
+          <div class="input-tips">
+            <span>用于对空间内做更细粒度的访问范围控制</span>
+          </div>
         </el-form-item>
         <el-form-item label="过期时间" :label-width="formLabelWidth">
           <el-checkbox v-model="neverExpire">永不过期</el-checkbox>
@@ -44,6 +57,8 @@
 </template>
 
 <script>
+import { queryRole } from '@/api/keyauth/role'
+
 export default {
   name: 'CreatePolicyDrawer',
   props: {
@@ -54,6 +69,9 @@ export default {
   },
   data() {
     return {
+      queryRoleLoading: false,
+      roleList: [],
+      roleTotal: 0,
       table: false,
       dialog: false,
       loading: false,
@@ -132,6 +150,22 @@ export default {
     }
   },
   methods: {
+    showRoleList(visible) {
+      if (visible && this.roleList.length === 0) {
+        this.getRoleList()
+      }
+    },
+    getRoleList() {
+      this.queryRoleLoading = true
+      // 获取用户列表
+      queryRole(this.listQuery).then(response => {
+        this.roleList = response.data.items
+        this.roleTotal = response.data.total
+        this.queryRoleLoading = false
+      }).catch(() => {
+        this.queryRoleLoading = false
+      })
+    },
     handleClose(done) {
       if (this.loading) {
         return
@@ -150,6 +184,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .drawer-footer {
   text-align: center;
 }
