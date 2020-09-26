@@ -79,12 +79,18 @@ export default {
   name: 'RolePolicy',
   components: { Pagination },
   directives: { },
+  props: {
+    roleId: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       filterKey: 'account',
       filterValue: '',
       listPolicyQuery: {
-        namespace_id: this.namespaceId,
+        role_id: '',
         with_namespace: true,
         page_number: 1,
         page_size: 20
@@ -104,6 +110,17 @@ export default {
       rules: {
         name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
       }
+    }
+  },
+  watch: {
+    roleId: {
+      handler: function(rid) {
+        if (rid) {
+          this.listPolicyQuery.role_id = rid
+          this.getRolePolicy()
+        }
+      },
+      immediate: true
     }
   },
   created() {

@@ -4,7 +4,7 @@
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
           <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
-            <el-option label="用户" value="account" />
+            <el-option label="用户名称" value="account" />
             <el-option label="角色" value="login_ip" />
           </el-select>
         </el-input>
@@ -24,7 +24,7 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="用户" prop="name" align="center" min-width="110">
+        <el-table-column label="用户名称" prop="name" align="center" min-width="110">
           <template slot-scope="{row}">
             <span>{{ row.account }}</span>
           </template>

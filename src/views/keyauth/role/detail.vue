@@ -60,7 +60,7 @@
           <role-permission :permissions="role.permissions" />
         </el-tab-pane>
         <el-tab-pane label="关联策略" lazy name="second">
-          <role-policy :role_id="role.id" />
+          <role-policy :role-id="role.id" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
