@@ -12,7 +12,7 @@
       </div>
 
       <div class="filter-item fr">
-        <el-button type="primary" size="mini" @click="handleCreate">
+        <el-button type="primary" size="mini" @click="handleCreateUser">
           新建用户
         </el-button>
       </div>
@@ -70,36 +70,20 @@
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getUserList" />
     </div>
+    <create-account-drawer :visible.sync="dialogFormVisible" @change="updateAccountList" />
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 40px; margin-right: 50px">
-        <el-form-item label="部门" prop="department_id">
-          <choice-department :department.sync="form.department_id" />
-        </el-form-item>
-        <el-form-item label="用户名" prop="account">
-          <el-input v-model="form.account" maxlength="60" show-word-limit />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" show-password />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { createSubAccount, querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
+import { querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
 import { queryDepartment } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
-import ChoiceDepartment from '@/components/ChoiceDepartment'
+import CreateAccountDrawer from '@/components/CreateAccountDrawer'
 
 export default {
   name: 'SubAccount',
-  components: { Pagination, ChoiceDepartment },
+  components: { Pagination, CreateAccountDrawer },
   data() {
     return {
       filterKey: 'account',
@@ -117,17 +101,7 @@ export default {
         page_size: 20,
         with_department: true
       },
-      dialogFormVisible: false,
-      dialogFormType: 'create',
-      form: {
-        account: '',
-        password: ''
-      },
-      rules: {
-        account: [{ required: true, message: '请输入用户名！', trigger: 'change' }],
-        password: [{ required: true, message: '请输入密码！', trigger: 'blur' }],
-        department_id: [{ required: true, message: '请选择部门', trigger: 'blur' }]
-      }
+      dialogFormVisible: false
     }
   },
   computed: {
@@ -157,52 +131,14 @@ export default {
       this.listQuery.page = 1
       this.getUserList()
     },
-    resetForm() {
-      this.form = {
-        account: '',
-        status: 'published'
-      }
-    },
-    handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.createLoading = true
-          if (this.dialogFormType === 'create') {
-            this.createUser()
-          } else {
-            this.updateUser()
-          }
-        }
-      })
-    },
-    createUser() {
-      createSubAccount(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.getUserList()
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
-    },
     clearSearch() {
 
     },
-    updateUser() {
-
+    handleCreateUser() {
+      this.dialogFormVisible = true
+    },
+    updateAccountList() {
+      this.getUserList()
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'

@@ -9,7 +9,20 @@
   >
     <div class="drawer-content">
       <el-form ref="policyForm" :model="form" :rules="rules">
-        <el-form-item label="用户" prop="account" :label-width="formLabelWidth">
+        <el-form-item v-if="!namespaceId" label="空间" prop="namespace_id" :label-width="formLabelWidth">
+          <el-select v-model="form.namespace_id" style="width:100%" placeholder="请选择授权空间" :loading="queryNamespaceLoading" @visible-change="showNamespaceList">
+            <el-option
+              v-for="item in namespaceList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+          <div class="input-tips">
+            <span>用户可以活动的范围</span>
+          </div>
+        </el-form-item>
+        <el-form-item v-if="!account" label="用户" prop="account" :label-width="formLabelWidth">
           <el-select
             v-model="form.account"
             filterable
@@ -35,7 +48,7 @@
             <span>请输入用户名,用户邮箱或者用户手机号码进行搜索</span>
           </div>
         </el-form-item>
-        <el-form-item label="角色" prop="role_id" :label-width="formLabelWidth">
+        <el-form-item v-if="!roleId" label="角色" prop="role_id" :label-width="formLabelWidth">
           <el-select v-model="form.role_id" style="width:100%" placeholder="请选择授权角色" :loading="queryRoleLoading" @visible-change="showRoleList">
             <el-option
               v-for="item in roleList"
@@ -78,6 +91,7 @@
 
 <script>
 import { queryRole } from '@/api/keyauth/role'
+import { queryNamespace } from '@/api/keyauth/namespace'
 import { querySubAccount } from '@/api/keyauth/subAccount'
 import { createPolicy } from '@/api/keyauth/policy'
 
@@ -91,6 +105,14 @@ export default {
     namespaceId: {
       default: '',
       type: String
+    },
+    roleId: {
+      default: '',
+      type: String
+    },
+    account: {
+      default: '',
+      type: String
     }
   },
   data() {
@@ -101,6 +123,9 @@ export default {
       roleListQuery: {},
       queryRoleLoading: false,
       roleList: [],
+      namespaceListQuery: {},
+      queryNamespaceLoading: false,
+      namespaceList: [],
       table: false,
       dialog: false,
       createPolicyLoading: false,
@@ -148,7 +173,8 @@ export default {
       formLabelWidth: '80px',
       rules: {
         account: [{ required: true, message: '请选择用户', trigger: 'change' }],
-        role_id: [{ required: true, message: '请选择角色', trigger: 'change' }]
+        role_id: [{ required: true, message: '请选择角色', trigger: 'change' }],
+        namespace_id: [{ required: true, message: '请选择空间', trigger: 'change' }]
       }
     }
   },
@@ -187,6 +213,21 @@ export default {
         this.queryRoleLoading = false
       })
     },
+    showNamespaceList(visible) {
+      if (visible && this.namespaceList.length === 0) {
+        this.getNamespaceList()
+      }
+    },
+    getNamespaceList() {
+      this.queryNamespaceLoading = true
+      // 获取用户列表
+      queryNamespace(this.namespaceListQuery).then(response => {
+        this.namespaceList = response.data.items
+        this.queryNamespaceLoading = false
+      }).catch(() => {
+        this.queryNamespaceLoading = false
+      })
+    },
     handleClose(done) {
       if (this.createPolicyLoading) {
         return
@@ -204,9 +245,16 @@ export default {
       this.$refs['policyForm'].validate((valid) => {
         if (valid) {
           this.createPolicyLoading = true
-          this.form.namespace_id = this.namespaceId
+          if (this.namespaceId) {
+            this.form.namespace_id = this.namespaceId
+          }
+          if (this.account) {
+            this.form.account = this.account
+          }
+          if (this.roleId) {
+            this.form.role_id = this.roleId
+          }
           createPolicy(this.form).then(resp => {
-            console.log(resp)
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)
             this.$emit('change', resp.data)

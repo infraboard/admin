@@ -11,7 +11,7 @@
       </div>
 
       <div class="filter-item fr">
-        <el-button type="primary" size="mini" @click="handleCreatePolicy()">添加权限</el-button>
+        <el-button type="primary" size="mini" @click="handleCreate()">添加权限</el-button>
       </div>
     </div>
 

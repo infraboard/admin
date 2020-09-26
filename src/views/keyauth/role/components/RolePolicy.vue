@@ -68,16 +68,18 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getRolePolicy" />
+    <create-policy-drawer :visible.sync="dialogFormVisible" :role-id="roleId" @change="updatePolicy" />
   </div>
 </template>
 
 <script>
 import { queryPolicy } from '@/api/keyauth/policy'
 import Pagination from '@/components/Pagination'
+import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
 
 export default {
   name: 'RolePolicy',
-  components: { Pagination },
+  components: { Pagination, CreatePolicyDrawer },
   directives: { },
   props: {
     roleId: {
@@ -98,18 +100,9 @@ export default {
       policys: [],
       tableKey: 0,
       total: 0,
-      activeName: 'first',
       deleteLoading: false,
       queryloading: false,
-      dialogFormVisible: false,
-      dialogFormType: 'create',
-      form: {
-        name: '',
-        description: ''
-      },
-      rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
-      }
+      dialogFormVisible: false
     }
   },
   watch: {
@@ -137,44 +130,15 @@ export default {
         this.listPolicyLoading = false
       })
     },
-    resetForm() {
-      this.form = {
-        name: '',
-        description: ''
-      }
-    },
-    handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
+    handleCreatePolicy() {
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-            this.createRole()
-          } else {
-            // 更新
-          }
-        }
-      })
-    },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    updatePolicy(val) {
+      this.getRolePolicy()
     },
     clearSearch() {
-
     },
     handleSearch() {
-
     }
   }
 }
