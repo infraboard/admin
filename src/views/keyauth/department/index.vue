@@ -103,7 +103,7 @@
               <department-user :department-id="current.id" />
             </el-tab-pane>
             <el-tab-pane lazy label="部门空间" name="second">
-              <department-namespace :department-name="current.name" />
+              <department-namespace :department-id="current.id" />
             </el-tab-pane>
           </el-tabs>
         </el-card>

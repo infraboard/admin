@@ -42,12 +42,13 @@
         </el-table-column>
         <el-table-column label="所属部门" prop="type" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.department }}</span>
+            <span v-if="row.department">{{ row.department.name }}</span>
+            <span v-else> - </span>
           </template>
         </el-table-column>
         <el-table-column label="负责人" prop="type" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.department }}</span>
+            <span>{{ row.owner }}</span>
           </template>
         </el-table-column>
         <el-table-column label="类型" prop="type" align="center" min-width="110">
@@ -125,6 +126,7 @@ export default {
       deleteLoading: '',
       listLoading: true,
       listQuery: {
+        with_department: true,
         page_number: 1,
         page_size: 20
       },
