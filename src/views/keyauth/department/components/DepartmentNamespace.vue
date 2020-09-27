@@ -50,10 +50,11 @@
           <span>{{ row.description }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" min-width="230">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-divider v-if="row.type !== 'build_in'" direction="vertical" />
+          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
