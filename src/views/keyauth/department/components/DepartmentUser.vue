@@ -10,8 +10,8 @@
       </div>
 
       <div class="filter-item fr">
+        <el-button type="primary" size="mini" :disabled="selectedRow.length === 0" @click="handleCreateUser()">迁移用户</el-button>
         <el-button type="primary" size="mini" @click="handleCreateUser()">添加用户</el-button>
-        <el-button type="primary" size="mini" @click="handleCreateUser()">迁移用户</el-button>
       </div>
     </div>
     <div>
@@ -23,6 +23,7 @@
         fit
         highlight-current-row
         style="width: 100%;"
+        @selection-change="handleSelect"
       >
         <el-table-column
           type="selection"
@@ -86,6 +87,7 @@ export default {
   },
   data() {
     return {
+      selectedRow: [],
       filterKey: 'account',
       filterValue: '',
       currentUers: [],
@@ -152,6 +154,9 @@ export default {
     },
     updateUser() {
 
+    },
+    handleSelect(selection) {
+      this.selectedRow = selection
     }
   }
 }

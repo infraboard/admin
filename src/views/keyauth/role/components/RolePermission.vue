@@ -24,9 +24,19 @@
       highlight-current-row
       style="width: 100%;margin-top:12px;"
     >
+      <el-table-column
+        type="selection"
+        width="45"
+        align="center"
+      />
       <el-table-column label="效力" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
           <span>{{ row.effect }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="资源名称" prop="description" align="center" min-width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.resource_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="标签建" min-width="150px" align="center">
@@ -38,11 +48,6 @@
         <template slot-scope="{row}">
           <span v-if="row.match_all">所有</span>
           <span v-else>{{ row.label_values }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="资源名称" prop="description" align="center" min-width="110">
-        <template slot-scope="{row}">
-          <span>{{ row.resource_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
