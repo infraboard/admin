@@ -13,7 +13,7 @@
       </div>
 
       <div class="filter-item fr">
-        <el-button type="primary" size="mini" @click="handleCreate">
+        <el-button type="primary" size="mini" @click="handleCreateNamespace">
           新建空间
         </el-button>
       </div>
@@ -79,40 +79,23 @@
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getNamespaceList" />
     </div>
-
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="部门" prop="department">
-          <choice-department :department.sync="form.department" value-attr="name" />
-        </el-form-item>
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
-      </div>
-    </el-dialog>
+    <create-namespace-drawer :visible.sync="dialogFormVisible" @change="updateNamespaceList" />
   </div>
 </template>
 
 <script>
-import { queryNamespace, createNamespace, deleteNamespace } from '@/api/keyauth/namespace'
+import { queryNamespace, deleteNamespace } from '@/api/keyauth/namespace'
 import Pagination from '@/components/Pagination'
-import ChoiceDepartment from '@/components/ChoiceDepartment'
+import CreateNamespaceDrawer from '@/components/CreateNamespaceDrawer'
 import Tips from '@/components/Tips'
 
 const tips = [
-  '空间负责控制用户访问的范围, 用户只能授权访问的空间'
+  '空间负责控制用户访问的范围, 用户只能访问已授权的空间'
 ]
 
 export default {
   name: 'NamespaceList',
-  components: { Pagination, ChoiceDepartment, Tips },
+  components: { Pagination, CreateNamespaceDrawer, Tips },
   directives: { },
   data() {
     return {
@@ -130,17 +113,7 @@ export default {
         page_number: 1,
         page_size: 20
       },
-      dialogFormVisible: false,
-      dialogFormType: 'create',
-      form: {
-        department: '',
-        name: '',
-        description: ''
-      },
-      rules: {
-        department: [{ required: true, message: '请输入空间所属部门!', trigger: 'change' }],
-        name: [{ required: true, message: '请输入空间名称!', trigger: 'change' }]
-      }
+      dialogFormVisible: false
     }
   },
   computed: {
@@ -163,56 +136,11 @@ export default {
         this.listLoading = false
       })
     },
-    resetForm() {
-      this.form = {
-        name: '',
-        description: ''
-      }
-    },
-    handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
+    handleCreateNamespace() {
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-            // 新建
-            this.createNamespace()
-          } else {
-            // 更新
-          }
-        }
-      })
-    },
-    createNamespace() {
-      this.createLoading = true
-      // 创建请求
-      createNamespace(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
-    },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    updateNamespaceList() {
+      this.getNamespaceList()
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
