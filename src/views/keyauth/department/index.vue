@@ -82,7 +82,19 @@
               <el-row class="attr-row">
                 <span class="attr-key">上级部门</span>
                 <div class="attr-value">
-                  <span v-if="current.parent_id">{{ current.parent_id }}</span>
+                  <span v-if="current.parent_id">
+                    {{ current.parent_id }}</span>
+                  <span v-else>-</span>
+                </div>
+              </el-row>
+              <el-row class="attr-row">
+                <span class="attr-key">成员角色</span>
+                <div class="attr-value">
+                  <span v-if="current.default_role">
+                    <router-link :to="'/permission/role/'+current.default_role.id" class="link-type">
+                      <span>{{ current.default_role.name }}</span>
+                    </router-link>
+                  </span>
                   <span v-else>-</span>
                 </div>
               </el-row>
@@ -156,7 +168,8 @@ export default {
         page_size: 20,
         parent_id: '',
         with_sub_count: true,
-        with_user_count: true
+        with_user_count: true,
+        with_role: true
       },
       dialogFormVisible: false,
       dialogFormType: 'create',

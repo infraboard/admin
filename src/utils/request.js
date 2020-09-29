@@ -70,7 +70,7 @@ service.interceptors.response.use(
       }
 
       Message({
-        message: res.reason || res.message,
+        message: res.reason + ' : ' + res.message,
         type: 'error',
         duration: 5 * 1000
       })
