@@ -1,5 +1,8 @@
 <template>
   <div class="container-wrapper">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -74,10 +77,15 @@
 import { querySubAccount } from '@/api/keyauth/subAccount'
 import Pagination from '@/components/Pagination'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '部门成员拥有部门角色的权限, 可以看见该部门下所有的空间'
+]
 
 export default {
   name: 'DepartmentUser',
-  components: { Pagination, CreateAccountDrawer },
+  components: { Tips, Pagination, CreateAccountDrawer },
   directives: { },
   props: {
     departmentId: {
@@ -87,6 +95,7 @@ export default {
   },
   data() {
     return {
+      tips,
       selectedRow: [],
       filterKey: 'account',
       filterValue: '',
