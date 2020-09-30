@@ -120,6 +120,15 @@ export const asyncRoutes = [
         }
       },
       {
+        hidden: true,
+        path: 'department/:id',
+        component: () => import('@/views/keyauth/department/detail'),
+        name: 'DepartmentDetail',
+        meta: {
+          title: '部门详情'
+        }
+      },
+      {
         path: 'sub',
         component: () => import('@/views/keyauth/sub-account/index'),
         name: 'SubAccountList',
