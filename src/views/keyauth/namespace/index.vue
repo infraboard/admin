@@ -42,8 +42,12 @@
         </el-table-column>
         <el-table-column label="所属部门" prop="type" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span v-if="row.department">{{ row.department.name }}</span>
-            <span v-else> - </span>
+            <div v-if="row.department">
+              <router-link :to="'/user/department/'+row.department.id" class="link-type">
+                <span>{{ row.department.name }}</span>
+              </router-link>
+            </div>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="负责人" prop="type" align="center" min-width="110">

@@ -42,7 +42,12 @@
             </el-row>
             <el-row class="attr-row">
               <span class="attr-key">所属部门</span>
-              <span class="attr-value">{{ namespace.department }}</span>
+              <div v-if="namespace.department">
+                <router-link :to="'/user/department/'+namespace.department.id" class="link-type">
+                  <span class="attr-value">{{ namespace.department.name }}</span>
+                </router-link>
+              </div>
+              <span v-else>-</span>
             </el-row>
           </el-col>
           <!-- 第三列 -->
@@ -101,6 +106,7 @@ export default {
     return {
       activeName: 'first',
       tableKey: 0,
+      descNamespaceQuery: { with_department: true },
       namespace: {},
       createLoading: false,
       queryLoading: true,
@@ -130,8 +136,7 @@ export default {
     getNamespaceDetail() {
       this.queryLoading = true
       // 获取用户列表
-      this.listPolicyQuery
-      describeNamespace(this.namespaceId).then(resp => {
+      describeNamespace(this.namespaceId, this.descNamespaceQuery).then(resp => {
         this.namespace = resp.data
         this.queryLoading = false
       }).catch(() => {

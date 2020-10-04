@@ -52,9 +52,17 @@
               />
             </div>
           </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">部门人数</span>
+            <span class="attr-value">{{ current.user_count }}</span>
+          </el-row>
         </el-col>
         <!-- 第二列 -->
         <el-col :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">部门ID</span>
+            <span class="attr-value">{{ current.id }}</span>
+          </el-row>
           <el-row class="attr-row">
             <span class="attr-key">上级部门</span>
             <div class="attr-value">
@@ -62,6 +70,17 @@
                 {{ current.parent_id }}</span>
               <span v-else>-</span>
             </div>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">子部门数</span>
+            <span class="attr-value">{{ current.sub_count }}</span>
+          </el-row>
+        </el-col>
+        <!-- 第三列 -->
+        <el-col :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-row>
           <el-row class="attr-row">
             <span class="attr-key">成员角色</span>
@@ -73,13 +92,6 @@
               </span>
               <span v-else>-</span>
             </div>
-          </el-row>
-        </el-col>
-        <!-- 第三列 -->
-        <el-col :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-row>
         </el-col>
       </el-row>
