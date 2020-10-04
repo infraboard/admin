@@ -119,7 +119,6 @@ export default {
         if (did) {
           this.listQuery.department_id = this.departmentId
           this.getDepartmentUser()
-          this.updateURL()
         }
       },
       immediate: true
@@ -128,11 +127,6 @@ export default {
   created() {
   },
   methods: {
-    updateURL() {
-      const query = JSON.parse(JSON.stringify(this.$route.query))
-      query.id = this.departmentId
-      this.$router.push({ path: this.$route.path, query })
-    },
     getDepartmentUser() {
       this.listUserLoading = true
       this.listQuery.department_id = this.departmentId

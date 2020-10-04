@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div :class="detailPageClass">
     <el-card class="box-card f12">
       <el-row :gutter="8">
         <el-col :xs="12" :sm="12" :lg="12">
@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
+import { describeDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
 import DepartmentUser from './components/DepartmentUser'
 import DepartmentNamespace from './components/DepartmentNamespace'
 
@@ -123,21 +123,26 @@ export default {
   components: { DepartmentUser, DepartmentNamespace },
   directives: { },
   props: {
-    departmentId: {
-      type: String,
-      default: ''
+    department: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data() {
     return {
+      detailPageClass: '',
       activeName: 'first',
       current: {},
-      props: {
-        children: 'children',
-        isLeaf: 'leaf'
-      },
       tableKey: 0,
       total: 0,
+      queryLoading: {},
+      descQuery: {
+        with_sub_count: true,
+        with_user_count: true,
+        with_role: true
+      },
       createLoading: false,
       deleteLoading: '',
       dialogFormVisible: false,
@@ -162,9 +167,38 @@ export default {
       return this.$refs.tree.getNode(this.current.id)
     }
   },
+  watch: {
+    department: {
+      handler: function(val, oldVal) {
+        this.current = val
+        this.updateURL()
+      },
+      immediate: true
+    }
+  },
   mounted() {
+    if (this.$route.name === 'DepartmentDetail') {
+      this.detailPageClass = 'app-container'
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-container',
+        body: true
+      })
+      describeDepartment(this.$route.params.id, this.descQuery).then(resp => {
+        this.current = resp.data
+      }).finally(() => {
+        this.queryLoading.close()
+      })
+    }
   },
   methods: {
+    updateURL() {
+      const query = JSON.parse(JSON.stringify(this.$route.query))
+      query.id = this.current.id
+      this.$router.push({ path: this.$route.path, query })
+    },
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
       this.tableKey = this.current.id

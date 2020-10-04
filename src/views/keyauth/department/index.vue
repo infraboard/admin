@@ -24,101 +24,7 @@
         </el-tree>
       </el-aside>
       <el-main style="padding:0px 0px 0px 10px;">
-        <el-card class="box-card f12">
-          <el-row :gutter="8">
-            <el-col :xs="12" :sm="12" :lg="12">
-              <span class="title">部门信息</span>
-            </el-col>
-            <el-col :xs="12" :sm="12" :lg="12">
-              <div class="fr">
-                <div v-show="isEdit">
-                  <el-button type="text" size="mini" @click="handleSave">保存</el-button>
-                  <el-button type="text" size="mini" @click="handleCancel">取消</el-button>
-                </div>
-                <div v-show="!isEdit">
-                  <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
-                  <el-divider direction="vertical" />
-                  <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
-                  <el-divider direction="vertical" />
-                  <el-button type="text" size="mini" @click="handleUpdate">编辑</el-button>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-
-          <!-- 详情数据 -->
-          <el-row>
-            <!-- 第一列 -->
-            <el-col :xs="18" :sm="18" :lg="8">
-              <el-row class="attr-row">
-                <span class="attr-key">名称</span>
-                <div class="attr-value">
-                  <span v-show="!isEdit">{{ current.name }}</span>
-                  <el-input
-                    v-show="isEdit"
-                    v-model="form.name"
-                    placeholder="请输入部门名称"
-                    maxlength="60"
-                    show-word-limit
-                  />
-                </div>
-              </el-row>
-              <el-row class="attr-row">
-                <span class="attr-key">负责人</span>
-                <div class="attr-value">
-                  <span v-show="!isEdit">{{ current.manager }}</span>
-                  <el-input
-                    v-show="isEdit"
-                    v-model="form.manager"
-                    placeholder="请输入部门负责人"
-                    maxlength="60"
-                    show-word-limit
-                  />
-                </div>
-              </el-row>
-            </el-col>
-            <!-- 第二列 -->
-            <el-col :xs="18" :sm="18" :lg="8">
-              <el-row class="attr-row">
-                <span class="attr-key">上级部门</span>
-                <div class="attr-value">
-                  <span v-if="current.parent_id">
-                    {{ current.parent_id }}</span>
-                  <span v-else>-</span>
-                </div>
-              </el-row>
-              <el-row class="attr-row">
-                <span class="attr-key">成员角色</span>
-                <div class="attr-value">
-                  <span v-if="current.default_role">
-                    <router-link :to="'/permission/role/'+current.default_role.id" class="link-type">
-                      <span>{{ current.default_role.name }}</span>
-                    </router-link>
-                  </span>
-                  <span v-else>-</span>
-                </div>
-              </el-row>
-            </el-col>
-            <!-- 第三列 -->
-            <el-col :xs="18" :sm="18" :lg="8">
-              <el-row class="attr-row">
-                <span class="attr-key">创建时间</span>
-                <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-              </el-row>
-            </el-col>
-          </el-row>
-
-        </el-card>
-        <el-card class="box-card" style="margin-top:12px;">
-          <el-tabs v-model="activeName">
-            <el-tab-pane label="部门成员" name="first">
-              <department-user :department-id="current.id" />
-            </el-tab-pane>
-            <el-tab-pane lazy label="部门空间" name="second">
-              <department-namespace :department-id="current.id" />
-            </el-tab-pane>
-          </el-tabs>
-        </el-card>
+        <department-detail :department="current" />
       </el-main>
     </el-container>
 
@@ -141,12 +47,11 @@
 
 <script>
 import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
-import DepartmentUser from './components/DepartmentUser'
-import DepartmentNamespace from './components/DepartmentNamespace'
+import DepartmentDetail from './detail'
 
 export default {
   name: 'DepartmentList',
-  components: { DepartmentUser, DepartmentNamespace },
+  components: { DepartmentDetail },
   directives: { },
   data() {
     return {
