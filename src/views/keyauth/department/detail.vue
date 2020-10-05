@@ -14,7 +14,7 @@
             <div v-show="!isEdit">
               <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
               <el-divider direction="vertical" />
-              <el-button type="text" size="mini" @click="handleDelete">删除</el-button>
+              <el-button type="text" size="mini" :loading="deleteLoading" @click="handleDelete">删除</el-button>
               <el-divider direction="vertical" />
               <el-button type="text" size="mini" @click="handleUpdate">编辑</el-button>
             </div>
@@ -156,7 +156,7 @@ export default {
         with_role: true
       },
       createLoading: false,
-      deleteLoading: '',
+      deleteLoading: false,
       dialogFormVisible: false,
       dialogFormType: 'create',
       isEdit: false,
@@ -174,9 +174,6 @@ export default {
   computed: {
     dialogTitle() {
       return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
-    },
-    currentNode() {
-      return this.$refs.tree.getNode(this.current.id)
     }
   },
   watch: {
@@ -195,7 +192,7 @@ export default {
         lock: true,
         text: '加载中...',
         spinner: 'el-icon-loading',
-        target: '.app-container',
+        target: '.app-main',
         body: true
       })
       describeDepartment(this.$route.params.id, this.descQuery).then(resp => {
@@ -283,32 +280,32 @@ export default {
       })
     },
     handleDelete() {
-      if (this.currentNode) {
-        this.currentNode.loading = true
+      if (this.current) {
+        this.deleteLoading = true
         deleteDepartment(this.current.id).then(resp => {
           // 从tree中清除当前节点
-          this.currentNode.loading = false
-          this.$refs.tree.remove(this.current.id)
+          // this.currentNode.loading = false
+          // this.$refs.tree.remove(this.current.id)
 
           // 设置下一个被选中的节点
-          const parent = this.$refs.tree.getNode(this.current.parent_id)
-          if (parent) {
-            const childCount = parent.childNodes.length
-            if (childCount > 0) {
-              this.current = parent.childNodes[childCount - 1].data
-            } else {
-              this.current = parent.data
-            }
-          } else {
-            // 顶层部门
-            const topCount = this.departmentList.length
-            if (topCount > 0) {
-              this.current = this.departmentList[topCount - 1]
-            }
-          }
-          this.$refs.tree.setCurrentKey(this.current.id)
-        }).catch(() => {
-          this.currentNode.loading = false
+          // const parent = this.$refs.tree.getNode(this.current.parent_id)
+          // if (parent) {
+          //   const childCount = parent.childNodes.length
+          //   if (childCount > 0) {
+          //     this.current = parent.childNodes[childCount - 1].data
+          //   } else {
+          //     this.current = parent.data
+          //   }
+          // } else {
+          //   // 顶层部门
+          //   const topCount = this.departmentList.length
+          //   if (topCount > 0) {
+          //     this.current = this.departmentList[topCount - 1]
+          //   }
+          // }
+          // this.$refs.tree.setCurrentKey(this.current.id)
+        }).finally(() => {
+          this.deleteLoading = false
         })
       }
     },

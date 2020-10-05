@@ -16,6 +16,7 @@
       </div>
 
       <div class="filter-item fr">
+        <el-button type="primary" size="mini" :disabled="selectedRow.length === 0" @click="handleCreateUser()">迁移空间</el-button>
         <el-button type="primary" size="mini" @click="handleCreateNamespace()">添加空间</el-button>
       </div>
     </div>
@@ -28,6 +29,7 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      @selection-change="handleSelect"
     >
       <el-table-column
         type="selection"
@@ -113,6 +115,7 @@ export default {
       roleList: [],
       total: 0,
       createLoading: false,
+      selectedRow: [],
       deleteLoading: '',
       listLoading: false,
       listQuery: {
@@ -183,6 +186,9 @@ export default {
     },
     updateUser() {
 
+    },
+    handleSelect(selection) {
+      this.selectedRow = selection
     }
   }
 }
