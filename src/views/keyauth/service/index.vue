@@ -11,7 +11,7 @@
 
       <div class="filter-item fr">
         <el-button type="primary" size="mini" @click="handleCreate">
-          新建服务
+          新增服务
         </el-button>
       </div>
     </div>
@@ -66,7 +66,8 @@
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getServiceList" />
     </div>
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
+    <create-service-drawer :visible.sync="dialogFormVisible" @change="updateServiceList" />
+    <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
       <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 50px; margin-right: 50px">
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" />
@@ -79,17 +80,18 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { queryService, createService, deleteService } from '@/api/keyauth/service'
+import { queryService, deleteService } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
+import CreateServiceDrawer from '@/components/CreateServiceDrawer'
 
 export default {
   name: 'ServiceList',
-  components: { Pagination },
+  components: { Pagination, CreateServiceDrawer },
   directives: { },
   data() {
     return {
@@ -136,57 +138,43 @@ export default {
         this.listLoading = false
       })
     },
-    resetForm() {
-      this.form = {
-        name: '',
-        description: ''
-      }
+    updateServiceList() {
+      this.getServiceList()
     },
     handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-            // 新建
-            this.createService()
-          } else {
-            // 更新
-          }
-        }
-      })
-    },
-    createService() {
-      this.createLoading = true
-      // 创建请求
-      createService(this.form).then(resp => {
-        this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
-    },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
+    // resetForm() {
+    //   this.form = {
+    //     name: '',
+    //     description: ''
+    //   }
+    // },
+    // createService() {
+    //   this.createLoading = true
+    //   // 创建请求
+    //   createService(this.form).then(resp => {
+    //     this.dialogFormVisible = false
+    //     this.roleList.unshift(resp.data)
+    //     this.$notify({
+    //       title: '成功',
+    //       message: '创建成功',
+    //       type: 'success',
+    //       duration: 2000
+    //     })
+    //     this.createLoading = false
+    //   }).catch(() => {
+    //     this.createLoading = false
+    //   })
+    // },
+    // handleUpdate(row) {
+    //   this.dialogFormType = 'update'
+    //   this.form = Object.assign({}, row) // copy obj
+    //   this.dialogFormVisible = true
+    //   this.$nextTick(() => {
+    //     this.$refs['dataForm'].clearValidate()
+    //   })
+    // },
     handleDelete(row, index) {
       this.deleteLoading = row.name
       deleteService(row.id).then(resp => {
