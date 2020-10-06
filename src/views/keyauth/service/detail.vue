@@ -186,6 +186,30 @@ export default {
       // })
     },
     handleUpdate(row) {
+      this.$notify({
+        title: '标题名称',
+        message: '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案',
+        duration: 0,
+        customClass: 'notify-info'
+      })
+      this.$notify({
+        title: '标题名称',
+        message: '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案',
+        duration: 0,
+        customClass: 'notify-warn'
+      })
+      this.$notify({
+        title: '标题名称',
+        message: '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案',
+        duration: 0,
+        customClass: 'notify-success'
+      })
+      this.$notify({
+        title: '标题名称',
+        message: '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案',
+        duration: 0,
+        customClass: 'notify-error'
+      })
       this.dialogFormType = 'update'
       this.form = Object.assign({}, row) // copy obj
       this.dialogFormVisible = true

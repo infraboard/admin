@@ -258,3 +258,55 @@ aside {
   border-color: #13C2C2;
   padding: 8px 2px;
 }
+
+.notify-info {
+  background-color: rgb(86, 249, 249);
+  .el-notification__content {
+    color: rgb(20, 105, 105);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .el-notification__title {
+    color:rgb(20, 105, 105);
+    font-size: 14px
+  }
+}
+
+.notify-warn {
+  background-color: rgb(255, 222, 170);
+  .el-notification__content {
+    color: rgb(160, 66, 0);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .el-notification__title {
+    color: rgb(160, 66, 0);
+    font-size: 14px
+  }
+}
+
+.notify-success {
+  background-color: #19ff80;
+  .el-notification__content {
+    color: #37681f;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .el-notification__title {
+    color:#37681f;
+    font-size: 14px
+  }
+}
+
+.notify-error {
+  background-color: #fd7070;
+  .el-notification__content {
+    color: #3a0505;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .el-notification__title {
+    color:#3a0505;
+    font-size: 14px
+  }
+}

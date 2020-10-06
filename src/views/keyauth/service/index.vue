@@ -42,14 +42,15 @@
             <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="类型" prop="type" align="center" min-width="110">
-          <template slot-scope="{row}">
-            <span>{{ row.type }}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="描述" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
             <span>{{ row.description }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" prop="status" align="center" min-width="110">
+          <template slot-scope="{row}">
+            <span v-if="row.enabled"><svg-icon icon-class="normal" /></span>
+            <span v-else><svg-icon icon-class="locked" /></span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" min-width="230">
@@ -67,20 +68,6 @@
     </div>
 
     <create-service-drawer :visible.sync="dialogFormVisible" @change="updateServiceList" />
-    <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="700px">
-      <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="90px" style="margin-left: 50px; margin-right: 50px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="createLoading" @click="submit()">确 定</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 

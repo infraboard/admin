@@ -151,6 +151,10 @@
   border-radius: 0px;
 }
 
+.el-notification {
+  border-radius: 0px;
+}
+
 .el-form-item__label {
   font-size: 13px;
 }
@@ -212,4 +216,9 @@
 
 .el-drawer__body {
   margin-right: 12px;
+}
+
+.el-icon-close:before {
+  font-weight: 600;
+  color: gray
 }

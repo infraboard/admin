@@ -94,7 +94,7 @@ export default {
       domain: {},
       endpoints: [],
       total: 0,
-      queryLoading: true,
+      queryLoading: {},
       listQuery: {
         page_number: 1,
         page_size: 20
@@ -114,13 +114,18 @@ export default {
   },
   methods: {
     getServiceDetail() {
-      this.queryLoading = true
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-main',
+        body: true
+      })
       // 获取用户列表
       getMyDomain().then(resp => {
         this.domain = resp.data
-        this.queryLoading = false
-      }).catch(() => {
-        this.queryLoading = false
+      }).finally(() => {
+        this.queryLoading.close()
       })
     },
     resetForm() {

@@ -1,7 +1,7 @@
 <template>
-  <div v-if="!hidden" class="el-alert tips is-light" style="margin-bottom: 10px;border-radius: 0px;">
+  <div v-if="!hidden" class="el-alert is-light" :style="style">
     <div class="tips-icon">
-      <svg-icon icon-class="tip" />
+      <svg-icon :icon-class="iconClass" />
     </div>
     <div class="el-alert__content tips-content">
       <span class="el-alert__title is-bold">{{ title }}</span>
@@ -15,6 +15,10 @@
 export default {
   name: 'Tips',
   props: {
+    type: {
+      type: String,
+      default: 'info'
+    },
     tips: {
       type: Array,
       default() {
@@ -31,6 +35,32 @@ export default {
       hidden: false
     }
   },
+  computed: {
+    iconClass() {
+      switch (this.type) {
+        case 'info':
+          return 'tip'
+        case 'warn':
+          return 'warnning'
+        default:
+          return 'tip'
+      }
+    },
+    style() {
+      const style = {
+        marginBottom: '10px',
+        borderRadius: '0px',
+        backgroundColor: 'rgb(86 249 249)',
+        color: 'rgb(20 105 105)'
+      }
+      switch (this.type) {
+        case 'warn':
+          style.color = '#a04200'
+          style.backgroundColor = '#ffdeaa'
+      }
+      return style
+    }
+  },
   methods: {
     handleClose() {
       this.hidden = true
@@ -40,10 +70,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tips {
-    background-color: #e7f9f9;
-    color: #1E9393;
-}
 .tips-icon {
     opacity: 1;
     position: absolute;

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <tips :tips="tips" />
+    <tips :tips="tips" type="warn" title="安全提示" />
+    <tips :tips="tips" type="info" title="使用提示" />
   </div>
 </template>
 
