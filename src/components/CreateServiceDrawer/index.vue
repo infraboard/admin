@@ -128,6 +128,10 @@ export default {
         if (valid) {
           this.createNamespaceLoading = true
           createService(this.form).then(resp => {
+            this.$notify({
+              message: `添加服务[${resp.data.name}]成功`,
+              customClass: 'notify-success'
+            })
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)
             this.$emit('change', resp.data)

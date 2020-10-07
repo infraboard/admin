@@ -255,6 +255,10 @@ export default {
             this.form.role_id = this.roleId
           }
           createPolicy(this.form).then(resp => {
+            this.$notify({
+              message: `添加策略成功`,
+              customClass: 'notify-success'
+            })
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)
             this.$emit('change', resp.data)

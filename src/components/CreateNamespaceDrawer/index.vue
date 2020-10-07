@@ -138,7 +138,7 @@ export default {
           this.createNamespaceLoading = true
           createNamespace(this.form).then(resp => {
             this.$notify({
-              message: '添加空间成功',
+              message: `添加空间[${resp.data.name}]成功`,
               customClass: 'notify-success'
             })
             this.$refs.drawer.closeDrawer()

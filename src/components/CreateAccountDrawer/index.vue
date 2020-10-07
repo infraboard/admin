@@ -193,6 +193,10 @@ export default {
         if (valid) {
           this.createAccountLoading = true
           createSubAccount(this.form).then(resp => {
+            this.$notify({
+              message: `添加用户[${resp.data.account}]成功`,
+              customClass: 'notify-success'
+            })
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)
             this.$emit('change', resp.data)
