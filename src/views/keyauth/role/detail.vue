@@ -80,10 +80,10 @@ export default {
   data() {
     return {
       tableKey: 0,
+      queryloading: {},
       role: {},
       activeName: 'first',
       deleteLoading: false,
-      queryloading: false,
       dialogFormVisible: false,
       form: {
         name: '',
@@ -100,13 +100,18 @@ export default {
   },
   methods: {
     getRole() {
-      this.queryloading = true
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-main',
+        body: true
+      })
       // 获取用户列表
       descRole(this.$route.params.id, { with_permissions: true }).then(resp => {
         this.role = resp.data
-        this.queryloading = false
-      }).catch(() => {
-        this.queryloading = false
+      }).finally(() => {
+        this.queryLoading.close()
       })
     },
     getRolePolicy() {

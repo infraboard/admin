@@ -163,9 +163,9 @@ export default {
       isEdit: false,
       activeName: 'first',
       tableKey: 0,
+      queryLoading: {},
       user: {},
       createLoading: false,
-      queryLoading: true,
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
@@ -191,14 +191,19 @@ export default {
   },
   methods: {
     getSubAccountDetail() {
-      this.queryLoading = true
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-main',
+        body: true
+      })
       // 获取用户列表
       this.listPolicyQuery
       describeSubAccount(this.account).then(resp => {
         this.user = resp.data
-        this.queryLoading = false
-      }).catch(() => {
-        this.queryLoading = false
+      }).finally(() => {
+        this.queryLoading.close()
       })
     },
     resetForm() {

@@ -106,10 +106,10 @@ export default {
     return {
       activeName: 'first',
       tableKey: 0,
+      queryLoading: {},
       descNamespaceQuery: { with_department: true },
       namespace: {},
       createLoading: false,
-      queryLoading: true,
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
@@ -134,13 +134,18 @@ export default {
   },
   methods: {
     getNamespaceDetail() {
-      this.queryLoading = true
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-main',
+        body: true
+      })
       // 获取用户列表
       describeNamespace(this.namespaceId, this.descNamespaceQuery).then(resp => {
         this.namespace = resp.data
-        this.queryLoading = false
-      }).catch(() => {
-        this.queryLoading = false
+      }).finally(() => {
+        this.queryLoading.close()
       })
     },
     resetForm() {

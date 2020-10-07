@@ -59,7 +59,7 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="接入凭证" name="first">
+        <el-tab-pane label="服务凭证" name="first">
           <service-credential :service-name="service.name" />
         </el-tab-pane>
         <el-tab-pane label="功能列表" name="second">
@@ -99,12 +99,12 @@ export default {
     return {
       activeName: 'first',
       tableKey: 0,
+      queryLoading: {},
       service: {},
       endpoints: [],
       total: 0,
       createLoading: false,
       deleteLoading: '',
-      queryLoading: true,
       listQuery: {
         page_number: 1,
         page_size: 20
@@ -133,13 +133,18 @@ export default {
   },
   methods: {
     getServiceDetail() {
-      this.queryLoading = true
+      this.queryLoading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        target: '.app-main',
+        body: true
+      })
       // 获取用户列表
       describeService(this.serviceName).then(resp => {
         this.service = resp.data
-        this.queryLoading = false
-      }).catch(() => {
-        this.queryLoading = false
+      }).finally(() => {
+        this.queryLoading.close()
       })
     },
     resetForm() {
