@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -75,13 +78,19 @@
 import { queryService, deleteService } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
 import CreateServiceDrawer from '@/components/CreateServiceDrawer'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '服务将功能列表注册到权限中心, 实现权限集中管理'
+]
 
 export default {
   name: 'ServiceList',
-  components: { Pagination, CreateServiceDrawer },
+  components: { Pagination, CreateServiceDrawer, Tips },
   directives: { },
   data() {
     return {
+      tips,
       filterKey: 'account',
       filterValue: '',
       tableKey: 0,

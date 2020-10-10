@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -84,12 +87,18 @@ import { querySubAccount, deleteSubAccount } from '@/api/keyauth/subAccount'
 import { queryDepartment } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '用户可以将 邮箱地址/电话号码 作为用户名登录'
+]
 
 export default {
   name: 'SubAccount',
-  components: { Pagination, CreateAccountDrawer },
+  components: { Pagination, CreateAccountDrawer, Tips },
   data() {
     return {
+      tips,
       filterKey: 'account',
       filterValue: '',
       searchDepartmentLoading: false,

@@ -6,6 +6,9 @@
       <el-col :span="6">
         <span class="attr-key f12">凭证</span>
         <span class="attr-value f12">xx</span>
+        <el-button v-clipboard:copy="inputData" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document">
+          拷贝
+        </el-button>
       </el-col>
       <el-col :span="6">xxx</el-col>
       <el-col :span="6">xxx</el-col>
@@ -93,10 +96,14 @@ import Tips from '@/components/Tips'
 import { queryPolicy } from '@/api/keyauth/policy'
 import Pagination from '@/components/Pagination'
 import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
+import clipboard from '@/directive/clipboard/index.js'
 
 export default {
   name: 'ServiceCredential',
   components: { Tips, Pagination, CreatePolicyDrawer },
+  directives: {
+    clipboard
+  },
   data() {
     return {
       seTips: [
