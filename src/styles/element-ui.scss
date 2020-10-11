@@ -139,6 +139,10 @@
   border-radius: 0px;
 }
 
+.el-message {
+  border-radius: 0px;
+}
+
 .el-dropdown-menu {
   border-radius: 0px;
 }
@@ -221,4 +225,9 @@
 .el-icon-close:before {
   font-weight: 600;
   color: gray
+}
+
+.el-message__content {
+  font-size: 13px;
+  font-weight: 600;
 }

@@ -2,20 +2,38 @@
   <div class="container-wrapper">
     <tips :tips="seTips" type="warn" title="安全提示" />
     <tips :tips="opTips" type="info" title="使用提示" />
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <span class="attr-key f12">凭证</span>
-        <span class="attr-value f12">xx</span>
-        <el-button v-clipboard:copy="inputData" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document">
-          拷贝
+    <el-row style="margin-top:18px;">
+      <el-col :span="4">
+        <span class="attr-key f12">状态</span>
+        <span class="attr-value f12" style="margin-left:12px;">
+          <span v-if="true"><svg-icon icon-class="normal" /></span>
+          <span v-else><svg-icon icon-class="locked" /></span>
+        </span>
+      </el-col>
+      <el-col :span="4">
+        <span class="attr-key f12">操作</span>
+        <el-button type="text" style="padding:0px;margin-left:12px;">
+          启用
+        </el-button>
+        <el-button type="text" style="padding:0px;margin-left:12px;">
+          禁用
+        </el-button>
+        <el-button type="text" style="padding:0px;margin-left:12px;">
+          刷新
         </el-button>
       </el-col>
-      <el-col :span="6">xxx</el-col>
-      <el-col :span="6">xxx</el-col>
-      <el-col :span="6">xxx</el-col>
+      <el-col :span="8">
+        <span class="attr-key f12">凭证</span>
+        <span class="attr-value f12" style="margin-left:12px;">TGVMMzhTcEEzSDNZLWFLcThiTzVxOV9S</span>
+        <el-button v-clipboard:copy="filterKey" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
+      </el-col>
+      <el-col :span="8">
+        <span class="attr-key f12">创建时间</span>
+        <span class="attr-value f12" style="margin-left:12px;">xxx</span>
+      </el-col>
     </el-row>
     <el-divider />
-    <div>
+    <div style="margin-top:22px;">
       <div class="filter-container">
         <div class="filter-item">
           <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -143,6 +161,13 @@ export default {
         this.listPolicyLoading = false
       }).catch(() => {
         this.listPolicyLoading = false
+      })
+    },
+    clipboardSuccess() {
+      this.$notify({
+        message: '复制成功',
+        duration: 1500,
+        customClass: 'notify-success'
       })
     },
     handleCreatePolicy() {
