@@ -60,7 +60,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="服务凭证" name="first">
-          <service-credential :service-name="service.name" />
+          <service-credential :service-id="service.id" />
         </el-tab-pane>
         <el-tab-pane label="功能列表" name="second">
           <service-endpoint lazy :service-name="service.name" />

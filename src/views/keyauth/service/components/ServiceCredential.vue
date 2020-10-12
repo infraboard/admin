@@ -6,30 +6,24 @@
       <el-col :span="4">
         <span class="attr-key f12">状态</span>
         <span class="attr-value f12" style="margin-left:12px;">
-          <span v-if="true"><svg-icon icon-class="normal" /></span>
+          <span v-if="!token.is_block"><svg-icon icon-class="normal" /></span>
           <span v-else><svg-icon icon-class="locked" /></span>
         </span>
       </el-col>
       <el-col :span="4">
         <span class="attr-key f12">操作</span>
         <el-button type="text" style="padding:0px;margin-left:12px;">
-          启用
-        </el-button>
-        <el-button type="text" style="padding:0px;margin-left:12px;">
-          禁用
-        </el-button>
-        <el-button type="text" style="padding:0px;margin-left:12px;">
           刷新
         </el-button>
       </el-col>
       <el-col :span="8">
         <span class="attr-key f12">凭证</span>
-        <span class="attr-value f12" style="margin-left:12px;">TGVMMzhTcEEzSDNZLWFLcThiTzVxOV9S</span>
-        <el-button v-clipboard:copy="filterKey" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
+        <span class="attr-value f12" style="margin-left:12px;">{{ token.access_token }}</span>
+        <el-button v-clipboard:copy="token.access_token" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
       </el-col>
       <el-col :span="8">
         <span class="attr-key f12">创建时间</span>
-        <span class="attr-value f12" style="margin-left:12px;">xxx</span>
+        <span class="attr-value f12" style="margin-left:12px;">{{ token.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
       </el-col>
     </el-row>
     <el-divider />
@@ -60,7 +54,7 @@
         >
           <el-table-column label="空间" prop="name" align="center" min-width="110">
             <template slot-scope="{row}">
-              <span>{{ row.account }}</span>
+              <span>{{ row }}</span>
             </template>
           </el-table-column>
           <el-table-column label="角色" prop="type" align="center" min-width="110">
@@ -104,7 +98,7 @@
         <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getNamespacePolicy" />
       </div>
 
-      <create-policy-drawer :visible.sync="dialogFormVisible" :account="account" @change="updatePolicy" />
+      <create-policy-drawer :visible.sync="dialogFormVisible" :account="token.account" @change="updatePolicy" />
     </div>
   </div>
 </template>
@@ -112,6 +106,7 @@
 <script>
 import Tips from '@/components/Tips'
 import { queryPolicy } from '@/api/keyauth/policy'
+import { describeServiceToken } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
 import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
 import clipboard from '@/directive/clipboard/index.js'
@@ -121,6 +116,12 @@ export default {
   components: { Tips, Pagination, CreatePolicyDrawer },
   directives: {
     clipboard
+  },
+  props: {
+    serviceId: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -136,7 +137,7 @@ export default {
       filterKey: 'account',
       filterValue: '',
       tableKey: 0,
-      namespace: {},
+      token: {},
       policys: [],
       total: 0,
       createLoading: false,
@@ -152,7 +153,22 @@ export default {
       dialogFormVisible: false
     }
   },
+  watch: {
+    serviceId: {
+      handler: function(sid) {
+        if (sid) {
+          this.queryServiceToken()
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
+    queryServiceToken() {
+      describeServiceToken(this.serviceId).then(resp => {
+        this.token = resp.data
+      })
+    },
     getNamespacePolicy() {
       this.listPolicyLoading = true
       queryPolicy(this.listPolicyQuery).then(resp => {

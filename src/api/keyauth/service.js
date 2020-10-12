@@ -16,6 +16,22 @@ export function describeService(id, query) {
   })
 }
 
+export function describeServiceToken(id, query) {
+  return request({
+    url: '/keyauth/v1/services/' + id + '/token',
+    method: 'get',
+    params: query
+  })
+}
+
+export function refreshServiceToken(id, data) {
+  return request({
+    url: '/keyauth/v1/services/' + id + '/token',
+    method: 'post',
+    data
+  })
+}
+
 export function createService(data) {
   return request({
     url: '/keyauth/v1/services/',
