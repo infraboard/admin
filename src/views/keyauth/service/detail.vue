@@ -62,8 +62,8 @@
         <el-tab-pane label="服务凭证" name="first">
           <service-credential :service-id="service.id" />
         </el-tab-pane>
-        <el-tab-pane label="功能列表" name="second">
-          <service-endpoint lazy :service-name="service.name" />
+        <el-tab-pane lazy label="功能列表" name="second">
+          <service-endpoint :service-name="service.name" />
         </el-tab-pane>
 
       </el-tabs>

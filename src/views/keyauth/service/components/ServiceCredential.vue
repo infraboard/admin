@@ -12,7 +12,13 @@
       </el-col>
       <el-col :span="4">
         <span class="attr-key f12">操作</span>
-        <el-button type="text" style="padding:0px;margin-left:12px;">
+        <el-button v-if="token.is_block" disabled type="text" style="padding:0px;margin-left:12px;">
+          启用
+        </el-button>
+        <el-button v-else disabled type="text" style="padding:0px;margin-left:12px;">
+          禁用
+        </el-button>
+        <el-button type="text" style="padding:0px;margin-left:12px;" :loading="refreshLoading" @click="refreshToken">
           刷新
         </el-button>
       </el-col>
@@ -54,7 +60,7 @@
         >
           <el-table-column label="空间" prop="name" align="center" min-width="110">
             <template slot-scope="{row}">
-              <span>{{ row }}</span>
+              <span v-if="row.namespace">{{ row.namespace.name }}</span>
             </template>
           </el-table-column>
           <el-table-column label="角色" prop="type" align="center" min-width="110">
@@ -95,7 +101,7 @@
           </el-table-column>
         </el-table>
 
-        <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getNamespacePolicy" />
+        <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getServicePolicy" />
       </div>
 
       <create-policy-drawer :visible.sync="dialogFormVisible" :account="token.account" @change="updatePolicy" />
@@ -106,7 +112,7 @@
 <script>
 import Tips from '@/components/Tips'
 import { queryPolicy } from '@/api/keyauth/policy'
-import { describeServiceToken } from '@/api/keyauth/service'
+import { describeServiceToken, refreshServiceToken } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
 import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
 import clipboard from '@/directive/clipboard/index.js'
@@ -144,9 +150,11 @@ export default {
       listPolicyLoading: false,
       deleteLoading: '',
       queryLoading: true,
+      refreshLoading: false,
       listPolicyQuery: {
         account: '',
         with_role: true,
+        with_namespace: true,
         page_number: 1,
         page_size: 20
       },
@@ -167,9 +175,11 @@ export default {
     queryServiceToken() {
       describeServiceToken(this.serviceId).then(resp => {
         this.token = resp.data
+        this.listPolicyQuery.account = this.token.account
+        this.getServicePolicy()
       })
     },
-    getNamespacePolicy() {
+    getServicePolicy() {
       this.listPolicyLoading = true
       queryPolicy(this.listPolicyQuery).then(resp => {
         this.policys = resp.data.items
@@ -190,7 +200,7 @@ export default {
       this.dialogFormVisible = true
     },
     updatePolicy(val) {
-      this.getNamespacePolicy()
+      this.getServicePolicy()
     },
     handleDelete(row, index) {
       this.deleteLoading = row.name
@@ -211,6 +221,14 @@ export default {
     },
     handleSearch() {
 
+    },
+    refreshToken() {
+      this.refreshLoading = true
+      refreshServiceToken(this.serviceId).then(resp => {
+        this.token = resp.data
+      }).finally(() => {
+        this.refreshLoading = false
+      })
     }
   }
 }
