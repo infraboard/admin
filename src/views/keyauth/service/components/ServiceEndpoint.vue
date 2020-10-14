@@ -64,7 +64,7 @@ export default {
   components: { Pagination },
   directives: { },
   props: {
-    serviceName: {
+    serviceId: {
       type: String,
       default: ''
     }
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       listEndpointQuery: {
+        service_id: '',
         page_number: 1,
         page_size: 20
       },
@@ -101,6 +102,7 @@ export default {
     getServiceEndpoint() {
       this.queryloading = true
       // 获取用户列表
+      this.listEndpointQuery.service_id = this.serviceId
       queryEndpoint(this.listEndpointQuery).then(response => {
         this.endpoints = response.data.items
         this.total = response.data.total

@@ -37,7 +37,8 @@
       <el-table-column label="空间" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
           <router-link :to="'/permission/namespace/'+row.namespace_id" class="link-type">
-            <span>{{ row.namespace.name }}</span>
+            <span v-if="row.namespace">{{ row.namespace.name }}</span>
+            <span v-else> {{ row.namespace_id }} </span>
           </router-link>
         </template>
       </el-table-column>
