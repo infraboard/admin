@@ -61,6 +61,7 @@
           <el-table-column label="空间" prop="name" align="center" min-width="110">
             <template slot-scope="{row}">
               <span v-if="row.namespace">{{ row.namespace.name }}</span>
+              <span v-else>{{ row.namespace_id }}</span>
             </template>
           </el-table-column>
           <el-table-column label="角色" prop="type" align="center" min-width="110">
