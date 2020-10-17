@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { queryLoginLog } from '@/api/keyauth/audit'
+import { queryLoginLog } from '@/api/keyauth/session'
 import Pagination from '@/components/Pagination'
 import DateTimePicker from '@/components/DateTimePicker'
 import Tips from '@/components/Tips'
