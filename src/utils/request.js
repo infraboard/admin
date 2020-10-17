@@ -59,7 +59,17 @@ service.interceptors.response.use(
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50015) {
         // to re-login
-        return MessageBox.confirm('当前会话已经过期, 您可以取消停留在此页面或再次登录', '确认退出', {
+        let message = ''
+        switch (res.code) {
+          case 50015:
+            message = '当前会话已经过期, 您可以取消停留在此页面或再次登录'
+            break
+          case 50012:
+            message = '你已通过其他端登录, 如非本人操作, 请尽快重置密码'
+            break
+        }
+
+        return MessageBox.confirm(message, '确认退出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'
