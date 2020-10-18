@@ -83,7 +83,7 @@
             <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </el-row>
           <el-row class="attr-row">
-            <span class="attr-key">成员角色</span>
+            <span class="attr-key">基础角色</span>
             <div class="attr-value">
               <span v-if="current.default_role">
                 <router-link :to="'/permission/role/'+current.default_role.id" class="link-type">
