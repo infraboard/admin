@@ -99,7 +99,7 @@
     </el-card>
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="部门成员" name="first">
+        <el-tab-pane lazy label="部门成员" name="first">
           <department-user :department-id="current.id" />
         </el-tab-pane>
         <el-tab-pane lazy label="部门空间" name="second">

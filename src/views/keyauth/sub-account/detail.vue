@@ -126,7 +126,7 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="访问策略" name="first">
+        <el-tab-pane lazy label="访问策略" name="first">
           <user-policy :account="account" />
         </el-tab-pane>
       </el-tabs>

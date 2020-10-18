@@ -56,10 +56,10 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="权限条目" name="first">
+        <el-tab-pane lazy label="权限条目" name="first">
           <role-permission :permissions="role.permissions" />
         </el-tab-pane>
-        <el-tab-pane label="关联策略" lazy name="second">
+        <el-tab-pane lazy label="关联策略" name="second">
           <role-policy :role-id="role.id" />
         </el-tab-pane>
       </el-tabs>
