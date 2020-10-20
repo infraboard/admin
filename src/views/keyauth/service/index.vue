@@ -140,47 +140,14 @@ export default {
     handleCreate() {
       this.dialogFormVisible = true
     },
-    // resetForm() {
-    //   this.form = {
-    //     name: '',
-    //     description: ''
-    //   }
-    // },
-    // createService() {
-    //   this.createLoading = true
-    //   // 创建请求
-    //   createService(this.form).then(resp => {
-    //     this.dialogFormVisible = false
-    //     this.roleList.unshift(resp.data)
-    //     this.$notify({
-    //       title: '成功',
-    //       message: '创建成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //     this.createLoading = false
-    //   }).catch(() => {
-    //     this.createLoading = false
-    //   })
-    // },
-    // handleUpdate(row) {
-    //   this.dialogFormType = 'update'
-    //   this.form = Object.assign({}, row) // copy obj
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['dataForm'].clearValidate()
-    //   })
-    // },
     handleDelete(row, index) {
       this.deleteLoading = row.name
       deleteService(row.id).then(resp => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          message: `删除服务[${row.name}]成功`,
+          customClass: 'notify-success'
         })
-        this.roleList.splice(index, 1)
+        this.getServiceList()
         this.deleteLoading = ''
       }).catch(() => {
         this.deleteLoading = ''
