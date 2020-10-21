@@ -1,5 +1,6 @@
 <template>
   <div>
+    <tips :tips="tips" type="info" title="温馨提示" />
     <el-table
       :key="tableKey"
       v-loading="queryloading"
@@ -51,17 +52,23 @@
       </el-table-column>
     </el-table>
 
-    <pagination :total="total" :page.sync="listEndpointQuery.page_number" :limit.sync="listEndpointQuery.page_size" @pagination="getServiceEndpoint" />
+    <pagination :total="total" :page.sync="listEndpointQuery.page_number" :limit.sync="listEndpointQuery.page_size" :page-sizes="[10, 20, 50, 100, 200, 500]" @pagination="getServiceEndpoint" />
   </div>
 </template>
 
 <script>
+import Tips from '@/components/Tips'
 import { queryEndpoint } from '@/api/keyauth/endpoint'
 import Pagination from '@/components/Pagination'
 
+const tips = [
+  '资源动作标签: get, list, create, update, delete',
+  '角色通过标签匹配服务提供的功能'
+]
+
 export default {
   name: 'ServiceEndpoint',
-  components: { Pagination },
+  components: { Tips, Pagination },
   directives: { },
   props: {
     serviceId: {
@@ -71,6 +78,7 @@ export default {
   },
   data() {
     return {
+      tips,
       listEndpointQuery: {
         service_id: '',
         page_number: 1,
