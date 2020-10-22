@@ -15,6 +15,19 @@
             <span>服务名称需要保持唯一, 不能重复</span>
           </div>
         </el-form-item>
+        <el-form-item label="角色" :label-width="formLabelWidth" prop="role_id">
+          <el-select v-model="form.role_id" style="width:100%" placeholder="visitor" :loading="queryRoleLoading" @visible-change="showRoleList">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+          <div class="input-tips">
+            <span>默认为访客(vistor)角色</span>
+          </div>
+        </el-form-item>
         <el-form-item label="备注" :label-width="formLabelWidth" prop="description">
           <el-input
             v-model="form.description"
@@ -35,6 +48,7 @@
 </template>
 
 <script>
+import { queryRole } from '@/api/keyauth/role'
 import { createService } from '@/api/keyauth/service'
 import { describeDepartment } from '@/api/keyauth/department'
 
@@ -57,6 +71,9 @@ export default {
   },
   data() {
     return {
+      roleListQuery: {},
+      queryRoleLoading: false,
+      roleList: [],
       departmentName: '',
       departmentQuery: {},
       queryDepartmentLoading: false,
@@ -65,12 +82,8 @@ export default {
       dialog: false,
       createNamespaceLoading: false,
       form: {
-        department_id: '',
-        account: '',
-        password: '',
-        mobile: '',
-        email: '',
-        gender: 'unknown',
+        name: '',
+        role_id: '',
         description: ''
       },
       formLabelWidth: '80px',
@@ -85,7 +98,6 @@ export default {
         this.dialog = val
         if (val) {
           this.resetForm()
-          this.form.department_id = this.departmentId
           this.describeDepartment()
           this.$nextTick(() => {
             this.$refs['serviceForm'].clearValidate()
@@ -96,6 +108,20 @@ export default {
     }
   },
   methods: {
+    showRoleList(visible) {
+      if (visible && this.roleList.length === 0) {
+        this.getRoleList()
+      }
+    },
+    getRoleList() {
+      this.queryRoleLoading = true
+      // 获取用户列表
+      queryRole(this.roleListQuery).then(response => {
+        this.roleList = response.data.items
+      }).finally(() => {
+        this.queryRoleLoading = false
+      })
+    },
     describeDepartment() {
       if (this.departmentId) {
         this.departmentName = '加载中 ...'
@@ -118,9 +144,10 @@ export default {
       this.$emit('update:visible', false)
     },
     resetForm() {
-      this.departmentName = ''
       this.form = {
-        gender: 'unknown'
+        name: '',
+        role_id: '',
+        description: ''
       }
     },
     submit() {

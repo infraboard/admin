@@ -1,6 +1,21 @@
 <template>
-  <div>
+  <div class="container-wrapper">
     <tips :tips="tips" type="info" title="温馨提示" />
+
+    <div class="filter-container">
+      <div class="filter-item">
+        <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
+          <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
+            <el-option label="资源名称" value="resource" />
+            <el-option label="访问标签" value="label" />
+            <el-option label="访问方式" value="method" />
+            <el-option label="访问路径" value="path" />
+            <el-option label="函数名称" value="function_name" />
+          </el-select>
+        </el-input>
+      </div>
+    </div>
+
     <el-table
       :key="tableKey"
       v-loading="queryloading"
@@ -8,7 +23,7 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;margin-top:12px;"
+      style="width: 100%;"
     >
       <el-table-column label="资源名称" prop="description" min-width="80">
         <template slot-scope="{row}">
@@ -79,6 +94,8 @@ export default {
   data() {
     return {
       tips,
+      filterKey: 'resource',
+      filterValue: '',
       listEndpointQuery: {
         service_id: '',
         page_number: 1,
@@ -107,6 +124,31 @@ export default {
     this.getServiceEndpoint()
   },
   methods: {
+    resetQuery() {
+      this.listEndpointQuery = {}
+    },
+    clearSearch() {
+      this.resetQuery()
+      this.getServiceEndpoint()
+    },
+    handleSearch() {
+      this.listEndpointQuery.page_number = 1
+      switch (this.filterKey) {
+        case 'resource':
+          this.listEndpointQuery.resource = this.filterValue
+          break
+        case 'method':
+          this.listEndpointQuery.method = this.filterValue
+          break
+        case 'path':
+          this.listEndpointQuery.path = this.filterValue
+          break
+        case 'function_name':
+          this.listEndpointQuery.function_name = this.filterValue
+          break
+      }
+      this.getServiceEndpoint()
+    },
     getServiceEndpoint() {
       this.queryloading = true
       // 获取用户列表
@@ -177,3 +219,17 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.container-wrapper ::v-deep .el-select {
+  width: 102px;
+}
+
+.container-wrapper ::v-deep .input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+
+.container-wrapper ::v-deep .el-divider--horizontal {
+  margin: 4px 0px 12px 0px;
+}
+</style>
