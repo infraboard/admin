@@ -40,7 +40,7 @@ const actions = {
     var req = {
       grant_type: 'password',
       username: username.trim(),
-      password: password
+      password: password.trim()
     }
     return new Promise((resolve, reject) => {
       login(req).then(response => {

@@ -54,9 +54,9 @@
             <span>开启后，子账号（子用户和协作者）仅在限制条件下允许登录</span>
           </div>
         </el-form-item>
-        <el-form-item>
-          <el-button>取 消</el-button>
-          <el-button type="primary">保 存</el-button>
+        <el-form-item class="text-center">
+          <el-button>取消修改</el-button>
+          <el-button type="primary">保存配置</el-button>
         </el-form-item>
       </el-form>
     </div>

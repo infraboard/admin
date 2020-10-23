@@ -16,3 +16,10 @@ export function saveDomainLDAP(data) {
     data
   })
 }
+
+export function checkDomainLDAP() {
+  return request({
+    url: '/keyauth/v1/settings/ldap/conn_check',
+    method: 'post'
+  })
+}
