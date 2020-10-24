@@ -13,17 +13,17 @@
           <div v-if="form.enabled">
             <el-divider content-position="left">LDAP配置</el-divider>
             <el-form-item label="服务地址" prop="url">
-              <el-input v-model="form.url" @input="objectUpdate" />
+              <el-input v-model="form.url" @input="objectUpdate('url')" />
               <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
             </el-form-item>
             <el-form-item label="绑定DN" prop="user">
-              <el-input v-model="form.user" @input="objectUpdate" />
+              <el-input v-model="form.user" @input="objectUpdate('user')" />
               <div class="input-tips">
                 <span>用于验证账号的管理员用户</span>
               </div>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input v-model="form.password" show-password @input="objectUpdate" />
+              <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
               <div class="input-tips">用于验证账号的管理员密码</div>
             </el-form-item>
             <el-form-item label="用户过滤器" prop="users_filter">
@@ -59,14 +59,14 @@
               </div>
             </el-form-item>
             <el-form-item label="配置验证">
-              <el-button @click="checkDomainLDAP">测试连接</el-button>
-              <el-button @click="checkLDAPLogin">测试登录</el-button>
+              <el-button @click="checkDomainLDAP">连接测试</el-button>
+              <el-button @click="checkLDAPLogin">登录测试</el-button>
               <div class="input-tips">验证通过后才能保存配置</div>
             </el-form-item>
           </div>
           <el-form-item class="text-center">
             <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-            <el-button :disabled="noUpdate" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
+            <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
           </el-form-item>
 
         </el-form>
@@ -103,6 +103,7 @@ export default {
   },
   data() {
     return {
+      connectOK: false,
       noUpdate: true,
       saveLoading: false,
       loading: undefined,
@@ -131,8 +132,8 @@ export default {
       },
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
-        user: [{ required: true, message: '请输入admin用户', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入admin用户密码', trigger: 'blur' }]
+        user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
       }
     }
   },
@@ -147,7 +148,10 @@ export default {
     this.getLDAPConfig()
   },
   methods: {
-    objectUpdate() {
+    objectUpdate(field) {
+      if (field === 'url' || field === 'user' || field === 'password') {
+        this.connectOK = false
+      }
       this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.ldap)
     },
     async getLDAPConfig() {
@@ -178,30 +182,39 @@ export default {
         if (valid) {
           this.saveLoading = true
           saveDomainLDAP(this.form).then(resp => {
-            this.form = resp.data
-            this.saveLoading = false
+            this.ldap = resp.data
+            this.noUpdate = true
+            this.connectOK = false
             this.$message({
               message: 'ldap配置保存成功',
               type: 'success',
               duration: 3 * 1000
             })
-          }).catch(() => {
+          }).finally(() => {
             this.saveLoading = false
           })
         }
       })
     },
     checkDomainLDAP() {
-      checkDomainLDAP().then(resp => {
-        this.$notify({
-          message: `连接测试成功: ${resp.data}`,
-          customClass: 'notify-success'
-        })
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          checkDomainLDAP().then(resp => {
+            this.connectOK = true
+            this.$notify({
+              message: `连接测试成功: ${resp.data}`,
+              customClass: 'notify-success'
+            })
+          })
+        }
       })
     },
     checkLDAPLogin() {
       login(this.loginCheckForm).then(resp => {
-        console.log(resp)
+        this.$notify({
+          message: `用户[${resp.data.account}]登录成功`,
+          customClass: 'notify-success'
+        })
       })
     }
   }
