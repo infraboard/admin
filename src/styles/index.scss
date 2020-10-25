@@ -310,3 +310,24 @@ aside {
     font-size: 14px
   }
 }
+
+.breath-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #4bfb52;
+  box-shadow: 0px 0px 20px 10px #08ff10;
+  animation-name: light;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  }
+  @keyframes light{
+      from{
+          opacity: 1;
+      }
+      to{
+          opacity: 0.2;
+      }
+  }

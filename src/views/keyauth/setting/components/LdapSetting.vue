@@ -6,64 +6,70 @@
       </div>
       <div class="setting-form">
         <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
+          <el-form-item label="状态">
+            <div style="display:flex">
+              <div style="margin-top:11px;width:48px;">
+                <div class="breath-green" />
+              </div>
+              <span class="f12" style="margin-lfet:100px;">当前正常</span>
+            </div>
+          </el-form-item>
           <el-form-item label="启用">
-            <el-checkbox v-model="form.enabled" @change="objectUpdate" />
+            <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
             <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
           </el-form-item>
-          <div v-if="form.enabled">
-            <el-divider content-position="left">LDAP配置</el-divider>
-            <el-form-item label="服务地址" prop="url">
-              <el-input v-model="form.url" @input="objectUpdate('url')" />
-              <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
-            </el-form-item>
-            <el-form-item label="绑定DN" prop="user">
-              <el-input v-model="form.user" @input="objectUpdate('user')" />
-              <div class="input-tips">
-                <span>用于验证账号的管理员用户</span>
+          <el-divider content-position="left">LDAP配置</el-divider>
+          <el-form-item label="服务地址" prop="url">
+            <el-input v-model="form.url" @input="objectUpdate('url')" />
+            <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
+          </el-form-item>
+          <el-form-item label="绑定DN" prop="user">
+            <el-input v-model="form.user" @input="objectUpdate('user')" />
+            <div class="input-tips">
+              <span>用于验证账号的管理员用户</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
+            <div class="input-tips">用于验证账号的管理员密码</div>
+          </el-form-item>
+          <el-form-item label="用户过滤器" prop="users_filter">
+            <el-input v-model="form.users_filter" @input="objectUpdate" />
+            <div class="input-tips">根据字段搜索用户</div>
+          </el-form-item>
+          <el-form-item label="组过滤器" prop="groups_filter">
+            <el-input v-model="form.groups_filter" @input="objectUpdate" />
+            <div class="input-tips">根据字段搜索用户组</div>
+          </el-form-item>
+          <el-form-item label="属性映射">
+            <el-checkbox v-model="showAttrMap" />
+            <div class="input-tips">
+              <span>当前系统子用户属性和LDAP中用户属性的映射关系</span>
+            </div>
+            <div v-show="showAttrMap">
+              <div class="attr-item">
+                <span class="f12 attr-key">用户组名称</span>
+                <el-input v-model="form.group_name_attribute" class="attr-value" @input="objectUpdate" />
               </div>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
-              <div class="input-tips">用于验证账号的管理员密码</div>
-            </el-form-item>
-            <el-form-item label="用户过滤器" prop="users_filter">
-              <el-input v-model="form.users_filter" @input="objectUpdate" />
-              <div class="input-tips">根据字段搜索用户</div>
-            </el-form-item>
-            <el-form-item label="组过滤器" prop="groups_filter">
-              <el-input v-model="form.groups_filter" @input="objectUpdate" />
-              <div class="input-tips">根据字段搜索用户组</div>
-            </el-form-item>
-            <el-form-item label="属性映射">
-              <el-checkbox v-model="showAttrMap" />
-              <div class="input-tips">
-                <span>当前系统子用户属性和LDAP中用户属性的映射关系</span>
+              <div class="attr-item">
+                <span class="f12 attr-key">用户名称</span>
+                <el-input v-model="form.username_attribute" class="attr-value" @input="objectUpdate" />
               </div>
-              <div v-show="showAttrMap">
-                <div class="attr-item">
-                  <span class="f12 attr-key">用户组名称</span>
-                  <el-input v-model="form.group_name_attribute" class="attr-value" @input="objectUpdate" />
-                </div>
-                <div class="attr-item">
-                  <span class="f12 attr-key">用户名称</span>
-                  <el-input v-model="form.username_attribute" class="attr-value" @input="objectUpdate" />
-                </div>
-                <div class="attr-item">
-                  <span class="f12 attr-key">用户邮箱</span>
-                  <el-input v-model="form.mail_attribute" class="attr-value" @input="objectUpdate" />
-                </div>
-                <div class="attr-item">
-                  <span class="f12 attr-key">显示名称</span>
-                  <el-input v-model="form.display_name_attribute" class="attr-value" @input="objectUpdate" />
-                </div>
+              <div class="attr-item">
+                <span class="f12 attr-key">用户邮箱</span>
+                <el-input v-model="form.mail_attribute" class="attr-value" @input="objectUpdate" />
               </div>
-            </el-form-item>
-            <el-form-item label="配置验证">
-              <el-button @click="checkDomainLDAP">连接测试</el-button>
-              <el-button @click="checkLDAPLogin">登录测试</el-button>
-              <div class="input-tips">验证通过后才能保存配置</div>
-            </el-form-item>
-          </div>
+              <div class="attr-item">
+                <span class="f12 attr-key">显示名称</span>
+                <el-input v-model="form.display_name_attribute" class="attr-value" @input="objectUpdate" />
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="配置验证">
+            <el-button @click="checkDomainLDAP">连接测试</el-button>
+            <el-button @click="checkLDAPLogin">登录测试</el-button>
+            <div class="input-tips">验证通过后才能保存配置</div>
+          </el-form-item>
           <el-form-item class="text-center">
             <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
             <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
@@ -89,7 +95,8 @@ import { login } from '@/api/keyauth/token'
 import Tips from '@/components/Tips'
 
 const tips = [
-  '配置并开启了LDAP后, 子用户可以通过LDAP账号进行登录'
+  '配置并开启了LDAP后, 子用户可以通过LDAP账号进行登录',
+  '状态指的是使用当前配置访问LDAP服务状态, 绿色: 正常'
 ]
 
 export default {
@@ -151,6 +158,10 @@ export default {
     objectUpdate(field) {
       if (field === 'url' || field === 'user' || field === 'password') {
         this.connectOK = false
+      }
+      // 启动的修改不检测连接状态
+      if (field === 'enabled') {
+        this.connectOK = true
       }
       this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.ldap)
     },
