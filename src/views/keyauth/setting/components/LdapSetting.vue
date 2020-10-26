@@ -9,7 +9,7 @@
           <el-form-item label="状态">
             <div style="display:flex">
               <div style="margin-top:11px;width:48px;">
-                <div class="breath-green" />
+                <div class="point point-flicker" />
               </div>
               <span class="f12" style="margin-lfet:100px;">当前正常</span>
             </div>

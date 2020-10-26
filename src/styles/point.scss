@@ -1,0 +1,51 @@
+.point {
+    width: 6px;
+    height: 6px;
+    background-color: #27f353;
+    position: relative;
+    border-radius: 50%;
+  }
+  
+  /* 设置动画前颜色 */
+  .point-flicker:after {
+    background-color: #27f353;
+  }
+  
+  /* 设置动画后颜色 */
+  .point-flicker:before {
+    background-color: #1cf11c33;
+  }
+  
+  /* 设置动画 */
+  .point-flicker:before,
+  .point-flicker:after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border-radius: 50%;
+    /* CSS3 animation 属性 网址 */
+    /* https://www.w3school.com.cn/cssref/pr_animation.asp */
+    animation: warn 1.5s ease-out 0s infinite;
+  }
+  
+  /* @keyframes 规则用于创建动画。在 @keyframes 中规定某项 CSS 样式，就能创建由当前样式逐渐改为新样式的动画效果。 */
+  @keyframes warn {
+    0% {
+      transform: scale(0.5);
+      opacity: 1;
+    }
+  
+    30% {
+      opacity: 1;
+    }
+  
+    100% {
+      transform: scale(1.4);
+      opacity: 0;
+    }
+  }
