@@ -17,10 +17,6 @@
             <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
             <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
           </el-form-item>
-          <el-form-item label="测试">
-            <el-button @click="checkLDAPLogin">登录测试</el-button>
-            <div class="input-tips">测试用户能否登录</div>
-          </el-form-item>
           <el-divider content-position="left">LDAP配置</el-divider>
           <el-form-item label="服务地址" prop="url">
             <el-input v-model="form.url" @input="objectUpdate('url')" />
@@ -93,7 +89,6 @@
 
 <script>
 import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
-import { login } from '@/api/keyauth/token'
 import Tips from '@/components/Tips'
 
 const tips = [
@@ -225,14 +220,6 @@ export default {
             this.checkConnLoading = false
           })
         }
-      })
-    },
-    checkLDAPLogin() {
-      login(this.loginCheckForm).then(resp => {
-        this.$notify({
-          message: `用户[${resp.data.account}]登录成功`,
-          customClass: 'notify-success'
-        })
       })
     }
   }
