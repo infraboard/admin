@@ -11,12 +11,15 @@
               <div style="margin-top:11px;width:48px;">
                 <div class="point point-flicker" />
               </div>
-              <span class="f12" style="margin-lfet:100px;">当前正常</span>
             </div>
           </el-form-item>
           <el-form-item label="启用">
             <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
             <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
+          </el-form-item>
+          <el-form-item label="测试">
+            <el-button @click="checkLDAPLogin">登录测试</el-button>
+            <div class="input-tips">测试用户能否登录</div>
           </el-form-item>
           <el-divider content-position="left">LDAP配置</el-divider>
           <el-form-item label="服务地址" prop="url">
@@ -66,8 +69,7 @@
             </div>
           </el-form-item>
           <el-form-item label="配置验证">
-            <el-button @click="checkDomainLDAP">连接测试</el-button>
-            <el-button @click="checkLDAPLogin">登录测试</el-button>
+            <el-button :loading="checkConnLoading" @click="checkDomainLDAP">连接测试</el-button>
             <div class="input-tips">验证通过后才能保存配置</div>
           </el-form-item>
           <el-form-item class="text-center">
@@ -90,7 +92,7 @@
 </template>
 
 <script>
-import { queryDomainLDAP, saveDomainLDAP, checkDomainLDAP } from '@/api/keyauth/ldap'
+import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
 import { login } from '@/api/keyauth/token'
 import Tips from '@/components/Tips'
 
@@ -110,6 +112,7 @@ export default {
   },
   data() {
     return {
+      checkConnLoading: false,
       connectOK: false,
       noUpdate: true,
       saveLoading: false,
@@ -210,12 +213,16 @@ export default {
     checkDomainLDAP() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          checkDomainLDAP().then(resp => {
+          this.checkConnLoading = true
+          saveDomainLDAP(this.form, { dry_run: true }).then(resp => {
             this.connectOK = true
+            console.log(resp)
             this.$notify({
-              message: `连接测试成功: ${resp.data}`,
+              message: `连接测试成功`,
               customClass: 'notify-success'
             })
+          }).finally(() => {
+            this.checkConnLoading = false
           })
         }
       })

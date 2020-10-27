@@ -9,10 +9,11 @@ export function queryDomainLDAP(query) {
   })
 }
 
-export function saveDomainLDAP(data) {
+export function saveDomainLDAP(data, params) {
   return request({
     url: '/keyauth/v1/settings/ldap/',
     method: 'post',
+    params: params,
     data
   })
 }

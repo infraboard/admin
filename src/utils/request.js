@@ -99,9 +99,17 @@ service.interceptors.response.use(
     }
 
     // 对于特定的请求专门放行, 让页面逻辑处理
-    if (!error.response.config.headers.Skip404) {
+    if (error.response) {
+      if (!error.response.config.headers.Skip404) {
+        Message({
+          message: message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
+    } else {
       Message({
-        message: message,
+        message: error,
         type: 'error',
         duration: 5 * 1000
       })
