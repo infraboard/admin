@@ -17,6 +17,10 @@
             <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
             <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
           </el-form-item>
+          <el-form-item label="测试">
+            <el-button @click="handleCheckLDAPLogin">登录测试</el-button>
+            <div class="input-tips">测试用户能否登录</div>
+          </el-form-item>
           <el-divider content-position="left">LDAP配置</el-divider>
           <el-form-item label="服务地址" prop="url">
             <el-input v-model="form.url" @input="objectUpdate('url')" />
@@ -72,7 +76,6 @@
             <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
             <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
           </el-form-item>
-
         </el-form>
       </div>
     </div>
@@ -83,12 +86,32 @@
         <el-button type="primary" @click="hasConfig = true">配置LDAP</el-button>
       </div>
     </div>
+    <el-dialog
+      title="LDAP用户登录测试"
+      :visible.sync="checkLoginDialog"
+      width="30%"
+      center
+    >
+      <el-form label-position="left" label-width="80px" :model="loginCheckForm">
+        <el-form-item label="用户">
+          <el-input v-model="loginCheckForm.username" placeholder="username@example.org" />
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="loginCheckForm.password" show-password placeholder="LDAP登录用户密码" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="checkLoginDialog = false">取 消</el-button>
+        <el-button type="primary" :loading="checkLoginLoading" @click="checkLDAPLogin">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 
 </template>
 
 <script>
 import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
+import { login } from '@/api/keyauth/token'
 import Tips from '@/components/Tips'
 
 const tips = [
@@ -107,6 +130,8 @@ export default {
   },
   data() {
     return {
+      checkLoginLoading: false,
+      checkLoginDialog: false,
       checkConnLoading: false,
       connectOK: false,
       noUpdate: true,
@@ -132,8 +157,8 @@ export default {
       },
       loginCheckForm: {
         grant_type: 'ldap',
-        username: 'yumaojun@example.org',
-        password: '123456'
+        username: '',
+        password: ''
       },
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
@@ -221,6 +246,21 @@ export default {
           })
         }
       })
+    },
+    handleCheckLDAPLogin() {
+      this.checkLoginDialog = true
+    },
+    checkLDAPLogin() {
+      this.checkLoginLoading = true
+      login(this.loginCheckForm).then(resp => {
+        this.checkLoginDialog = false
+        this.$notify({
+          message: `用户[${resp.data.account}]登录成功`,
+          customClass: 'notify-success'
+        })
+      }).finally(() => (
+        this.checkLoginLoading = false
+      ))
     }
   }
 }
@@ -252,6 +292,10 @@ export default {
   color: #333;
   text-align: center;
   line-height: 40px;
+}
+
+.sub-main ::v-deep .el-dialog__body {
+  padding: 25px 25px 0px;
 }
 
 </style>
