@@ -92,11 +92,11 @@
       width="30%"
       center
     >
-      <el-form label-position="left" label-width="80px" :model="loginCheckForm">
-        <el-form-item label="用户">
+      <el-form ref="checkLoginDataForm" :rules="checkLoginrules" label-position="left" label-width="80px" :model="loginCheckForm">
+        <el-form-item label="用户" prop="username">
           <el-input v-model="loginCheckForm.username" placeholder="username@example.org" />
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="loginCheckForm.password" show-password placeholder="LDAP登录用户密码" />
         </el-form-item>
       </el-form>
@@ -106,7 +106,6 @@
       </span>
     </el-dialog>
   </div>
-
 </template>
 
 <script>
@@ -163,6 +162,10 @@ export default {
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
         user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
+      },
+      checkLoginrules: {
+        username: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
         password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
       }
     }
@@ -247,20 +250,29 @@ export default {
         }
       })
     },
+    resetLoginForm() {
+      this.loginCheckForm.username = ''
+      this.loginCheckForm.password = ''
+    },
     handleCheckLDAPLogin() {
+      this.resetLoginForm()
       this.checkLoginDialog = true
     },
     checkLDAPLogin() {
-      this.checkLoginLoading = true
-      login(this.loginCheckForm).then(resp => {
-        this.checkLoginDialog = false
-        this.$notify({
-          message: `用户[${resp.data.account}]登录成功`,
-          customClass: 'notify-success'
-        })
-      }).finally(() => (
-        this.checkLoginLoading = false
-      ))
+      this.$refs['checkLoginDataForm'].validate((valid) => {
+        if (valid) {
+          this.checkLoginLoading = true
+          login(this.loginCheckForm).then(resp => {
+            this.checkLoginDialog = false
+            this.$notify({
+              message: `用户[${resp.data.account}]登录成功`,
+              customClass: 'notify-success'
+            })
+          }).finally(() => (
+            this.checkLoginLoading = false
+          ))
+        }
+      })
     }
   }
 }
