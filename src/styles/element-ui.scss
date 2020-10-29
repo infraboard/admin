@@ -231,3 +231,11 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+.el-dialog__header {
+  border-bottom: 1px solid #f0f0f0;
+}
+.el-dialog__footer {
+  padding: 10px 20px;
+  border-top: 1px solid #f0f0f0;
+}

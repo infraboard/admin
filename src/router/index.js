@@ -88,6 +88,15 @@ export const constantRoutes = [
         component: () => import('@/views/keyauth/profile/index'),
         name: 'Profile',
         meta: { title: 'profile', icon: 'user', noCache: true }
+      },
+      {
+        hidden: true,
+        path: 'init',
+        component: () => import('@/views/keyauth/profile/initial'),
+        name: 'SubAccountInit',
+        meta: {
+          title: '首次登陆'
+        }
       }
     ]
   }

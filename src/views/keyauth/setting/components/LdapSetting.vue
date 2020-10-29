@@ -89,8 +89,7 @@
     <el-dialog
       title="LDAP用户登录测试"
       :visible.sync="checkLoginDialog"
-      width="30%"
-      center
+      width="40%"
     >
       <el-form ref="checkLoginDataForm" :rules="checkLoginrules" label-position="left" label-width="80px" :model="loginCheckForm">
         <el-form-item label="用户" prop="username">
@@ -257,6 +256,9 @@ export default {
     handleCheckLDAPLogin() {
       this.resetLoginForm()
       this.checkLoginDialog = true
+      this.$nextTick(() => {
+        this.$refs['checkLoginDataForm'].clearValidate()
+      })
     },
     checkLDAPLogin() {
       this.$refs['checkLoginDataForm'].validate((valid) => {
@@ -304,10 +306,6 @@ export default {
   color: #333;
   text-align: center;
   line-height: 40px;
-}
-
-.sub-main ::v-deep .el-dialog__body {
-  padding: 25px 25px 0px;
 }
 
 </style>
