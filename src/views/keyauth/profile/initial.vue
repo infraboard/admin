@@ -11,7 +11,7 @@
       </div>
       <div class="form-content">
         <el-divider />
-        <el-form label-width="80px" label-position="left" :model="profileForm" style="margin-top:24px;">
+        <el-form label-width="80px" :rules="rules" label-position="left" :model="profileForm" style="margin-top:24px;">
           <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
             <el-input v-model="profileForm.mobile" maxlength="40" show-word-limit />
             <div class="input-tips">
@@ -30,8 +30,9 @@
             <el-radio v-model="profileForm.gender" label="unknown">保密</el-radio>
           </el-form-item>
           <div>
-            <el-button @click="next">上一步</el-button>
-            <el-button type="primary" @click="next">下一步</el-button>
+            <el-button :disabled="active === 0" @click="previous">上一步</el-button>
+            <el-button v-if="active < 2" type="primary" @click="next">下一步</el-button>
+            <el-button v-if="active === 2" type="primary" style="width:68px;" @click="next">完 成</el-button>
           </div>
         </el-form>
 
@@ -50,18 +51,25 @@ export default {
   data() {
     return {
       active: 0,
-      formLabelWidth: '40px',
+      formLabelWidth: '50px',
       profileForm: {
         mobile: '',
         email: '',
         gender: 'unknown'
       },
-      departForm: {}
+      departForm: {},
+      rules: {
+        mobile: [{ required: true, message: '请输入手机号码', trigger: 'change' }],
+        email: [{ required: true, message: '请输入邮箱地址', trigger: 'blur' }]
+      }
     }
   },
   methods: {
     next() {
-      if (this.active++ > 2) this.active = 0
+      if (this.active++ > 2) this.active = 2
+    },
+    previous() {
+      if (this.active-- < 0) this.active = 0
     }
   }
 }
