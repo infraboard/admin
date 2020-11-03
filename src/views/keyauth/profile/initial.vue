@@ -49,6 +49,18 @@
             </el-form-item>
           </el-form>
           <!-- department -->
+          <el-form v-if="active === 1" ref="departFormData" :rules="rules" label-position="left" :model="departForm">
+            <el-form-item label="语言" :label-width="formLabelWidth" prop="language">
+              <el-select v-model="profileForm.language" placeholder="请选择">
+                <el-option
+                  v-for="item in languageOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-form>
         </div>
 
         <div>
