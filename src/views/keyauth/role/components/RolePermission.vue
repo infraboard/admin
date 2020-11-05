@@ -1,5 +1,8 @@
 <template>
   <div class="container-wrapper">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -65,10 +68,15 @@
 
 <script>
 import Pagination from '@/components/Pagination'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '权限条目指匹配服务功能端点(Endpoint)的一组策略'
+]
 
 export default {
   name: 'RolePermission',
-  components: { Pagination },
+  components: { Pagination, Tips },
   directives: { },
   props: {
     permissions: {
@@ -80,6 +88,7 @@ export default {
   },
   data() {
     return {
+      tips,
       filterKey: 'account',
       filterValue: '',
       listPermissionQuery: {

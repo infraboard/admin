@@ -1,5 +1,8 @@
 <template>
   <div class="container-wrapper">
+    <div>
+      <tips :tips="tips" />
+    </div>
     <div class="filter-container">
       <div class="filter-item">
         <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
@@ -83,10 +86,15 @@
 import { queryPolicy } from '@/api/keyauth/policy'
 import Pagination from '@/components/Pagination'
 import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
+import Tips from '@/components/Tips'
+
+const tips = [
+  '该空间可以被哪些用户访问(以指定的角色)'
+]
 
 export default {
   name: 'NamespacePolicy',
-  components: { Pagination, CreatePolicyDrawer },
+  components: { Pagination, CreatePolicyDrawer, Tips },
   directives: { },
   props: {
     namespaceId: {
@@ -96,6 +104,7 @@ export default {
   },
   data() {
     return {
+      tips,
       filterKey: 'account',
       filterValue: '',
       tableKey: 0,
