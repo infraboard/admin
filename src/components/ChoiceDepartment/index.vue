@@ -1,5 +1,5 @@
 <template>
-  <el-cascader v-model="currentdepartment" :props="props" style="width:100%" :show-all-levels="false" />
+  <el-cascader v-model="currentdepartment" :props="props" style="width:100%" :show-all-levels="false" placeholder="请选择部门, 格式说明: 部门名称 (部门负责人)" />
 </template>
 
 <script>
@@ -24,7 +24,7 @@ export default {
       total: 0,
       props: {
         lazy: true,
-        label: 'name',
+        label: 'show',
         value: this.$props.valueAttr,
         lazyLoad(node, resolve) {
           listQuery.parent_id = ''
@@ -37,6 +37,8 @@ export default {
             const list = []
             resp.data.items.forEach(item => {
               item.leaf = item.sub_count === 0
+              item.show = item.name + ' (' + item.manager + ')'
+              console.log(item)
               list.push(item)
             })
             resolve(list)
