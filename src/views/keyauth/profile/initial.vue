@@ -49,11 +49,26 @@
             </el-form-item>
           </el-form>
           <!-- department -->
-          <el-form v-if="active === 1" ref="departFormData" :rules="rules" label-position="left" :model="departForm">
+          <el-form v-if="active === 1" ref="departFormData" :rules="dprules" label-position="left" :model="departForm">
             <el-form-item label="部门" :label-width="formLabelWidth" prop="department_id">
               <choice-department :department.sync="departForm.department_id" />
               <div class="input-tips">
-                <span>选择需要申请加入的部门, 申请完成后请联系部门负责人及时处理</span>
+                <span>选择需要申请加入的部门</span>
+              </div>
+            </el-form-item>
+            <el-form-item label="留言" :label-width="formLabelWidth" prop="message">
+              <el-input v-model="departForm.message" maxlength="200" type="textarea" show-word-limit />
+              <div class="input-tips">
+                <span>如果有啥备注请写这里吧</span>
+              </div>
+            </el-form-item>
+          </el-form>
+          <!-- review -->
+          <el-form v-if="active === 2" label-position="left">
+            <el-form-item label="部门" :label-width="formLabelWidth">
+              <choice-department :department.sync="departForm.department_id" />
+              <div class="input-tips">
+                <span>选择需要申请加入的部门</span>
               </div>
             </el-form-item>
             <el-form-item label="留言" :label-width="formLabelWidth" prop="message">
@@ -93,7 +108,7 @@ export default {
   data() {
     return {
       languageOptions,
-      active: 0,
+      active: 1,
       formLabelWidth: '50px',
       profileForm: {
         mobile: '',
@@ -108,6 +123,9 @@ export default {
         real_name: [{ required: true, message: '请输入姓名', trigger: 'change' }],
         mobile: [{ required: true, message: '请输入手机号码', trigger: 'change' }],
         email: [{ required: true, message: '请输入邮箱地址', trigger: 'change' }]
+      },
+      dprules: {
+        department_id: [{ required: true, message: '请选择申请加入的部门', trigger: 'change' }]
       }
     }
   },
@@ -122,7 +140,11 @@ export default {
           })
           break
         case 1:
-          console.log('1')
+          this.$refs['departFormData'].validate((valid) => {
+            if (valid) {
+              this.active++
+            }
+          })
           break
         case 2:
           console.log('2')
