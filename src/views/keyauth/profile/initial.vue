@@ -6,7 +6,7 @@
         <el-steps :active="active" simple>
           <el-step title="个人信息" icon="el-icon-user-solid" />
           <el-step title="加入申请" icon="el-icon-s-cooperation" />
-          <el-step title="审阅" icon="el-icon-s-order" />
+          <el-step title="注意事项" icon="el-icon-s-order" />
         </el-steps>
       </div>
       <div class="form-content">
@@ -64,14 +64,9 @@
             </el-form-item>
           </el-form>
           <!-- review -->
-          <el-form v-show="active === 2" label-position="left">
-            <el-form-item label="电话" :label-width="formLabelWidth">
-              <span>{{ profileForm.mobile }}</span>
-            </el-form-item>
-            <el-form-item label="邮箱" :label-width="formLabelWidth">
-              <span>{{ profileForm.email }}</span>
-            </el-form-item>
-          </el-form>
+          <div v-show="active === 2" class="tips-content">
+            <li v-for="(item, i) in tips" :key="i">{{ item }}</li>
+          </div>
         </div>
 
         <div>
@@ -91,6 +86,10 @@
 import ChoiceDepartment from '@/components/ChoiceDepartment'
 import Tips from '@/components/Tips'
 
+const tips = [
+  '点击完成后, 加入申请就会提交, 请及时联系部门负责人处理'
+]
+
 const languageOptions = [
   { label: '中文', value: 'zh' },
   { label: 'English', value: 'en' }
@@ -101,6 +100,7 @@ export default {
   components: { Tips, ChoiceDepartment },
   data() {
     return {
+      tips,
       languageOptions,
       active: 0,
       formLabelWidth: '50px',
@@ -155,6 +155,12 @@ export default {
 <style lang="scss" scoped>
 .form-content {
   padding: 0px 24px 24px 24px;
+}
+
+.tips-content {
+    padding: 0px 0px 10px 0px;
+    font-size: 12px;
+    color: #303133;
 }
 
 .app-container ::v-deep .el-steps--simple {
