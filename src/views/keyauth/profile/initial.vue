@@ -73,7 +73,7 @@
           <div>
             <el-button :disabled="active === 0" @click="previous">上一步</el-button>
             <el-button v-if="active < 2" type="primary" @click="next">下一步</el-button>
-            <el-button v-if="active === 2" type="primary" style="width:68px;" @click="next">完 成</el-button>
+            <el-button v-if="active === 2" type="primary" style="width:68px;" @click="submit">完 成</el-button>
           </div>
         </div>
       </div>
@@ -83,6 +83,8 @@
 </template>
 
 <script>
+import { updateProfile } from '@/api/keyauth/profile'
+import { joinDepartment } from '@/api/keyauth/department'
 import ChoiceDepartment from '@/components/ChoiceDepartment'
 import Tips from '@/components/Tips'
 
@@ -147,6 +149,12 @@ export default {
     },
     previous() {
       if (this.active-- < 0) this.active = 0
+    },
+    async submit() {
+      var upResp = await updateProfile(this.profileForm)
+      console.log(upResp)
+      var jdResp = await joinDepartment(this.departForm)
+      console.log(jdResp)
     }
   }
 }

@@ -47,3 +47,27 @@ export function deleteDepartment(id, query) {
     params: query
   })
 }
+
+export function joinDepartment(data) {
+  return request({
+    url: '/keyauth/v1/join_apply/',
+    method: 'post',
+    data
+  })
+}
+
+export function describeJoinApply(id, query) {
+  return request({
+    url: '/keyauth/v1/join_apply/' + id,
+    method: 'get',
+    params: query
+  })
+}
+
+export function queryJoinApply(query) {
+  return request({
+    url: '/keyauth/v1/join_apply/',
+    method: 'get',
+    params: query
+  })
+}
