@@ -7,6 +7,7 @@ const getters = {
   refreshToken: state => state.user.refreshToken,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
+  isInitialized: state => state.user.isInitialized,
   introduction: state => state.user.introduction,
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,

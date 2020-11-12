@@ -150,6 +150,10 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              // 如果没有初始化 调转初始化页面进行设置
+              if (!this.$store.getters.isInitialized) {
+                this.$router.push({ name: 'SubAccountInit' })
+              }
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })

@@ -38,7 +38,6 @@ export default {
             resp.data.items.forEach(item => {
               item.leaf = item.sub_count === 0
               item.show = item.name + ' (' + item.manager + ')'
-              console.log(item)
               list.push(item)
             })
             resolve(list)
