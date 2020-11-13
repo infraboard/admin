@@ -7,7 +7,7 @@
       <el-collapse accordion style="margin-bottom:12px;">
         <el-collapse-item>
           <template slot="title">
-            <span>加入申请</span>
+            <span>加入申请 （{{ departmentJoinApplyTotal }}）</span>
           </template>
           <div class="infinite-list-wrapper" style="overflow:auto">
             <ul
@@ -220,7 +220,11 @@ export default {
 }
 
 .infinite-list-wrapper .list-item+.list-item {
-    margin-top: 10px;
+    margin-top: 2px;
+}
+
+.container-wrapper ::v-deep .el-collapse-item__content {
+  padding-bottom: 0px
 }
 
 .infinite-list-wrapper .list-item {
@@ -228,8 +232,8 @@ export default {
     align-items: center;
     justify-content: center;
     height: 50px;
-    background: #fff6f6;
-    color: #ff8484;
+    background: #e8f3fe;
+    color: #7dbcfc;
 }
 
 li {
