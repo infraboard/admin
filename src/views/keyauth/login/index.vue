@@ -151,6 +151,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               // 如果没有初始化 调转初始化页面进行设置
+              console.log(this.$store.getters.isInitialized)
               if (!this.$store.getters.isInitialized) {
                 this.$router.push({ name: 'SubAccountInit' })
               } else {

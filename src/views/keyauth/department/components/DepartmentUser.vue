@@ -9,8 +9,17 @@
           <template slot="title">
             <span>加入申请</span>
           </template>
-          <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-          <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+          <div class="infinite-list-wrapper" style="overflow:auto">
+            <ul
+              v-infinite-scroll="loadNextPage"
+              class="list"
+              infinite-scroll-disabled="disabled"
+            >
+              <li v-for="i in departmentJoinApplyList" :key="i.id" class="list-item">{{ i }}</li>
+            </ul>
+            <p v-if="loadingNextJoinApply">加载中...</p>
+            <p v-if="noMore">没有更多了</p>
+          </div>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -86,6 +95,7 @@
 
 <script>
 import { querySubAccount } from '@/api/keyauth/subAccount'
+import { queryJoinApply } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
 import Tips from '@/components/Tips'
@@ -121,7 +131,16 @@ export default {
         page_size: 20,
         department_id: ''
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      loadingNextJoinApply: false,
+      departmentJoinApplyTotal: 0,
+      departmentJoinApplyList: [],
+      listdepartmentJoinApply: {
+        page_number: 1,
+        page_size: 20,
+        department_id: '',
+        status: 'pending'
+      }
     }
   },
   watch: {
@@ -130,6 +149,7 @@ export default {
         if (did) {
           this.listQuery.department_id = this.departmentId
           this.getDepartmentUser()
+          this.queryJoinApply()
         }
       },
       immediate: true
@@ -171,6 +191,20 @@ export default {
     },
     handleSelect(selection) {
       this.selectedRow = selection
+    },
+    queryJoinApply() {
+      this.listdepartmentJoinApply.department_id = this.departmentId
+      queryJoinApply(this.listdepartmentJoinApply).then(resp => {
+        this.departmentJoinApplyTotal = resp.data.total
+        resp.data.items.forEach(element => {
+          this.departmentJoinApplyList.push(element)
+        })
+      })
+    },
+    loadNextPage() {
+    },
+    noMore() {
+      return this.departmentJoinApplyList.length() >= this.departmentJoinApplyTotal
     }
   }
 }
@@ -183,5 +217,29 @@ export default {
 
 .container-wrapper ::v-deep .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+
+.infinite-list-wrapper .list-item+.list-item {
+    margin-top: 10px;
+}
+
+.infinite-list-wrapper .list-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    background: #fff6f6;
+    color: #ff8484;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.infinite-list-wrapper .list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 </style>

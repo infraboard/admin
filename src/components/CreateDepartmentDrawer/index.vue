@@ -8,7 +8,7 @@
     size="32%"
   >
     <div class="drawer-content">
-      <el-form ref="namespaceForm" :model="form" :rules="rules">
+      <el-form ref="departmentForm" :model="form" :rules="rules">
         <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" maxlength="60" show-word-limit />
         </el-form-item>
@@ -55,17 +55,12 @@ export default {
       dialog: false,
       createNamespaceLoading: false,
       form: {
-        department_id: '',
-        account: '',
-        password: '',
-        mobile: '',
-        email: '',
-        gender: 'unknown',
+        name: '',
+        manager: '',
         description: ''
       },
       formLabelWidth: '80px',
       rules: {
-        department_id: [{ required: true, message: '请选择用户部门', trigger: 'change' }],
         name: [{ required: true, message: '请输入空间名称', trigger: 'change' }]
       }
     }
@@ -79,7 +74,7 @@ export default {
           this.form.department_id = this.departmentId
           this.describeDepartment()
           this.$nextTick(() => {
-            this.$refs['namespaceForm'].clearValidate()
+            this.$refs['departmentForm'].clearValidate()
           })
         }
       },
@@ -115,7 +110,7 @@ export default {
       }
     },
     submit() {
-      this.$refs['namespaceForm'].validate((valid) => {
+      this.$refs['departmentForm'].validate((valid) => {
         if (valid) {
           this.createNamespaceLoading = true
           createNamespace(this.form).then(resp => {
