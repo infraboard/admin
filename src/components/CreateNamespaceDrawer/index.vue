@@ -74,11 +74,7 @@ export default {
       createNamespaceLoading: false,
       form: {
         department_id: '',
-        account: '',
-        password: '',
-        mobile: '',
-        email: '',
-        gender: 'unknown',
+        name: '',
         description: ''
       },
       formLabelWidth: '80px',

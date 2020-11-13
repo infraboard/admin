@@ -19,8 +19,8 @@
         <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
           <el-input v-model="form.password" show-password />
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
-          <el-input v-model="form.mobile" maxlength="40" show-word-limit />
+        <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
+          <el-input v-model="form.phone" maxlength="40" show-word-limit />
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
           <el-input v-model="form.email" maxlength="60" show-word-limit />
@@ -129,7 +129,7 @@ export default {
         department_id: '',
         account: '',
         password: '',
-        mobile: '',
+        phone: '',
         email: '',
         gender: 'unknown',
         description: ''
@@ -139,7 +139,7 @@ export default {
         department_id: [{ required: true, message: '请选择用户部门', trigger: 'change' }],
         account: [{ required: true, message: '请输入用户名称', trigger: 'change' }],
         password: [{ required: true, message: '请输入用户密码', trigger: 'change' }],
-        mobile: [{ required: true, message: '请输入用户电话号码', trigger: 'change' }],
+        phone: [{ required: true, message: '请输入用户电话号码', trigger: 'change' }],
         email: [{ required: true, message: '请输入用户邮箱', trigger: 'change' }]
       }
     }

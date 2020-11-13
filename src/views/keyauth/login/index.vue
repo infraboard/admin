@@ -153,8 +153,9 @@ export default {
               // 如果没有初始化 调转初始化页面进行设置
               if (!this.$store.getters.isInitialized) {
                 this.$router.push({ name: 'SubAccountInit' })
+              } else {
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               }
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
             .catch(() => {

@@ -20,8 +20,8 @@
                 <span>用户真实姓名, 用于界面展示</span>
               </div>
             </el-form-item>
-            <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
-              <el-input v-model="profileForm.mobile" maxlength="40" show-word-limit />
+            <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
+              <el-input v-model="profileForm.phone" maxlength="40" show-word-limit />
               <div class="input-tips">
                 <span>电话号码将用于密码找回,消息通知和多因子认证</span>
               </div>
@@ -107,17 +107,18 @@ export default {
       active: 0,
       formLabelWidth: '50px',
       profileForm: {
-        mobile: '',
+        phone: '',
         email: '',
         gender: 'unknown',
-        language: 'zh'
+        language: 'zh',
+        is_initialized: true
       },
       departForm: {
         department_id: ''
       },
       rules: {
         real_name: [{ required: true, message: '请输入姓名', trigger: 'change' }],
-        mobile: [{ required: true, message: '请输入手机号码', trigger: 'change' }],
+        phone: [{ required: true, message: '请输入手机号码', trigger: 'change' }],
         email: [{ required: true, message: '请输入邮箱地址', trigger: 'change' }]
       },
       dprules: {
