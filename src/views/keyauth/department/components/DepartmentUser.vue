@@ -15,7 +15,24 @@
               class="list"
               infinite-scroll-disabled="disabled"
             >
-              <li v-for="i in departmentJoinApplyList" :key="i.id" class="list-item">{{ i }}</li>
+              <li v-for="i in departmentJoinApplyList" :key="i.id" class="list-item">
+                <div style="width:10%">
+                  <span style="margin-left:12px;">{{ i.account }}</span>
+                </div>
+                <div style="width:20%">
+                  <span>{{ i.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                </div>
+                <div style="width:50%">
+                  <span>{{ i.message }}</span>
+                </div>
+                <div style="width:20%">
+                  <div class="fr" style="margin-right:12px;">
+                    <el-button type="success" size="mini" @click="handleCreateUser()">同意</el-button>
+                    <el-button type="danger" size="mini" @click="handleCreateUser()">拒绝</el-button>
+                  </div>
+
+                </div>
+              </li>
             </ul>
             <p v-if="loadingNextJoinApply">加载中...</p>
             <p v-if="noMore">没有更多了</p>
@@ -137,7 +154,7 @@ export default {
       departmentJoinApplyList: [],
       listdepartmentJoinApply: {
         page_number: 1,
-        page_size: 20,
+        page_size: 10,
         department_id: '',
         status: 'pending'
       }
@@ -149,6 +166,8 @@ export default {
         if (did) {
           this.listQuery.department_id = this.departmentId
           this.getDepartmentUser()
+
+          this.departmentJoinApplyList = []
           this.queryJoinApply()
         }
       },
@@ -230,10 +249,9 @@ export default {
 .infinite-list-wrapper .list-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 50px;
+    height: 44px;
     background: #e8f3fe;
-    color: #7dbcfc;
+    color: #828386;
 }
 
 li {
