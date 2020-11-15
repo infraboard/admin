@@ -71,3 +71,11 @@ export function queryJoinApply(query) {
     params: query
   })
 }
+
+export function dealJoinApply(id, data) {
+  return request({
+    url: '/keyauth/v1/join_apply/' + id,
+    method: 'patch',
+    data
+  })
+}

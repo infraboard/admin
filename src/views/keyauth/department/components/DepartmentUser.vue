@@ -15,27 +15,26 @@
               class="list"
               infinite-scroll-disabled="disabled"
             >
-              <li v-for="i in departmentJoinApplyList" :key="i.id" class="list-item">
+              <li v-for="(jp, index) in departmentJoinApplyList" :key="jp.id" class="list-item">
                 <div style="width:10%">
-                  <span style="margin-left:12px;">{{ i.account }}</span>
+                  <span style="margin-left:12px;">{{ jp.account }}</span>
                 </div>
                 <div style="width:20%">
-                  <span>{{ i.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                  <span>{{ jp.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
                 </div>
                 <div style="width:50%">
-                  <span>{{ i.message }}</span>
+                  <span>{{ jp.message }}</span>
                 </div>
                 <div style="width:20%">
                   <div class="fr" style="margin-right:12px;">
-                    <el-button type="success" size="mini" @click="handleCreateUser()">同意</el-button>
-                    <el-button type="danger" size="mini" @click="handleCreateUser()">拒绝</el-button>
+                    <el-button type="success" size="mini" @click="dealJoinApply(index, jp.id, 'passed')">同意</el-button>
+                    <el-button type="danger" size="mini" @click="dealJoinApply(index, jp.id, 'deny')">拒绝</el-button>
                   </div>
 
                 </div>
               </li>
             </ul>
             <p v-if="loadingNextJoinApply">加载中...</p>
-            <p v-if="noMore">没有更多了</p>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -112,7 +111,7 @@
 
 <script>
 import { querySubAccount } from '@/api/keyauth/subAccount'
-import { queryJoinApply } from '@/api/keyauth/department'
+import { queryJoinApply, dealJoinApply } from '@/api/keyauth/department'
 import Pagination from '@/components/Pagination'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
 import Tips from '@/components/Tips'
@@ -224,6 +223,13 @@ export default {
     },
     noMore() {
       return this.departmentJoinApplyList.length() >= this.departmentJoinApplyTotal
+    },
+    dealJoinApply(index, id, status) {
+      console.log(index, id, status)
+      dealJoinApply(id, { status }).then(resp => {
+        this.departmentJoinApplyList.splice(index, 1)
+        this.departmentJoinApplyTotal--
+      })
     }
   }
 }
