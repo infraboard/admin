@@ -34,7 +34,8 @@
                 </div>
               </li>
             </ul>
-            <p v-if="loadingNextJoinApply">加载中...</p>
+            <span v-if="loadingNextJoinApply" class="tips-item">加载中...</span>
+            <span v-if="departmentJoinApplyTotal === 0" class="tips-item">没有需要处理的申请</span>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -257,6 +258,14 @@ export default {
     align-items: center;
     height: 44px;
     background: #e8f3fe;
+    color: #828386;
+}
+
+.infinite-list-wrapper .tips-item {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    justify-content: center;
     color: #828386;
 }
 
