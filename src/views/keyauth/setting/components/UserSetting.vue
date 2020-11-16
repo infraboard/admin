@@ -43,15 +43,25 @@
         </el-form-item>
         <el-divider content-position="left">登录限制</el-divider>
         <el-form-item label="异常登录限制" prop="user">
-          <el-checkbox v-model="checked" />
+          <el-checkbox v-model="exceptionLoginProtect" />
           <div class="input-tips">
             <span>异地登录、30天未登录, 将要求用户进行二次身份校验，有效保障账号资产安全</span>
           </div>
         </el-form-item>
         <el-form-item label="IP登录限制" prop="user">
-          <el-checkbox v-model="checked" />
+          <el-checkbox v-model="ipLoginProtect" />
           <div class="input-tips">
             <span>开启后，子账号（子用户和协作者）仅在限制条件下允许登录</span>
+          </div>
+        </el-form-item>
+        <el-form-item v-if="ipLoginProtect" label="" prop="user">
+          <el-radio-group v-model="ipLoginProtectType">
+            <el-radio-button label="white_list"> 白名单 </el-radio-button>
+            <el-radio-button label="black_lsit"> 黑名单 </el-radio-button>
+          </el-radio-group>
+          <div class="input-tips">
+            <span v-show="ipLoginProtectType === 'white_list'">设置白名单限制后，允许子账号在白名单限制 IP（段）内登录控制台</span>
+            <span v-show="ipLoginProtectType === 'black_lsit'">设置黑名单限制后，不允许子账号在黑名单限制 IP（段）内登录控制台</span>
           </div>
         </el-form-item>
         <el-form-item class="text-center">
@@ -94,7 +104,9 @@ export default {
         lock_time: 30,
         contains: ['数字', '小写字母', '大写字母', '特殊字符(除空格)']
       },
-      checked: true,
+      exceptionLoginProtect: true,
+      ipLoginProtect: false,
+      ipLoginProtectType: 'white_list',
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
         user: [{ required: true, message: '请输入admin用户', trigger: 'blur' }],
