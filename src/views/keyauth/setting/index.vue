@@ -70,7 +70,7 @@
           <security-setting />
         </el-tab-pane>
         <el-tab-pane lazy label="LDAP设置" name="second">
-          <ldap-setting />
+          <ldap-setting :setting.sync="domain.security_setting" />
         </el-tab-pane>
       </el-tabs>
     </el-card>
