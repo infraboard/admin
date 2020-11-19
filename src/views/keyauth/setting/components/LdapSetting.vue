@@ -120,12 +120,7 @@ const tips = [
 export default {
   name: 'LdapSetting',
   components: { Tips },
-  props: {
-    namespaceId: {
-      type: String,
-      default: ''
-    }
-  },
+  props: {},
   data() {
     return {
       checkLoginLoading: false,
