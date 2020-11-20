@@ -12,47 +12,47 @@
           <el-checkbox v-model="form.password_security.include_upper_letter" @change="objectUpdate">大写字母</el-checkbox>
           <el-checkbox v-model="form.password_security.include_symbols" @change="objectUpdate">特殊字符(除空格)</el-checkbox>
         </el-form-item>
-        <el-form-item label="最短密码长度" prop="length">
+        <el-form-item label="最短密码长度">
           <el-input-number v-model="form.password_security.length" :min="8" :max="32" @change="objectUpdate" />
           <span class="f12 append-text"> 个字符</span>
           <div class="input-tips">
             <span>限制密码长度。默认 8 个字符，最大长度可设置 32 个字符</span>
           </div>
         </el-form-item>
-        <el-form-item label="定期失效" prop="password_expired_days">
+        <el-form-item label="定期失效">
           <el-input-number v-model="form.password_security.password_expired_days" :min="0" :max="365" @change="objectUpdate" />
           <span class="f12 append-text"> 天</span>
           <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
         </el-form-item>
-        <el-form-item label="重复限制" prop="repeate">
+        <el-form-item label="重复限制">
           <el-input-number v-model="form.password_security.repeate_limite" :min="1" :max="24" @change="objectUpdate" />
           <span class="f12 append-text"> 次</span>
           <div class="input-tips">限制新密码与历史密码的重复。默认与前 1 次密码不重复，最多可限制与前 24 次密码不重复</div>
         </el-form-item>
-        <el-form-item label="重试限制" prop="max_retry">
+        <el-form-item label="重试限制">
           <el-input-number v-model="form.login_security.retry_lock_config.retry_limite" :min="1" :max="10" @change="objectUpdate" />
           <span class="f12 append-text"> 次</span>
           <div class="input-tips">限制密码重试错误次数。默认为5次，最小可设置1次</div>
         </el-form-item>
-        <el-form-item label="锁定时间" prop="lock_time">
+        <el-form-item label="锁定时间">
           <el-input-number v-model="form.login_security.retry_lock_config.locked_minite" :min="1" :max="60" @change="objectUpdate" />
           <span class="f12 append-text"> 分钟</span>
           <div class="input-tips">密码重试超过约束次数将自动锁定的时间, 默认锁定30分钟</div>
         </el-form-item>
         <el-divider content-position="left">登录限制</el-divider>
-        <el-form-item label="异常登录限制" prop="user">
+        <el-form-item label="异常登录限制">
           <el-checkbox v-model="form.login_security.exception_lock" @change="objectUpdate" />
           <div class="input-tips">
             <span>异地登录、30天未登录, 将要求用户进行二次身份校验，有效保障账号资产安全</span>
           </div>
         </el-form-item>
-        <el-form-item label="IP登录限制" prop="user">
+        <el-form-item label="IP登录限制">
           <el-checkbox v-model="form.login_security.ip_limite" @change="objectUpdate" />
           <div class="input-tips">
             <span>开启后，子账号（子用户和协作者）仅在限制条件下允许登录</span>
           </div>
         </el-form-item>
-        <el-form-item v-if="form.login_security.ip_limite" label="" prop="user">
+        <el-form-item v-if="form.login_security.ip_limite" label="">
           <el-radio-group v-model="form.login_security.ip_limite_config.type">
             <el-radio-button label="white_list"> 白名单 </el-radio-button>
             <el-radio-button label="black_lsit"> 黑名单 </el-radio-button>
