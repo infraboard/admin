@@ -6,20 +6,20 @@
     <el-divider content-position="left">密码规则</el-divider>
     <div class="setting-form">
       <el-form label-position="left" label-width="110px" :model="form.password_security">
-        <el-form-item label="至少包含" prop="contains">
+        <el-form-item label="至少包含">
           <el-checkbox v-model="form.password_security.include_number" disabled>数字</el-checkbox>
           <el-checkbox v-model="form.password_security.include_lower_letter" disabled>小写字母</el-checkbox>
           <el-checkbox v-model="form.password_security.include_upper_letter" @change="objectUpdate">大写字母</el-checkbox>
           <el-checkbox v-model="form.password_security.include_symbols" @change="objectUpdate">特殊字符(除空格)</el-checkbox>
         </el-form-item>
-        <el-form-item label="最短密码长度" prop="min_length">
+        <el-form-item label="最短密码长度" prop="length">
           <el-input-number v-model="form.password_security.length" :min="8" :max="32" @change="objectUpdate" />
           <span class="f12 append-text"> 个字符</span>
           <div class="input-tips">
             <span>限制密码长度。默认 8 个字符，最大长度可设置 32 个字符</span>
           </div>
         </el-form-item>
-        <el-form-item label="定期失效" prop="expire_days">
+        <el-form-item label="定期失效" prop="password_expired_days">
           <el-input-number v-model="form.password_security.password_expired_days" :min="0" :max="365" @change="objectUpdate" />
           <span class="f12 append-text"> 天</span>
           <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
@@ -64,7 +64,7 @@
         </el-form-item>
         <el-form-item class="text-center">
           <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-          <el-button type="primary">保存配置</el-button>
+          <el-button :disabled="noUpdate" type="primary" :loading="updateLoading" @click="update">保存配置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -124,26 +124,45 @@ export default {
     return {
       tips,
       noUpdate: true,
+      updateLoading: false,
       form: {}
+    }
+  },
+  computed: {
+    currentSetting: {
+      get() {
+        return this.setting
+      },
+      set(val) {
+        this.$emit('update:setting', val)
+      }
     }
   },
   watch: {
     setting: {
       handler: function(val, oldVal) {
         this.form = JSON.parse(JSON.stringify(this.setting))
-        console.log(this.form)
       },
       immediate: true
     }
   },
   methods: {
     update() {
-      updateSecuritySetting().then(resp => {
-        console.log(resp)
+      this.updateLoading = true
+      updateSecuritySetting(this.form).then(resp => {
+        this.currentSetting = resp.data
+        this.noUpdate = true
+        this.$message({
+          message: '登录安全配置保存成功',
+          type: 'success',
+          duration: 3 * 1000
+        })
+      }).finally(() => {
+        this.updateLoading = false
       })
     },
     objectUpdate(field) {
-      this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.ldap)
+      this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.setting)
     },
     cancel() {
       this.form = JSON.parse(JSON.stringify(this.setting))

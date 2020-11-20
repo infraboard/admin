@@ -67,10 +67,10 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane label="登录安全" name="first">
-          <security-setting />
+          <security-setting :setting.sync="domain.security_setting" />
         </el-tab-pane>
         <el-tab-pane lazy label="LDAP设置" name="second">
-          <ldap-setting :setting.sync="domain.security_setting" />
+          <ldap-setting />
         </el-tab-pane>
       </el-tabs>
     </el-card>
