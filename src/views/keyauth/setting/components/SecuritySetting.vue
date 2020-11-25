@@ -24,11 +24,17 @@
           <span class="f12 append-text"> 天</span>
           <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
         </el-form-item>
+        <el-form-item label="重置失效">
+          <el-input-number v-model="form.password_security.allow_expired_reset_days" :min="0" :max="365" @change="objectUpdate" />
+          <span class="f12 append-text"> 天</span>
+          <div class="input-tips">密码失效后一段时间允许用户通过原密码重置密码。默认为 30 天，最长可设置 365 天</div>
+        </el-form-item>
         <el-form-item label="重复限制">
           <el-input-number v-model="form.password_security.repeate_limite" :min="1" :max="24" @change="objectUpdate" />
           <span class="f12 append-text"> 次</span>
           <div class="input-tips">限制新密码与历史密码的重复。默认与前 1 次密码不重复，最多可限制与前 24 次密码不重复</div>
         </el-form-item>
+        <el-divider content-position="left">登录限制</el-divider>
         <el-form-item label="重试限制">
           <el-input-number v-model="form.login_security.retry_lock_config.retry_limite" :min="1" :max="10" @change="objectUpdate" />
           <span class="f12 append-text"> 次</span>
@@ -39,7 +45,6 @@
           <span class="f12 append-text"> 分钟</span>
           <div class="input-tips">密码重试超过约束次数将自动锁定的时间, 默认锁定30分钟</div>
         </el-form-item>
-        <el-divider content-position="left">登录限制</el-divider>
         <el-form-item label="异常登录限制">
           <el-checkbox v-model="form.login_security.exception_lock" @change="objectUpdate" />
           <div class="input-tips">
@@ -97,7 +102,8 @@ export default {
             include_symbols: true,
             length: 8,
             repeate_limite: 1,
-            password_expired_days: 0
+            password_expired_days: 0,
+            allow_expired_reset_days: 30
           },
           login_security: {
             exception_lock: true,

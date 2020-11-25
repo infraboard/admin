@@ -159,7 +159,8 @@ export default {
               }
               this.loading = false
             })
-            .catch(() => {
+            .catch((err) => {
+              console.log(err)
               this.loading = false
             })
         } else {
