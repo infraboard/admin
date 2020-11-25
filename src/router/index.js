@@ -55,6 +55,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/password-reset',
+    component: () => import('@/views/keyauth/login/password-reset'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: () => import('@/views/common/error-page/404'),
     hidden: true

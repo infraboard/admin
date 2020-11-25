@@ -160,7 +160,10 @@ export default {
               this.loading = false
             })
             .catch((err) => {
-              console.log(err)
+              // 如果需要重置密码, 直接调转到密码重置页面
+              if (err.code === 50019) {
+                this.$router.push({ path: '/password-reset' })
+              }
               this.loading = false
             })
         } else {

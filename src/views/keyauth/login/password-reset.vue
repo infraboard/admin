@@ -8,7 +8,7 @@
 import Tips from '@/components/Tips'
 
 export default {
-  name: 'DashboardAdmin',
+  name: 'PasswordReset',
   components: { Tips },
   data() {
     return {
