@@ -12,7 +12,7 @@ export default {
   components: { Tips },
   data() {
     return {
-      tips: ['功能开发中, 敬请期待']
+      tips: ['你当前密码已经过期, 为了保障资产安全, 请重置密码']
     }
   }
 }
