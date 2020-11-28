@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import LangSelect from '@/components/LangSelect'
 export default {
   name: 'Login',
@@ -162,6 +163,9 @@ export default {
             .catch((err) => {
               // 如果需要重置密码, 直接调转到密码重置页面
               if (err.code === 50019) {
+                // 敏感信息通过Cookie传递给重置页面, 过期时间5秒
+                Cookies.set('account', this.loginForm.username, { expires: 5000 })
+                Cookies.set('password', window.atob(this.loginForm.password), { expires: 5000 })
                 this.$router.push({ path: '/password-reset' })
               }
               this.loading = false

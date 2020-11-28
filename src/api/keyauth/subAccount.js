@@ -39,3 +39,11 @@ export function deleteSubAccount(account, query) {
     params: query
   })
 }
+
+export function resetSubAccountPassword(data) {
+  return request({
+    url: '/keyauth/v1/password/reset',
+    method: 'put',
+    data: data
+  })
+}
