@@ -74,6 +74,9 @@
 <script>
 import Cookies from 'js-cookie'
 import LangSelect from '@/components/LangSelect'
+
+const Base64 = require('js-base64').Base64
+
 export default {
   name: 'Login',
   components: { LangSelect },
@@ -164,8 +167,8 @@ export default {
               // 如果需要重置密码, 直接调转到密码重置页面
               if (err.code === 50019) {
                 // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
-                Cookies.set('account', this.loginForm.username, { expires: 3000 })
-                Cookies.set('password', window.atob(this.loginForm.password), { expires: 3000 })
+                Cookies.set('account', Base64.encode(this.loginForm.username.trim(' ')), { expires: 3000 })
+                Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
                 this.$router.push({ path: '/password-reset' })
               }
               this.loading = false

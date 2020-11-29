@@ -33,6 +33,8 @@ import Cookies from 'js-cookie'
 import Tips from '@/components/Tips'
 import { resetSubAccountPassword } from '@/api/keyauth/subAccount'
 
+const Base64 = require('js-base64').Base64
+
 export default {
   name: 'PasswordReset',
   components: { Tips },
@@ -63,8 +65,8 @@ export default {
   },
   mounted() {
     // 从cookie中获取登录页面传递过来的敏感信息
-    this.form.account = Cookies.get('account')
-    this.form.old_pass = window.btoa(Cookies.get('password'))
+    this.form.account = Base64.decode(Cookies.get('account'))
+    this.form.old_pass = Base64.decode(Cookies.get('password'))
   },
   methods: {
     submit() {
@@ -72,10 +74,8 @@ export default {
         if (valid) {
           this.resetPasswordLoading = true
           resetSubAccountPassword(this.form).then(resp => {
-            this.$notify({
-              message: `添加用户[${resp.data.account}]成功`,
-              customClass: 'notify-success'
-            })
+            // 重置完成跳转到登录页面重新登录
+            this.$router.push({ path: '/login' })
           }).finally(() => {
             this.resetPasswordLoading = false
           })
