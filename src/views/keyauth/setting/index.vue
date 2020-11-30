@@ -72,6 +72,15 @@
         <el-tab-pane lazy label="LDAP设置" name="second">
           <ldap-setting />
         </el-tab-pane>
+        <el-tab-pane lazy label="邮件设置" name="third">
+          <mail-setting />
+        </el-tab-pane>
+        <el-tab-pane lazy label="短信设置" name="four">
+          <sms-setting />
+        </el-tab-pane>
+        <el-tab-pane lazy label="验证码" name="five">
+          <verify-code />
+        </el-tab-pane>
       </el-tabs>
     </el-card>
 
@@ -82,10 +91,13 @@
 import { getMyDomain } from '@/api/keyauth/profile'
 import LdapSetting from './components/LdapSetting'
 import SecuritySetting from './components/SecuritySetting'
+import MailSetting from './components/MailSetting'
+import SmsSetting from './components/SmsSetting'
+import VerifyCode from './components/VerifyCode'
 
 export default {
   name: 'DomainSetting',
-  components: { LdapSetting, SecuritySetting },
+  components: { LdapSetting, SecuritySetting, MailSetting, SmsSetting, VerifyCode },
   directives: { },
   data() {
     return {
