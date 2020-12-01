@@ -24,10 +24,10 @@
           <span class="f12 append-text"> 天</span>
           <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
         </el-form-item>
-        <el-form-item label="重置失效">
-          <el-input-number v-model="form.password_security.allow_expired_reset_days" :min="0" :max="365" @change="objectUpdate" />
+        <el-form-item label="过期提醒">
+          <el-input-number v-model="form.password_security.before_expired_remind_days" :min="0" :max="form.password_security.password_expired_days" @change="objectUpdate" />
           <span class="f12 append-text"> 天</span>
-          <div class="input-tips">密码失效后一段时间允许用户通过原密码重置密码。默认为 30 天，最长可设置 365 天</div>
+          <div class="input-tips">密码失效前多少天提醒用户重置密码。默认为 10 天，最长不能超过密码过期时间</div>
         </el-form-item>
         <el-form-item label="重复限制">
           <el-input-number v-model="form.password_security.repeate_limite" :min="1" :max="24" @change="objectUpdate" />
@@ -103,7 +103,7 @@ export default {
             length: 8,
             repeate_limite: 1,
             password_expired_days: 0,
-            allow_expired_reset_days: 30
+            before_expired_remind_days: 10
           },
           login_security: {
             exception_lock: true,

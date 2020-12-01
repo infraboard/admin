@@ -6,10 +6,13 @@ import router, { resetRouter } from '@/router'
 const state = {
   accessToken: getAccessToken(),
   refreshToken: getRefreshToken(),
+  account: '',
   name: '',
   avatar: '',
   introduction: '',
   isInitialized: true,
+  needReset: false,
+  resetReason: '',
   roles: []
 }
 
@@ -19,6 +22,9 @@ const mutations = {
   },
   SET_REFRESH_TOKEN: (state, token) => {
     state.refreshToken = token
+  },
+  SET_ACCOUNT: (state, account) => {
+    state.account = account
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -32,6 +38,12 @@ const mutations = {
   SET_IS_INITIALIZED: (state, init) => {
     state.isInitialized = init
   },
+  SET_NEED_RESET: (state, reset) => {
+    state.needReset = reset
+  },
+  SET_RESET_REASON: (state, reason) => {
+    state.resetReason = reason
+  },
   SET_ROLES: (state, roles) => {
     state.roles = roles
   }
@@ -39,7 +51,7 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ dispatch, commit }, userInfo) {
     const { username, password } = userInfo
     var req = {
       grant_type: 'password',
@@ -49,10 +61,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(req).then(response => {
         const { data } = response
+        commit('SET_ACCOUNT', req.username)
         commit('SET_ACCESS_TOKEN', data.access_token)
         commit('SET_REFRESH_TOKEN', data.refresh_token)
         setAccessToken(data.access_token)
         setRefreshToken(data.refresh_token)
+        dispatch('getInfo')
         resolve()
       }).catch(error => {
         reject(error)
@@ -72,7 +86,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction, is_initialized } = data
+        const { roles, name, avatar, introduction, is_initialized, password } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -84,6 +98,8 @@ const actions = {
         commit('SET_AVATAR', avatar)
         commit('SET_IS_INITIALIZED', is_initialized)
         commit('SET_INTRODUCTION', introduction)
+        commit('SET_NEED_RESET', password.need_reset)
+        commit('SET_RESET_REASON', password.reset_reason)
         resolve(data)
       }).catch(error => {
         reject(error)

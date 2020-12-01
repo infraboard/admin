@@ -65,8 +65,11 @@ export default {
   },
   mounted() {
     // 从cookie中获取登录页面传递过来的敏感信息
-    this.form.account = Base64.decode(Cookies.get('account'))
+    this.form.account = this.$store.getters.account
     this.form.old_pass = Base64.decode(Cookies.get('password'))
+    if (this.$store.getters.resetReason !== '') {
+      this.tips = [this.$store.getters.resetReason]
+    }
   },
   methods: {
     submit() {

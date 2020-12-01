@@ -149,33 +149,31 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              // 如果没有初始化 调转初始化页面进行设置
+              console.log(this.$store.getters.needReset)
+              console.log(this.$store.getters.resetReason)
               console.log(this.$store.getters.isInitialized)
+
               if (!this.$store.getters.isInitialized) {
+                // 如果没有初始化 调转初始化页面进行设置
                 this.$router.push({ name: 'SubAccountInit' })
-              } else {
-                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              }
-              this.loading = false
-            })
-            .catch((err) => {
-              // 如果需要重置密码, 直接调转到密码重置页面
-              if (err.code === 50019) {
+              } else if (this.$store.getters.needReset) {
+                console.log('xx')
                 // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
-                Cookies.set('account', Base64.encode(this.loginForm.username.trim(' ')), { expires: 3000 })
                 Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
                 this.$router.push({ path: '/password-reset' })
+              } else {
+                // 其他直接调转
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               }
+            })
+            .finally(() => {
               this.loading = false
             })
-        } else {
-          console.log('error submit!!')
-          return false
         }
       })
     },
