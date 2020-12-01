@@ -31,7 +31,7 @@
 <script>
 import Cookies from 'js-cookie'
 import Tips from '@/components/Tips'
-import { resetSubAccountPassword } from '@/api/keyauth/subAccount'
+import { updatePassword } from '@/api/keyauth/profile'
 
 const Base64 = require('js-base64').Base64
 
@@ -76,7 +76,7 @@ export default {
       this.$refs['setPassForm'].validate((valid) => {
         if (valid) {
           this.resetPasswordLoading = true
-          resetSubAccountPassword(this.form).then(resp => {
+          updatePassword(this.form).then(resp => {
             // 重置完成跳转到登录页面重新登录
             this.$router.push({ path: '/login' })
           }).finally(() => {
