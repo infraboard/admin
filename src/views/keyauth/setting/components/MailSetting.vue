@@ -1,65 +1,63 @@
 <template>
   <div class="sub-main">
-    <div v-if="hasConfig">
-      <div>
-        <tips :tips="tips" title="须知" />
-      </div>
-      <div class="setting-form">
-        <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
-          <el-form-item label="服务地址" prop="url">
-            <el-input v-model="form.url" @input="objectUpdate('url')" />
-            <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
-          </el-form-item>
-          <el-form-item label="绑定DN" prop="user">
-            <el-input v-model="form.user" @input="objectUpdate('user')" />
-            <div class="input-tips">
-              <span>用于验证账号的管理员用户</span>
-            </div>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
-            <div class="input-tips">用于验证账号的管理员密码</div>
-          </el-form-item>
-          <el-form-item label="用户过滤器" prop="users_filter">
-            <el-input v-model="form.users_filter" @input="objectUpdate" />
-            <div class="input-tips">根据字段搜索用户</div>
-          </el-form-item>
-          <el-form-item label="组过滤器" prop="groups_filter">
-            <el-input v-model="form.groups_filter" @input="objectUpdate" />
-            <div class="input-tips">根据字段搜索用户组</div>
-          </el-form-item>
-          <el-form-item label="配置验证">
-            <el-button :loading="checkConnLoading" @click="checkDomainLDAP">发送测试</el-button>
-            <div class="input-tips">验证通过后才能保存配置</div>
-          </el-form-item>
-          <el-form-item class="text-center">
-            <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-            <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
+    <!-- 提醒 -->
     <div>
-      <el-dialog
-        title="LDAP用户登录测试"
-        :visible.sync="checkLoginDialog"
-        width="40%"
-      >
-        <el-form ref="checkLoginDataForm" :rules="checkLoginrules" label-position="left" label-width="80px" :model="loginCheckForm">
-          <el-form-item label="用户" prop="username">
-            <el-input v-model="loginCheckForm.username" placeholder="username@example.org" />
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="loginCheckForm.password" show-password placeholder="LDAP登录用户密码" />
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="checkLoginDialog = false">取 消</el-button>
-          <el-button type="primary" :loading="checkLoginLoading" @click="checkLDAPLogin">确 定</el-button>
-        </span>
-      </el-dialog>
+      <tips :tips="tips" title="须知" />
     </div>
-  </div></template>
+    <!-- 邮箱设置表单 -->
+    <div class="setting-form">
+      <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
+        <el-form-item label="服务地址" prop="host">
+          <el-input v-model="form.host" @input="objectUpdate('url')" />
+          <div class="input-tips">SMTP服务端地址, 比如smtp.163.com:25</div>
+        </el-form-item>
+        <el-form-item label="邮箱用户" prop="username">
+          <el-input v-model="form.username" @input="objectUpdate('user')" />
+          <div class="input-tips">
+            <span>用于发送邮件的用户, 比如example@163.com</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="邮箱密码" prop="password">
+          <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
+          <div class="input-tips">用于发送邮件的用户密码</div>
+        </el-form-item>
+        <el-form-item label="显示用户" prop="user">
+          <el-input v-model="form.from" @input="objectUpdate('user')" />
+          <div class="input-tips">
+            <span>发送邮件事, 发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="配置验证">
+          <el-button @click="handleCheckSend">发送测试</el-button>
+          <div class="input-tips">验证通过后才能保存配置</div>
+        </el-form-item>
+        <el-form-item class="text-center">
+          <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
+          <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveEmailConfig">保存配置</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- 测试对话框 -->
+      <div>
+        <el-dialog
+          title="邮件发送测试"
+          :visible.sync="checkSendDialog"
+          width="40%"
+        >
+          <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
+            <el-form-item label="收件人" prop="username">
+              <el-input v-model="sendCheckForm.to" placeholder="username@example.org" />
+              <div class="input-tips">收件人邮箱地址, 如果多个请使用逗号分隔</div>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="checkSendDialog = false">取 消</el-button>
+            <el-button type="primary" :loading="checkSendLoading" @click="checkEmailSend">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script>
 import { queryDomainLDAP, saveDomainLDAP } from '@/api/keyauth/ldap'
@@ -76,44 +74,29 @@ export default {
   props: {},
   data() {
     return {
-      checkLoginLoading: false,
-      checkLoginDialog: false,
-      checkConnLoading: false,
-      connectOK: false,
+      checkSendDialog: false,
+      checkSendLoading: false,
       noUpdate: true,
       saveLoading: false,
       loading: undefined,
       tips,
-      hasConfig: true,
-      showAttrMap: false,
       ldap: {},
       form: {
-        url: 'ldap://127.0.0.1:389',
-        user: 'cn=admin,dc=example,dc=org',
-        password: '',
-        base_dn: '',
-        additional_users_dn: '',
-        users_filter: '(uid={input})',
-        groups_filter: '(|(member={dn})(uid={username})(uid={input}))',
-        group_name_attribute: 'cn',
-        username_attribute: 'uid',
-        mail_attribute: 'mail',
-        display_name_attribute: 'displayname',
-        enabled: true
-      },
-      loginCheckForm: {
-        grant_type: 'ldap',
+        host: '',
         username: '',
-        password: ''
+        password: '',
+        from: ''
+      },
+      sendCheckForm: {
+        to: ''
       },
       rules: {
-        url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
-        user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
+        host: [{ required: true, message: '请输入邮件(SMTP)服务器地址', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入发送邮件的用户名称', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入发送邮件的用户密码', trigger: 'blur' }]
       },
-      checkLoginrules: {
-        username: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
+      checkSendRules: {
+        username: [{ required: true, message: '请输入收件人邮箱地址', trigger: 'blur' }]
       }
     }
   },
@@ -144,15 +127,11 @@ export default {
         this.ldap = resp.data
         this.form = Object.assign({}, this.ldap)
       } catch (e) {
-        if (e.response.status === 404) {
-          this.hasConfig = false
-        } else {
-          this.$message({
-            message: e.response.data,
-            type: 'error',
-            duration: 5 * 1000
-          })
-        }
+        this.$message({
+          message: e.response.data,
+          type: 'error',
+          duration: 5 * 1000
+        })
       } finally {
         this.loading.close()
       }
@@ -161,7 +140,7 @@ export default {
       this.form = Object.assign({}, this.ldap)
       this.noUpdate = true
     },
-    saveLDAPConfig() {
+    saveEmailConfig() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.saveLoading = true
@@ -180,46 +159,28 @@ export default {
         }
       })
     },
-    checkDomainLDAP() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.checkConnLoading = true
-          saveDomainLDAP(this.form, { dry_run: true }).then(resp => {
-            this.connectOK = true
-            console.log(resp)
-            this.$notify({
-              message: `连接测试成功`,
-              customClass: 'notify-success'
-            })
-          }).finally(() => {
-            this.checkConnLoading = false
-          })
-        }
-      })
+    resetCheckSendForm() {
+      this.sendCheckForm.to = ''
     },
-    resetLoginForm() {
-      this.loginCheckForm.username = ''
-      this.loginCheckForm.password = ''
-    },
-    handleCheckLDAPLogin() {
-      this.resetLoginForm()
-      this.checkLoginDialog = true
+    handleCheckSend() {
+      this.resetCheckSendForm()
+      this.checkSendDialog = true
       this.$nextTick(() => {
-        this.$refs['checkLoginDataForm'].clearValidate()
+        this.$refs['checkSendEmailForm'].clearValidate()
       })
     },
-    checkLDAPLogin() {
-      this.$refs['checkLoginDataForm'].validate((valid) => {
+    checkEmailSend() {
+      this.$refs['checkSendEmailForm'].validate((valid) => {
         if (valid) {
-          this.checkLoginLoading = true
-          login(this.loginCheckForm).then(resp => {
-            this.checkLoginDialog = false
+          this.checkSendLoading = true
+          login(this.sendCheckForm).then(resp => {
+            this.checkSendDialog = false
             this.$notify({
               message: `用户[${resp.data.account}]登录成功`,
               customClass: 'notify-success'
             })
           }).finally(() => (
-            this.checkLoginLoading = false
+            this.checkSendLoading = false
           ))
         }
       })
