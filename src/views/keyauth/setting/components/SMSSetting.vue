@@ -15,36 +15,36 @@
         </el-form-item>
         <!-- 腾讯配置 -->
         <div v-if="form.enabled_provider == 'tencent'">
-          <el-form-item label="服务地址" prop="tencent.endpoint">
+          <el-form-item label="短信服务地址" prop="tencent.endpoint">
             <el-input v-model="form.tencent.endpoint" placeholder="sms.tencentcloudapi.com" @input="objectUpdate()" />
-            <div class="input-tips">SMTP服务端地址, 默认为sms.tencentcloudapi.com, 一般不修改</div>
+            <div class="input-tips">短信服务端地址, 腾讯云默认为sms.tencentcloudapi.com</div>
           </el-form-item>
           <el-form-item label="Secret ID" prop="tencent.secret_id">
             <el-input v-model="form.tencent.secret_id" @input="objectUpdate()" />
             <div class="input-tips">
-              <span>用于发送邮件的用户, 比如example@163.com</span>
+              <span>腾讯云 Secret ID, 腾讯云控制台获取</span>
             </div>
           </el-form-item>
           <el-form-item label="Secret Key" prop="tencent.secret_key">
             <el-input v-model="form.tencent.secret_key" show-password @input="objectUpdate()" />
-            <div class="input-tips">用于发送邮件的用户密码</div>
+            <div class="input-tips">腾讯云 Secret Key, 腾讯云控制台获取</div>
           </el-form-item>
           <el-form-item label="短信应用ID" prop="tencent.app_id">
             <el-input v-model="form.tencent.app_id" @input="objectUpdate()" />
             <div class="input-tips">
-              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+              <span>短信服务控制台获取</span>
             </div>
           </el-form-item>
           <el-form-item label="短信模板ID" prop="tencent.template_id">
             <el-input v-model="form.tencent.template_id" @input="objectUpdate()" />
             <div class="input-tips">
-              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+              <span>短信服务控制台获取，必须是腾讯云审核成功的模板</span>
             </div>
           </el-form-item>
           <el-form-item label="短信签名" prop="tencent.sign">
             <el-input v-model="form.tencent.sign" @input="objectUpdate()" />
             <div class="input-tips">
-              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+              <span>短信服务控制台获取, 必须是腾讯云审核成功的签名</span>
             </div>
           </el-form-item>
         </div>
@@ -61,14 +61,14 @@
       <!-- 测试对话框 -->
       <div>
         <el-dialog
-          title="邮件发送测试"
+          title="短信发送测试"
           :visible.sync="checkSendDialog"
           width="40%"
         >
           <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
-            <el-form-item label="收件人" prop="to">
-              <el-input v-model="sendCheckForm.to" placeholder="username@example.org" />
-              <div class="input-tips">收件人邮箱地址, 如果多个请使用逗号分隔</div>
+            <el-form-item label="接收号码" prop="phone_number_set">
+              <el-input v-model="sendCheckForm.phones" placeholder="username@example.org" />
+              <div class="input-tips">接收人电话号码, 如果多个请使用逗号分隔</div>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -82,11 +82,11 @@
 </template>
 
 <script>
-import { getSystemSetting, testEmailSetting, setEmailSetting } from '@/api/keyauth/system'
+import { getSystemSetting, testSMSSetting, setSMSSetting } from '@/api/keyauth/system'
 import Tips from '@/components/Tips'
 
 const tips = [
-  '用于向用户发送邮件, 比如发送验证码'
+  '用于向用户发送短信, 比如发送验证码'
 ]
 
 export default {
@@ -104,15 +104,16 @@ export default {
       sms: {},
       form: {
         enabled_provider: 'tencent',
-        host: '',
-        username: '',
-        password: '',
-        from: ''
+        endpoint: '',
+        secret_id: '',
+        app_id: '',
+        template_id: '',
+        sign: ''
       },
       sendCheckForm: {
-        to: '',
-        subject: '邮件发送验证',
-        content: '该邮件为验证邮件, 请忽略'
+        phones: '',
+        phone_number_set: '',
+        param_set: ['666666', '30']
       },
       rules: {
         'tencent.secret_id': [{ required: true, message: '请输入腾讯云Secret ID', trigger: 'blur' }],
@@ -122,7 +123,7 @@ export default {
         'tencent.sign': [{ required: true, message: '请输入腾讯云短信签名(短信服务)', trigger: 'blur' }]
       },
       checkSendRules: {
-        to: [{ required: true, message: '请输入收件人邮箱地址', trigger: 'blur' }]
+        phones: [{ required: true, message: '请输入短信接收人电话号码', trigger: 'blur' }]
       }
     }
   },
@@ -163,7 +164,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.saveLoading = true
-          setEmailSetting(this.form).then(resp => {
+          setSMSSetting(this.form).then(resp => {
             this.sms = resp.data
             this.noUpdate = true
             this.connectOK = false
@@ -196,8 +197,9 @@ export default {
       this.$refs['checkSendEmailForm'].validate((valid) => {
         if (valid) {
           this.checkSendLoading = true
+          this.sendCheckForm.phone_number_set = this.sendCheckForm.phones.split(',')
           Object.assign(this.sendCheckForm, this.form)
-          testEmailSetting(this.sendCheckForm).then(resp => {
+          testSMSSetting(this.sendCheckForm).then(resp => {
             this.checkSendDialog = false
             this.$notify({
               message: `用户[${resp.data.account}]登录成功`,
