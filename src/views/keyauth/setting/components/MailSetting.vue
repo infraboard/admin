@@ -140,11 +140,11 @@ export default {
         if (valid) {
           this.saveLoading = true
           setEmailSetting(this.form).then(resp => {
-            this.email = resp.data.email
+            this.email = resp.data
             this.noUpdate = true
             this.connectOK = false
             this.$message({
-              message: 'email配置保存成功',
+              message: '邮件发送配置保存成功',
               type: 'success',
               duration: 3 * 1000
             })

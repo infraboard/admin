@@ -1,175 +1,213 @@
 <template>
-  <div>
+  <div class="sub-main">
+    <!-- 提醒 -->
     <div>
       <tips :tips="tips" title="须知" />
     </div>
+    <!-- 邮箱设置表单 -->
     <div class="setting-form">
-      <el-form label-position="left" label-width="110px" :model="form.password_security">
-        <el-form-item label="短信服务厂商">
-          <el-radio-group v-model="form.password_security">
-            <el-radio-button label="white_list"> 腾讯云 </el-radio-button>
-            <el-radio-button label="black_lsit"> 阿里云 </el-radio-button>
+      <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
+        <el-form-item label="短信服务商">
+          <el-radio-group v-model="form.enabled_provider">
+            <el-radio-button label="tencent"> 腾讯云 </el-radio-button>
+            <el-radio-button label="ali" disabled> 阿里云 </el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="最短密码长度">
-          <el-input-number v-model="form.password_security.length" :min="8" :max="32" @change="objectUpdate" />
-          <span class="f12 append-text"> 个字符</span>
-          <div class="input-tips">
-            <span>限制密码长度。默认 8 个字符，最大长度可设置 32 个字符</span>
-          </div>
-        </el-form-item>
-        <el-form-item label="定期失效">
-          <el-input-number v-model="form.password_security.password_expired_days" :min="0" :max="365" @change="objectUpdate" />
-          <span class="f12 append-text"> 天</span>
-          <div class="input-tips">限制密码定期失效须重置密码。默认为 0 即不限制，最长可设置 365 天</div>
-        </el-form-item>
-        <el-form-item label="重置失效">
-          <el-input-number v-model="form.password_security.allow_expired_reset_days" :min="0" :max="365" @change="objectUpdate" />
-          <span class="f12 append-text"> 天</span>
-          <div class="input-tips">密码失效后一段时间允许用户通过原密码重置密码。默认为 30 天，最长可设置 365 天</div>
-        </el-form-item>
-        <el-form-item label="重复限制">
-          <el-input-number v-model="form.password_security.repeate_limite" :min="1" :max="24" @change="objectUpdate" />
-          <span class="f12 append-text"> 次</span>
-          <div class="input-tips">限制新密码与历史密码的重复。默认与前 1 次密码不重复，最多可限制与前 24 次密码不重复</div>
-        </el-form-item>
-        <el-divider content-position="left">登录限制</el-divider>
-        <el-form-item label="重试限制">
-          <el-input-number v-model="form.login_security.retry_lock_config.retry_limite" :min="1" :max="10" @change="objectUpdate" />
-          <span class="f12 append-text"> 次</span>
-          <div class="input-tips">限制密码重试错误次数。默认为5次，最小可设置1次</div>
-        </el-form-item>
-        <el-form-item label="锁定时间">
-          <el-input-number v-model="form.login_security.retry_lock_config.locked_minite" :min="1" :max="60" @change="objectUpdate" />
-          <span class="f12 append-text"> 分钟</span>
-          <div class="input-tips">密码重试超过约束次数将自动锁定的时间, 默认锁定30分钟</div>
-        </el-form-item>
-        <el-form-item label="异常登录限制">
-          <el-checkbox v-model="form.login_security.exception_lock" @change="objectUpdate" />
-          <div class="input-tips">
-            <span>异地登录、30天未登录, 将要求用户进行二次身份校验，有效保障账号资产安全</span>
-          </div>
-        </el-form-item>
-        <el-form-item label="IP登录限制">
-          <el-checkbox v-model="form.login_security.ip_limite" @change="objectUpdate" />
-          <div class="input-tips">
-            <span>开启后，子账号（子用户和协作者）仅在限制条件下允许登录</span>
-          </div>
-        </el-form-item>
-        <el-form-item v-if="form.login_security.ip_limite" label="">
-          <el-radio-group v-model="form.login_security.ip_limite_config.type">
-            <el-radio-button label="white_list"> 白名单 </el-radio-button>
-            <el-radio-button label="black_lsit"> 黑名单 </el-radio-button>
-          </el-radio-group>
-          <div class="input-tips">
-            <span v-show="form.login_security.ip_limite_config.type === 'white_list'">设置白名单限制后，允许子账号在白名单限制 IP（段）内登录控制台</span>
-            <span v-show="form.login_security.ip_limite_config.type === 'black_lsit'">设置黑名单限制后，不允许子账号在黑名单限制 IP（段）内登录控制台</span>
-          </div>
+        <!-- 腾讯配置 -->
+        <div v-if="form.enabled_provider == 'tencent'">
+          <el-form-item label="服务地址" prop="tencent.endpoint">
+            <el-input v-model="form.tencent.endpoint" placeholder="sms.tencentcloudapi.com" @input="objectUpdate()" />
+            <div class="input-tips">SMTP服务端地址, 默认为sms.tencentcloudapi.com, 一般不修改</div>
+          </el-form-item>
+          <el-form-item label="Secret ID" prop="tencent.secret_id">
+            <el-input v-model="form.tencent.secret_id" @input="objectUpdate()" />
+            <div class="input-tips">
+              <span>用于发送邮件的用户, 比如example@163.com</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="Secret Key" prop="tencent.secret_key">
+            <el-input v-model="form.tencent.secret_key" show-password @input="objectUpdate()" />
+            <div class="input-tips">用于发送邮件的用户密码</div>
+          </el-form-item>
+          <el-form-item label="短信应用ID" prop="tencent.app_id">
+            <el-input v-model="form.tencent.app_id" @input="objectUpdate()" />
+            <div class="input-tips">
+              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="短信模板ID" prop="tencent.template_id">
+            <el-input v-model="form.tencent.template_id" @input="objectUpdate()" />
+            <div class="input-tips">
+              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="短信签名" prop="tencent.sign">
+            <el-input v-model="form.tencent.sign" @input="objectUpdate()" />
+            <div class="input-tips">
+              <span>发件人显示名称, 默认使用配置的邮箱用户作为发送账号</span>
+            </div>
+          </el-form-item>
+        </div>
+
+        <el-form-item label="配置验证">
+          <el-button @click="handleCheckSend">发送测试</el-button>
+          <div class="input-tips">验证通过后才能保存配置</div>
         </el-form-item>
         <el-form-item class="text-center">
           <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-          <el-button :disabled="noUpdate" type="primary" :loading="updateLoading" @click="update">保存配置</el-button>
+          <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveEmailConfig">保存配置</el-button>
         </el-form-item>
       </el-form>
+      <!-- 测试对话框 -->
+      <div>
+        <el-dialog
+          title="邮件发送测试"
+          :visible.sync="checkSendDialog"
+          width="40%"
+        >
+          <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
+            <el-form-item label="收件人" prop="to">
+              <el-input v-model="sendCheckForm.to" placeholder="username@example.org" />
+              <div class="input-tips">收件人邮箱地址, 如果多个请使用逗号分隔</div>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="checkSendDialog = false">取 消</el-button>
+            <el-button type="primary" :loading="checkSendLoading" @click="checkEmailSend">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
     </div>
   </div>
-
 </template>
 
 <script>
+import { getSystemSetting, testEmailSetting, setEmailSetting } from '@/api/keyauth/system'
 import Tips from '@/components/Tips'
-import { updateSecuritySetting } from '@/api/keyauth/setting'
 
 const tips = [
-  '用于向用户发送短信, 比如短信验证码'
+  '用于向用户发送邮件, 比如发送验证码'
 ]
 
 export default {
   name: 'SmsSetting',
   components: { Tips },
-  props: {
-    setting: {
-      type: Object,
-      default: () => {
-        return {
-          password_security: {
-            include_number: true,
-            include_lower_letter: true,
-            include_upper_letter: true,
-            include_symbols: true,
-            length: 8,
-            repeate_limite: 1,
-            password_expired_days: 0,
-            allow_expired_reset_days: 30
-          },
-          login_security: {
-            exception_lock: true,
-            exception_lock_config: {
-              not_login_days: 30,
-              other_place_login: true
-            },
-            ip_limite: false,
-            ip_limite_config: {
-              type: 'white_list',
-              ip: []
-            },
-            retry_lock: true,
-            retry_lock_config: {
-              retry_limite: 5,
-              locked_minite: 30
-            }
-          }
-        }
-      }
-    }
-  },
+  props: {},
   data() {
     return {
-      tips,
+      checkSendDialog: false,
+      checkSendLoading: false,
       noUpdate: true,
-      updateLoading: false,
-      form: {}
-    }
-  },
-  computed: {
-    currentSetting: {
-      get() {
-        return this.setting
+      saveLoading: false,
+      loading: undefined,
+      tips,
+      sms: {},
+      form: {
+        enabled_provider: 'tencent',
+        host: '',
+        username: '',
+        password: '',
+        from: ''
       },
-      set(val) {
-        this.$emit('update:setting', val)
+      sendCheckForm: {
+        to: '',
+        subject: '邮件发送验证',
+        content: '该邮件为验证邮件, 请忽略'
+      },
+      rules: {
+        'tencent.secret_id': [{ required: true, message: '请输入腾讯云Secret ID', trigger: 'blur' }],
+        'tencent.secret_key': [{ required: true, message: '请输入腾讯云Secret Key', trigger: 'blur' }],
+        'tencent.app_id': [{ required: true, message: '请输入腾讯云短信服务APP ID(短信服务)', trigger: 'blur' }],
+        'tencent.template_id': [{ required: true, message: '请输入腾讯云短信模板 ID(短信服务)', trigger: 'blur' }],
+        'tencent.sign': [{ required: true, message: '请输入腾讯云短信签名(短信服务)', trigger: 'blur' }]
+      },
+      checkSendRules: {
+        to: [{ required: true, message: '请输入收件人邮箱地址', trigger: 'blur' }]
       }
     }
   },
-  watch: {
-    setting: {
-      handler: function(val, oldVal) {
-        this.form = JSON.parse(JSON.stringify(this.setting))
-      },
-      immediate: true
-    }
+  mounted() {
+    this.loading = this.$loading({
+      lock: true,
+      text: '加载中...',
+      spinner: 'el-icon-loading',
+      target: '.sub-main',
+      body: true
+    })
+    this.getSystemConfig()
   },
   methods: {
-    update() {
-      this.updateLoading = true
-      updateSecuritySetting(this.form).then(resp => {
-        this.currentSetting = resp.data
-        this.noUpdate = true
-        this.$message({
-          message: '登录安全配置保存成功',
-          type: 'success',
-          duration: 3 * 1000
-        })
-      }).finally(() => {
-        this.updateLoading = false
-      })
+    objectUpdate() {
+      this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.sms)
     },
-    objectUpdate(field) {
-      this.noUpdate = JSON.stringify(this.form) === JSON.stringify(this.setting)
+    async getSystemConfig() {
+      try {
+        var resp = await getSystemSetting()
+        this.sms = resp.data.sms
+        this.form = Object.assign({}, this.sms)
+      } catch (e) {
+        this.$message({
+          message: e.response.data,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      } finally {
+        this.loading.close()
+      }
     },
     cancel() {
-      this.form = JSON.parse(JSON.stringify(this.setting))
+      this.form = Object.assign({}, this.sms)
       this.noUpdate = true
+    },
+    saveEmailConfig() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.saveLoading = true
+          setEmailSetting(this.form).then(resp => {
+            this.sms = resp.data
+            this.noUpdate = true
+            this.connectOK = false
+            this.$message({
+              message: '短信发送配置保存成功',
+              type: 'success',
+              duration: 3 * 1000
+            })
+          }).finally(() => {
+            this.saveLoading = false
+          })
+        }
+      })
+    },
+    resetCheckSendForm() {
+      this.sendCheckForm.to = ''
+    },
+    handleCheckSend() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.resetCheckSendForm()
+          this.checkSendDialog = true
+          this.$nextTick(() => {
+            this.$refs['checkSendEmailForm'].clearValidate()
+          })
+        }
+      })
+    },
+    checkEmailSend() {
+      this.$refs['checkSendEmailForm'].validate((valid) => {
+        if (valid) {
+          this.checkSendLoading = true
+          Object.assign(this.sendCheckForm, this.form)
+          testEmailSetting(this.sendCheckForm).then(resp => {
+            this.checkSendDialog = false
+            this.$notify({
+              message: `用户[${resp.data.account}]登录成功`,
+              customClass: 'notify-success'
+            })
+          }).finally(() => (
+            this.checkSendLoading = false
+          ))
+        }
+      })
     }
   }
 }
@@ -195,8 +233,12 @@ export default {
   margin-top: 12px;
 }
 
-.append-text {
-  margin-left: 4px;
+.el-main {
+  // background-color: #E9EEF3;
+  display: flexbox;
+  color: #333;
+  text-align: center;
+  line-height: 40px;
 }
 
 </style>
