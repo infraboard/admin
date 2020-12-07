@@ -72,7 +72,7 @@
           width="40%"
         >
           <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
-            <el-form-item label="接收号码" prop="phone_number_set">
+            <el-form-item label="接收号码" prop="phones">
               <el-input v-model="sendCheckForm.phones" placeholder="" />
               <div class="input-tips">接收人电话号码, 如果多个请使用逗号分隔</div>
             </el-form-item>
