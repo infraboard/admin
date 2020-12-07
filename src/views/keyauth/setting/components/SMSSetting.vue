@@ -5,7 +5,7 @@
     </div>
     <div class="setting-form">
       <el-form label-position="left" label-width="110px" :model="form.password_security">
-        <el-form-item label="短信厂商">
+        <el-form-item label="短信服务厂商">
           <el-radio-group v-model="form.password_security">
             <el-radio-button label="white_list"> 腾讯云 </el-radio-button>
             <el-radio-button label="black_lsit"> 阿里云 </el-radio-button>
