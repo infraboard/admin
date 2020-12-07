@@ -40,6 +40,12 @@
             <div class="input-tips">
               <span>短信服务控制台获取，必须是腾讯云审核成功的模板</span>
             </div>
+            <div class="input-tips">
+              <span>注意: 模板只能有2个参数, 第一个为验证码, 第二个为过期时间(分钟)</span>
+            </div>
+            <div class="input-tips">
+              <span>样例: 您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！</span>
+            </div>
           </el-form-item>
           <el-form-item label="短信签名" prop="tencent.sign">
             <el-input v-model="form.tencent.sign" @input="objectUpdate()" />
@@ -67,7 +73,7 @@
         >
           <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
             <el-form-item label="接收号码" prop="phone_number_set">
-              <el-input v-model="sendCheckForm.phones" placeholder="username@example.org" />
+              <el-input v-model="sendCheckForm.phones" placeholder="" />
               <div class="input-tips">接收人电话号码, 如果多个请使用逗号分隔</div>
             </el-form-item>
           </el-form>
@@ -202,7 +208,7 @@ export default {
           testSMSSetting(this.sendCheckForm).then(resp => {
             this.checkSendDialog = false
             this.$notify({
-              message: `用户[${resp.data.account}]登录成功`,
+              message: `短信发送成功: ${this.sendCheckForm.phones}`,
               customClass: 'notify-success'
             })
           }).finally(() => (

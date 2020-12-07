@@ -176,7 +176,7 @@ export default {
           testEmailSetting(this.sendCheckForm).then(resp => {
             this.checkSendDialog = false
             this.$notify({
-              message: `用户[${resp.data.account}]登录成功`,
+              message: `邮件发送成功: ${this.sendCheckForm.to}`,
               customClass: 'notify-success'
             })
           }).finally(() => (
