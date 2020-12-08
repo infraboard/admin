@@ -78,7 +78,7 @@
         <el-tab-pane lazy label="短信设置" name="four">
           <sms-setting />
         </el-tab-pane>
-        <el-tab-pane lazy label="验证码" name="five">
+        <el-tab-pane lazy label="验证码设置" name="five">
           <verify-code />
         </el-tab-pane>
       </el-tabs>
