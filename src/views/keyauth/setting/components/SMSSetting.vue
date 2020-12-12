@@ -110,11 +110,13 @@ export default {
       sms: {},
       form: {
         enabled_provider: 'tencent',
-        endpoint: '',
-        secret_id: '',
-        app_id: '',
-        template_id: '',
-        sign: ''
+        tencent: {
+          endpoint: '',
+          secret_id: '',
+          app_id: '',
+          template_id: '',
+          sign: ''
+        }
       },
       sendCheckForm: {
         phones: '',

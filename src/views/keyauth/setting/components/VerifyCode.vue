@@ -5,6 +5,13 @@
     </div>
     <div class="setting-form">
       <el-form label-position="left" label-width="110px" :model="form">
+        <el-form-item label="通知方式" prop="notify_type">
+          <el-radio-group v-model="form.notify_type">
+            <el-radio-button label="tencent"> 邮件 </el-radio-button>
+            <el-radio-button label="ali"> 短信 </el-radio-button>
+          </el-radio-group>
+          <div class="input-tips">验证码如果未使用多久失效。默认为 10 分钟，最长可设置 600 分钟</div>
+        </el-form-item>
         <el-form-item label="失效时长" prop="expire_minutes">
           <el-input-number v-model="form.expire_minutes" :min="1" :max="600" @change="objectUpdate" />
           <span class="f12 append-text"> 分钟</span>
@@ -66,9 +73,11 @@ export default {
     return {
       tips,
       noUpdate: true,
+      updateLoading: false,
       loading: null,
       verifyCode: {},
       form: {
+        notify_type: '',
         expire_minutes: 10,
         mail_template: '您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！',
         sms_template_id: ''
