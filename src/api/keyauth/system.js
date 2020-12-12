@@ -39,3 +39,11 @@ export function setSMSSetting(data) {
   })
 }
 
+export function setVerifyCodeSetting(data) {
+  return request({
+    url: '/keyauth/v1/system_config/verify_code',
+    method: 'post',
+    data
+  })
+}
+

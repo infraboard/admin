@@ -149,31 +149,35 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              console.log(this.$store.getters.needReset)
-              console.log(this.$store.getters.resetReason)
-              console.log(this.$store.getters.isInitialized)
+          try {
+            await this.$store.dispatch('user/login', this.loginForm)
+            // get user info
+            // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
+            const { roles } = await this.$store.dispatch('user/getInfo')
 
-              if (!this.$store.getters.isInitialized) {
-                // 如果没有初始化 调转初始化页面进行设置
-                this.$router.push({ name: 'SubAccountInit' })
-              } else if (this.$store.getters.needReset) {
-                console.log('xx')
-                // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
-                Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
-                this.$router.push({ path: '/password-reset' })
-              } else {
-                // 其他直接调转
-                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              }
-            })
-            .finally(() => {
-              this.loading = false
-            })
+            // generate accessible routes map based on roles
+            const accessRoutes = await this.$store.dispatch('permission/generateRoutes', roles)
+
+            // dynamically add accessible routes
+            this.$router.addRoutes(accessRoutes)
+          } finally {
+            this.loading = false
+          }
+
+          if (!this.$store.getters.isInitialized) {
+            // 如果没有初始化 调转初始化页面进行设置
+            this.$router.push({ name: 'SubAccountInit' })
+          } else if (this.$store.getters.needReset) {
+            // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
+            Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
+            this.$router.push({ path: '/password-reset' })
+          } else {
+            // 其他直接调转
+            this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          }
         }
       })
     },
