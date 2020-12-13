@@ -60,6 +60,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/verify-code',
+    component: () => import('@/views/keyauth/login/verify-code'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: () => import('@/views/common/error-page/404'),
     hidden: true
