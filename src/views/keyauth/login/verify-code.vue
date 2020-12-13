@@ -5,7 +5,7 @@
       <el-card class="center">
         <div class="first-row">
           <span class="title">验证码</span>
-          <el-button type="primary" class="fr" :disabled="!show">重新获取验证码 ({{ times }})</el-button>
+          <el-button type="primary" class="fr" :disabled="!show">重新获取验证码 <span v-show="times > 0">({{ times }})</span></el-button>
         </div>
 
         <div class="input-box">
@@ -258,6 +258,11 @@ export default {
 .first-row {
     vertical-align:middle;
     line-height: 32px
+}
+
+.app-container ::v-deep .el-card__body {
+  width: 100%;
+  height: 100%;
 }
 
 .input-box {
