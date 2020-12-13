@@ -35,18 +35,6 @@
               <span>短信服务控制台获取</span>
             </div>
           </el-form-item>
-          <el-form-item label="短信模板ID" prop="tencent.template_id">
-            <el-input v-model="form.tencent.template_id" @input="objectUpdate()" />
-            <div class="input-tips">
-              <span>短信服务控制台获取，必须是腾讯云审核成功的模板</span>
-            </div>
-            <div class="input-tips">
-              <span>注意: 模板只能有2个参数, 第一个为验证码, 第二个为过期时间(分钟)</span>
-            </div>
-            <div class="input-tips">
-              <span>样例: 您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！</span>
-            </div>
-          </el-form-item>
           <el-form-item label="短信签名" prop="tencent.sign">
             <el-input v-model="form.tencent.sign" @input="objectUpdate()" />
             <div class="input-tips">
@@ -72,6 +60,16 @@
           width="40%"
         >
           <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
+            <el-form-item label="模板ID" prop="template_id">
+              <el-input v-model="sendCheckForm.template_id" />
+              <div class="input-tips">
+                <span>短信服务控制台获取，必须是腾讯云审核成功的模板</span>
+              </div>
+            </el-form-item>
+            <el-form-item label="模板参数" prop="param_set">
+              <el-input v-model="sendCheckForm.param_set" placeholder="" />
+              <div class="input-tips">模板对应的参数, 参数个数必须一一对应，且不能缺失</div>
+            </el-form-item>
             <el-form-item label="接收号码" prop="phones">
               <el-input v-model="sendCheckForm.phones" placeholder="" />
               <div class="input-tips">接收人电话号码, 如果多个请使用逗号分隔</div>
@@ -131,7 +129,9 @@ export default {
         'tencent.sign': [{ required: true, message: '请输入腾讯云短信签名(短信服务)', trigger: 'blur' }]
       },
       checkSendRules: {
-        phones: [{ required: true, message: '请输入短信接收人电话号码', trigger: 'blur' }]
+        phones: [{ required: true, message: '请输入短信接收人电话号码', trigger: 'blur' }],
+        template_id: [{ required: true, message: '请输入运营商短信模板ID', trigger: 'blur' }],
+        param_set: [{ required: true, message: '请输入短信模板对应参数', trigger: 'blur' }]
       }
     }
   },

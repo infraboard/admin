@@ -7,10 +7,10 @@
       <el-form label-position="left" label-width="110px" :model="form">
         <el-form-item label="通知方式" prop="notify_type">
           <el-radio-group v-model="form.notify_type">
-            <el-radio-button label="tencent"> 邮件 </el-radio-button>
-            <el-radio-button label="ali"> 短信 </el-radio-button>
+            <el-radio-button label="mail"> 邮件 </el-radio-button>
+            <el-radio-button label="sms"> 短信 </el-radio-button>
           </el-radio-group>
-          <div class="input-tips">验证码如果未使用多久失效。默认为 10 分钟，最长可设置 600 分钟</div>
+          <div class="input-tips">默认使用邮件通知, 如果要配置短信通知, 请提前配置好短信设置</div>
         </el-form-item>
         <el-form-item label="失效时长" prop="expire_minutes">
           <el-input-number v-model="form.expire_minutes" :min="1" :max="600" @change="objectUpdate" />
@@ -39,7 +39,7 @@
         <el-form-item label="短信模板ID" prop="sms_template_id">
           <el-input v-model="form.sms_template_id" @input="objectUpdate()" />
           <div class="input-tips">
-            <span>短信服务控制台获取，必须是腾讯云审核成功的模板</span>
+            <span>短信服务控制台获取，必须是云商审核成功的模板</span>
           </div>
           <div class="input-tips">
             <span>注意: 模板只能有2个参数, 第一个为验证码, 第二个为过期时间(分钟)</span>
@@ -77,7 +77,7 @@ export default {
       loading: null,
       verifyCode: {},
       form: {
-        notify_type: '',
+        notify_type: 'mail',
         expire_minutes: 10,
         mail_template: '您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！',
         sms_template_id: ''
@@ -119,7 +119,7 @@ export default {
         this.currentSetting = resp.data
         this.noUpdate = true
         this.$message({
-          message: '登录安全配置保存成功',
+          message: '验证码配置保存成功',
           type: 'success',
           duration: 3 * 1000
         })
