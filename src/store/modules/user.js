@@ -66,7 +66,7 @@ const actions = {
         commit('SET_REFRESH_TOKEN', data.refresh_token)
         setAccessToken(data.access_token)
         setRefreshToken(data.refresh_token)
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })

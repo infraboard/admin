@@ -154,6 +154,7 @@ export default {
           this.loading = true
           try {
             await this.$store.dispatch('user/login', this.loginForm)
+
             // get user info
             // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
             const { roles } = await this.$store.dispatch('user/getInfo')
@@ -163,6 +164,13 @@ export default {
 
             // dynamically add accessible routes
             this.$router.addRoutes(accessRoutes)
+          } catch (err) {
+            if (err.code === 50018) {
+              // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
+              Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
+              this.$router.push({ path: '/verify-code' })
+            }
+            return
           } finally {
             this.loading = false
           }

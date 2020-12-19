@@ -80,7 +80,7 @@ service.interceptors.response.use(
       }
 
       // 对于特定的请求专门放行, 让页面逻辑处理
-      if (res.code === 50019) {
+      if (res.code === 50018) {
         return Promise.reject(res)
       }
 

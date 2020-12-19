@@ -5,7 +5,7 @@
       <el-card class="center">
         <div class="first-row">
           <span class="title">验证码</span>
-          <el-button type="primary" class="fr" :disabled="!show">重新获取验证码 <span v-show="times > 0">({{ times }})</span></el-button>
+          <el-button type="primary" class="fr" :disabled="!show" @click="getCode">获取验证码 <span v-show="times > 0">({{ times }})</span></el-button>
         </div>
 
         <div class="input-box">
@@ -84,7 +84,7 @@ export default {
       tips: ['为了保障账户资产安全, 请输入验证码进行二次身份确认'],
       pasteResult: [],
       code: [],
-      times: 60,
+      times: 0,
       show: true
     }
   },
@@ -106,13 +106,14 @@ export default {
     // this.form.account = this.$store.getters.account
     // this.form.old_pass = Base64.decode(Cookies.get('password'))
     // 等待dom渲染完成，在执行focus,否则无法获取到焦点
-    this.$nextTick(() => {
-      this.$refs.firstinput.focus()
-      this.getCode()
-    })
+    // this.$nextTick(() => {
+    //   this.$refs.firstinput.focus()
+    //   this.getCode()
+    // })
   },
   methods: {
     getCode() {
+      this.times = 60
       this.show = false
       this.timer = setInterval(() => {
         this.times--
