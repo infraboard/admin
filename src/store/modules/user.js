@@ -51,17 +51,11 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ dispatch, commit }, userInfo) {
-    const { username, password } = userInfo
-    var req = {
-      grant_type: 'password',
-      username: username.trim(),
-      password: password.trim()
-    }
+  login({ commit }, loginForm) {
     return new Promise((resolve, reject) => {
-      login(req).then(response => {
+      login(loginForm).then(response => {
         const { data } = response
-        commit('SET_ACCOUNT', req.username)
+        commit('SET_ACCOUNT', loginForm.username)
         commit('SET_ACCESS_TOKEN', data.access_token)
         commit('SET_REFRESH_TOKEN', data.refresh_token)
         setAccessToken(data.access_token)

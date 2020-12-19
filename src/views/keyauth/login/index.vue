@@ -68,18 +68,22 @@
       <br>
       <br>
     </el-dialog>
+
+    <!-- 验证码 -->
+    <verify-code :visible.sync="dialogVerifyCodeVisible" :username="loginForm.username" :password="loginForm.password" @change="updateVerifyCode" />
   </div>
 </template>
 
 <script>
 import Cookies from 'js-cookie'
 import LangSelect from '@/components/LangSelect'
+import VerifyCode from './components/VerifyCode'
 
 const Base64 = require('js-base64').Base64
 
 export default {
   name: 'Login',
-  components: { LangSelect },
+  components: { LangSelect, VerifyCode },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()
@@ -92,7 +96,10 @@ export default {
       }
     }
     return {
+      dialogVerifyCodeVisible: false,
       loginForm: {
+        grant_type: 'password',
+        verify_code: '',
         username: '',
         password: ''
       },
@@ -134,6 +141,10 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    updateVerifyCode(code) {
+      this.loginForm.verify_code = code
+      this.handleLogin()
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -151,6 +162,7 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
         if (valid) {
+          console.log('xxx')
           this.loading = true
           try {
             await this.$store.dispatch('user/login', this.loginForm)
@@ -166,9 +178,11 @@ export default {
             this.$router.addRoutes(accessRoutes)
           } catch (err) {
             if (err.code === 50018) {
-              // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
-              Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
-              this.$router.push({ path: '/verify-code' })
+              this.dialogVerifyCodeVisible = true
+              // // 敏感信息通过Cookie传递给重置页面, 过期时间5秒
+              // Cookies.set('username', Base64.encode(this.loginForm.username.trim(' ')), { expires: 5000 })
+              // Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 5000 })
+              // this.$router.push({ path: '/verify-code', query: this.otherQuery })
             }
             return
           } finally {
@@ -179,8 +193,8 @@ export default {
             // 如果没有初始化 调转初始化页面进行设置
             this.$router.push({ name: 'SubAccountInit' })
           } else if (this.$store.getters.needReset) {
-            // 敏感信息通过Cookie传递给重置页面, 过期时间3秒
-            Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 3000 })
+            // 敏感信息通过Cookie传递给重置页面, 过期时间5秒
+            Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 5000 })
             this.$router.push({ path: '/password-reset' })
           } else {
             // 其他直接调转

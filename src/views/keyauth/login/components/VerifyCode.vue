@@ -1,89 +1,116 @@
 <template>
-  <div class="app-container">
-    <tips :tips="tips" />
-    <div style="padding-top:22px;">
-      <el-card class="center">
-        <div class="first-row">
-          <span class="title">验证码</span>
-          <el-button type="primary" class="fr" :disabled="!show" @click="getCode">获取验证码 <span v-show="times > 0">({{ times }})</span></el-button>
-        </div>
-
-        <div class="input-box">
-          <div
-            class="input-content"
-            @keydown="keydown"
-            @keyup="keyup"
-            @paste="paste"
-            @mousewheel="mousewheel"
-            @input="inputEvent"
-          >
-            <input
-              ref="firstinput"
-              v-model.trim.number="input[0]"
-              max="9"
-              min="0"
-              maxlength="1"
-              data-index="0"
-              type="number"
-            >
-            <input
-              v-model.trim.number="input[1]"
-              max="9"
-              min="0"
-              maxlength="1"
-              data-index="1"
-              type="number"
-            >
-            <input
-              v-model.trim.number="input[2]"
-              max="9"
-              min="0"
-              maxlength="1"
-              data-index="2"
-              type="number"
-            >
-            <input
-              v-model.trim.number="input[3]"
-              max="9"
-              min="0"
-              maxlength="1"
-              data-index="3"
-              type="number"
-            >
-            <input
-              v-model.trim.number="input[4]"
-              max="9"
-              min="0"
-              maxlength="1"
-              data-index="4"
-              type="number"
-            >
-            <input v-model.trim.number="input[5]" max="9" min="0" maxlength="1" data-index="5" type="number">
+  <el-drawer
+    ref="drawer"
+    :before-close="handleClose"
+    :visible.sync="dialog"
+    :show-close="false"
+    :with-header="false"
+    size="100%"
+  >
+    <div class="app-container">
+      <tips :tips="tips" />
+      <div style="padding-top:22px;">
+        <el-card class="center">
+          <div class="first-row">
+            <span class="title">验证码</span>
+            <el-button type="primary" class="fr" :loading="sendLoading" :disabled="!show" @click="getCode">获取验证码 <span v-show="times > 0">({{ times }})</span></el-button>
           </div>
-        </div>
-        <div class="input-tips" style="margin-top:22px;">
-          <span>验证码已通过邮件发送到: xxx, 请获取填写于此</span>
-        </div>
-      </el-card>
+
+          <div class="input-box">
+            <div
+              class="input-content"
+              @keydown="keydown"
+              @keyup="keyup"
+              @paste="paste"
+              @mousewheel="mousewheel"
+              @input="inputEvent"
+            >
+              <input
+                ref="firstinput"
+                v-model.trim.number="input[0]"
+                max="9"
+                min="0"
+                maxlength="1"
+                data-index="0"
+                type="number"
+              >
+              <input
+                v-model.trim.number="input[1]"
+                max="9"
+                min="0"
+                maxlength="1"
+                data-index="1"
+                type="number"
+              >
+              <input
+                v-model.trim.number="input[2]"
+                max="9"
+                min="0"
+                maxlength="1"
+                data-index="2"
+                type="number"
+              >
+              <input
+                v-model.trim.number="input[3]"
+                max="9"
+                min="0"
+                maxlength="1"
+                data-index="3"
+                type="number"
+              >
+              <input
+                v-model.trim.number="input[4]"
+                max="9"
+                min="0"
+                maxlength="1"
+                data-index="4"
+                type="number"
+              >
+              <input v-model.trim.number="input[5]" max="9" min="0" maxlength="1" data-index="5" type="number">
+            </div>
+          </div>
+          <div class="input-tips" style="margin-top:22px;">
+            <span v-if="message">{{ message }}</span>
+          </div>
+        </el-card>
+      </div>
     </div>
-  </div>
+  </el-drawer>
 </template>
 
 <script>
-// import Cookies from 'js-cookie'
 import Tips from '@/components/Tips'
-import { updatePassword } from '@/api/keyauth/profile'
-
-// const Base64 = require('js-base64').Base64
+import { sendVerifyCodeByPass } from '@/api/keyauth/token'
 
 export default {
-  name: 'PasswordReset',
+  name: 'VerifyCode',
   components: { Tips },
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    username: {
+      type: String,
+      default: ''
+    },
+    password: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tips: ['为了保障账户资产安全, 请输入验证码进行二次身份确认'],
+      dialog: false,
       pasteResult: [],
+      sendLoading: false,
       code: [],
+      form: {
+        username: '',
+        password: ''
+      },
+      message: '',
       times: 0,
       show: true
     }
@@ -101,27 +128,50 @@ export default {
       }
     }
   },
+  watch: {
+    visible: {
+      handler: function(val, oldVal) {
+        this.dialog = val
+        if (val) {
+          // 等待dom渲染完成，在执行focus,否则无法获取到焦点
+          this.$nextTick(() => {
+            this.$refs.firstinput.focus()
+          })
+        }
+      },
+      immediate: true
+    }
+  },
   mounted() {
-    // 从cookie中获取登录页面传递过来的敏感信息
-    // this.form.account = this.$store.getters.account
-    // this.form.old_pass = Base64.decode(Cookies.get('password'))
-    // 等待dom渲染完成，在执行focus,否则无法获取到焦点
-    // this.$nextTick(() => {
-    //   this.$refs.firstinput.focus()
-    //   this.getCode()
-    // })
   },
   methods: {
-    getCode() {
-      this.times = 60
-      this.show = false
-      this.timer = setInterval(() => {
-        this.times--
-        if (this.times === 0) {
-          this.show = true
-          clearInterval(this.timer)
-        }
-      }, 1000)
+    handleClose(done) {
+      if (this.sendLoading) {
+        return
+      }
+      this.sendLoading = false
+      this.dialog = false
+      this.$emit('update:visible', false)
+    },
+    async getCode() {
+      try {
+        this.sendLoading = true
+        this.form.username = this.username
+        this.form.password = this.password
+        var resp = await sendVerifyCodeByPass(this.form)
+        this.message = resp.data
+        this.times = 60
+        this.show = false
+        this.timer = setInterval(() => {
+          this.times--
+          if (this.times === 0) {
+            this.show = true
+            clearInterval(this.timer)
+          }
+        }, 1000)
+      } finally {
+        this.sendLoading = false
+      }
     },
     // 解决一个输入框输入多个字符
     inputEvent(e) {
@@ -187,7 +237,7 @@ export default {
         if (index === 5) {
           if (this.input.join('').length === 6) {
             document.activeElement.blur()
-            this.$emit('complete', this.input)
+            this.$emit('change', this.input.join(''))
           }
         }
       } else {
@@ -209,7 +259,7 @@ export default {
       } else if (e.key === 'Enter') {
         if (this.input.join('').length === 6) {
           document.activeElement.blur()
-          this.$emit('complete', this.input)
+          this.$emit('change', this.input.join(''))
         }
       }
     },
@@ -219,24 +269,11 @@ export default {
         if (str.toString().length === 6) {
           this.pasteResult = str.split('')
           document.activeElement.blur()
-          this.$emit('complete', this.input)
+          this.$emit('change', this.input.join(''))
           this.pasteResult = []
         } else {
           // 如果粘贴内容不合规，清除所有内容
           this.input[0] = new Array(6)
-        }
-      })
-    },
-    submit() {
-      this.$refs['setPassForm'].validate((valid) => {
-        if (valid) {
-          this.resetPasswordLoading = true
-          updatePassword(this.form).then(resp => {
-            // 重置完成跳转到登录页面重新登录
-            this.$router.push({ path: '/login' })
-          }).finally(() => {
-            this.resetPasswordLoading = false
-          })
         }
       })
     }

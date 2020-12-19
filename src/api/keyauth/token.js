@@ -36,3 +36,15 @@ export function logout() {
     }
   })
 }
+
+export function sendVerifyCodeByPass(data) {
+  return request({
+    url: '/keyauth/v1/verify_code/pass/',
+    method: 'post',
+    auth: {
+      username: defaultSettings.client_id,
+      password: defaultSettings.client_secret
+    },
+    data
+  })
+}
