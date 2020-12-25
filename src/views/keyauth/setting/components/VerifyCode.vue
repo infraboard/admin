@@ -6,7 +6,7 @@
     <div class="setting-form">
       <el-form label-position="left" label-width="110px" :model="form">
         <el-form-item label="通知方式" prop="notify_type">
-          <el-radio-group v-model="form.notify_type">
+          <el-radio-group v-model="form.notify_type" @@change="objectUpdate">
             <el-radio-button label="mail"> 邮件 </el-radio-button>
             <el-radio-button label="sms"> 短信 </el-radio-button>
           </el-radio-group>
@@ -33,7 +33,7 @@
             <span>注意: 模板只能有2个参数, 第一个为验证码, 第二个为过期时间(分钟)</span>
           </div>
           <div class="input-tips">
-            <span>样例: 您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！</span>
+            <span>样例: 您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本邮件！</span>
           </div>
         </el-form-item>
         <el-form-item label="短信模板ID" prop="sms_template_id">
