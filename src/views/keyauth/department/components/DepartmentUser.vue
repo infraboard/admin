@@ -156,7 +156,7 @@ export default {
         page_number: 1,
         page_size: 10,
         department_id: '',
-        status: 'pending'
+        status: 'pendding'
       }
     }
   },
