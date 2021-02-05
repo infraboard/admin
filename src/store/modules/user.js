@@ -129,7 +129,7 @@ const actions = {
   // refresh token
   refreshToken({ commit, state, dispatch }) {
     var req = {
-      grant_type: 'refresh_token',
+      grant_type: 'refresh',
       access_token: getAccessToken(),
       refresh_token: getRefreshToken()
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <treeselect
-      v-model="value"
+      v-model="currentdepartment"
       :multiple="false"
       :options="options"
       :load-options="loadOptions"
@@ -20,12 +20,6 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 
-// We just use `setTimeout()` here to simulate an async operation
-// instead of requesting a real API server for demo purpose.
-const simulateAsyncOperation = fn => {
-  setTimeout(fn, 2000)
-}
-
 export default {
   name: 'ChoiceDepartment',
   components: { Treeselect },
@@ -41,43 +35,23 @@ export default {
   },
   data() {
     return {
-      value: null,
       options: [],
-      total: 0,
-      props: {
-        lazy: true,
-        label: 'show',
-        value: this.$props.valueAttr,
-        lazyLoad(node, resolve) {
-          listQuery.parent_id = ''
-          if (!node.root) {
-            listQuery.parent_id = node.data.id
-          }
-          node.loading = true
-          queryDepartment(listQuery).then(resp => {
-            this.total = resp.data.total
-            const list = []
-            resp.data.items.forEach(item => {
-              item.show = item.name + ' (' + item.manager + ')'
-              list.push(item)
-            })
-            resolve(list)
-            node.loading = false
-          }).catch(() => {
-            node.loading = false
-          })
-        }
-      }
+      total: 0
     }
   },
   computed: {
     currentdepartment: {
       get() {
+        console.log(this.department)
+        if (this.department === '') {
+          return null
+        }
         return this.department
       },
       set(val) {
-        this.$emit('update:department', val[val.length - 1])
-        this.$emit('change', val[val.length - 1])
+        console.log(val)
+        this.$emit('update:department', val)
+        this.$emit('change', val)
       }
     }
   },
@@ -98,35 +72,30 @@ export default {
         })
       })
     },
-    loadOptions({ action, parentNode, callback }) {
-      // Typically, do the AJAX stuff here.
-      // Once the server has responded,
-      // assign children options to the parent node & call the callback.
+    async loadOptions({ action, parentNode, callback }) {
       console.log(parentNode)
       if (action === LOAD_CHILDREN_OPTIONS) {
         switch (parentNode.id) {
           case 'success': {
-            simulateAsyncOperation(() => {
-              parentNode.children = [{
-                id: 'child',
-                label: 'Child option',
-                children: null
-              }]
-              callback()
+            listQuery.parent_id = parentNode.id
+            const resp = await queryDepartment(listQuery)
+            this.total = resp.data.total
+            resp.data.items.forEach(item => {
+              item.label = item.name + ' (' + item.manager + ')'
+              if (item.sub_count !== 0) {
+                item.children = null
+              }
+              parentNode.children.push(item)
             })
             break
           }
           case 'no-children': {
-            simulateAsyncOperation(() => {
-              parentNode.children = []
-              callback()
-            })
+            parentNode.children = []
+            callback()
             break
           }
           case 'failure': {
-            simulateAsyncOperation(() => {
-              callback(new Error('Failed to load options: network error.'))
-            })
+            callback(new Error('Failed to load options: network error.'))
             break
           }
           default: /* empty */

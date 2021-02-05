@@ -59,20 +59,20 @@
         </el-table-column>
         <el-table-column label="登录地点" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.country }} {{ row.isp }}</span> <br>
-            <span>{{ row.province }} {{ row.city }}</span>
+            <span v-if="row.ip_info">{{ row.ip_info.country }} {{ row.ip_info.isp }}</span> <br>
+            <span v-if="row.ip_info">{{ row.ip_info.province }} {{ row.ip_info.city }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作系统" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.os }}</span> <br>
-            <span>{{ row.platform }}</span>
+            <span v-if="row.user_agent">{{ row.user_agent.os }}</span> <br>
+            <span v-if="row.user_agent">{{ row.user_agent.platform }}</span>
           </template>
         </el-table-column>
         <el-table-column label="浏览器" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span>{{ row.browser_name }}</span> <br>
-            <span>{{ row.browser_version }}</span>
+            <span v-if="row.user_agent">{{ row.user_agent.browser_name }}</span> <br>
+            <span v-if="row.user_agent">{{ row.user_agent.browser_version }}</span>
           </template>
         </el-table-column>
       </el-table>
