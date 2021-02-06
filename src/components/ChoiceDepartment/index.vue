@@ -8,7 +8,6 @@
       placeholder=""
     />
   </div>
-
 </template>
 
 <script>

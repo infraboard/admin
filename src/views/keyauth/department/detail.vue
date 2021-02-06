@@ -114,7 +114,10 @@
           <el-input v-model="form.name" maxlength="60" show-word-limit />
         </el-form-item>
         <el-form-item label="负责人" prop="manager">
-          <el-input v-model="form.manager" />
+          <choice-subuser :user.sync="form.manager" />
+          <div class="input-tips">
+            <span>部门负责人负责管理部门的人员与空间</span>
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -129,10 +132,11 @@
 import { describeDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
 import DepartmentUser from './components/DepartmentUser'
 import DepartmentNamespace from './components/DepartmentNamespace'
+import ChoiceSubuser from '@/components/ChoiceSubuser'
 
 export default {
   name: 'DepartmentDetail',
-  components: { DepartmentUser, DepartmentNamespace },
+  components: { DepartmentUser, DepartmentNamespace, ChoiceSubuser },
   directives: { },
   props: {
     department: {
