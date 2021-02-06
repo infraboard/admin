@@ -156,6 +156,8 @@ export default {
       console.log(upResp)
       var jdResp = await joinDepartment(this.departForm)
       console.log(jdResp)
+      // 调转到首页
+      this.$router.push({ path: '/' })
     }
   }
 }

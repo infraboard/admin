@@ -34,7 +34,7 @@
         </el-form-item>
         <el-form-item class="text-center">
           <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-          <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveEmailConfig">保存配置</el-button>
+          <el-button :disabled="noUpdate || !sendTestOk" type="primary" :loading="saveLoading" @click="saveEmailConfig">保存配置</el-button>
         </el-form-item>
       </el-form>
       <!-- 测试对话框 -->
@@ -74,6 +74,7 @@ export default {
   props: {},
   data() {
     return {
+      sendTestOk: false,
       checkSendDialog: false,
       checkSendLoading: false,
       noUpdate: true,
@@ -142,7 +143,7 @@ export default {
           setEmailSetting(this.form).then(resp => {
             this.email = resp.data
             this.noUpdate = true
-            this.connectOK = false
+            this.sendTestOk = false
             this.$message({
               message: '邮件发送配置保存成功',
               type: 'success',
@@ -176,9 +177,10 @@ export default {
           testEmailSetting(this.sendCheckForm).then(resp => {
             this.checkSendDialog = false
             this.$notify({
-              message: `邮件发送成功: ${this.sendCheckForm.to}`,
+              message: `邮件发送成功: ${this.sendCheckForm.to}, 测试通过, 可以保存配置了`,
               customClass: 'notify-success'
             })
+            this.sendTestOk = true
           }).finally(() => (
             this.checkSendLoading = false
           ))

@@ -179,10 +179,6 @@ export default {
           } catch (err) {
             if (err.code === 50018) {
               this.dialogVerifyCodeVisible = true
-              // // 敏感信息通过Cookie传递给重置页面, 过期时间5秒
-              // Cookies.set('username', Base64.encode(this.loginForm.username.trim(' ')), { expires: 5000 })
-              // Cookies.set('password', Base64.encode(this.loginForm.password.trim(' ')), { expires: 5000 })
-              // this.$router.push({ path: '/verify-code', query: this.otherQuery })
             }
             return
           } finally {

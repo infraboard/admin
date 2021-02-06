@@ -7,8 +7,8 @@
       <el-form label-position="left" label-width="110px" :model="form">
         <el-form-item label="通知方式" prop="notify_type">
           <el-radio-group v-model="form.notify_type" @@change="objectUpdate">
-            <el-radio-button label="mail"> 邮件 </el-radio-button>
-            <el-radio-button label="sms"> 短信 </el-radio-button>
+            <el-radio-button label="MAIL"> 邮件 </el-radio-button>
+            <el-radio-button label="SMS"> 短信 </el-radio-button>
           </el-radio-group>
           <div class="input-tips">默认使用邮件通知, 如果要配置短信通知, 请提前配置好短信设置</div>
         </el-form-item>
@@ -17,7 +17,7 @@
           <span class="f12 append-text"> 分钟</span>
           <div class="input-tips">验证码如果未使用多久失效。默认为 10 分钟，最长可设置 600 分钟</div>
         </el-form-item>
-        <el-form-item label="邮件模板" prop="mail_template">
+        <el-form-item v-if="form.notify_type === 'MAIL'" label="邮件模板" prop="mail_template">
           <el-input
             v-model="form.mail_template"
             type="textarea"
@@ -25,6 +25,7 @@
             :autosize="{minRows: 2}"
             maxlength="1024"
             show-word-limit
+            @input="objectUpdate()"
           />
           <div class="input-tips">
             <span>支持文本和HTML格式模板</span>
@@ -36,7 +37,7 @@
             <span>样例: 您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本邮件！</span>
           </div>
         </el-form-item>
-        <el-form-item label="短信模板ID" prop="sms_template_id">
+        <el-form-item v-if="form.notify_type === 'SMS'" label="短信模板ID" prop="sms_template_id">
           <el-input v-model="form.sms_template_id" @input="objectUpdate()" />
           <div class="input-tips">
             <span>短信服务控制台获取，必须是云商审核成功的模板</span>
@@ -77,7 +78,7 @@ export default {
       loading: null,
       verifyCode: {},
       form: {
-        notify_type: 'mail',
+        notify_type: 'MAIL',
         expire_minutes: 10,
         mail_template: '您的动态验证码为：{1}，{2}分钟内有效！，如非本人操作，请忽略本短信！',
         sms_template_id: ''
