@@ -12,26 +12,44 @@
         <el-form-item :label-width="formLabelWidth" label="部门" prop="department_id">
           <choice-department v-if="!departmentId" :department.sync="form.department_id" />
           <el-input v-else v-model="departmentName" disabled />
+          <div class="input-tips">
+            <span>用户归属的部门, 决定了用户可以看到的空间</span>
+          </div>
         </el-form-item>
         <el-form-item label="用户名" :label-width="formLabelWidth" prop="account">
           <el-input v-model="form.account" maxlength="60" show-word-limit />
+          <div class="input-tips">
+            <span>建议直接使用中文</span>
+          </div>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
           <el-input v-model="form.password" show-password />
+          <div class="input-tips">
+            <span>用户密码有强度校验,建议随机生成</span>
+          </div>
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
-          <el-input v-model="form.phone" maxlength="40" show-word-limit />
+        <el-form-item label="电话" :label-width="formLabelWidth" prop="profile.phone">
+          <el-input v-model="form.profile.phone" maxlength="40" show-word-limit />
+          <div class="input-tips">
+            <span>用于收取验证码和重要提醒</span>
+          </div>
         </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-          <el-input v-model="form.email" maxlength="60" show-word-limit />
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="profile.email">
+          <el-input v-model="form.profile.email" maxlength="60" show-word-limit />
+          <div class="input-tips">
+            <span>用于收取验证码和重要提醒</span>
+          </div>
         </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth" prop="gender">
-          <el-radio v-model="form.gender" label="male">男</el-radio>
-          <el-radio v-model="form.gender" label="female">女</el-radio>
-          <el-radio v-model="form.gender" label="unknown">保密</el-radio>
+        <el-form-item label="性别" :label-width="formLabelWidth" prop="profile.gender">
+          <el-radio v-model="form.profile.gender" label="male">男</el-radio>
+          <el-radio v-model="form.profile.gender" label="female">女</el-radio>
+          <el-radio v-model="form.profile.gender" label="unknown">保密</el-radio>
         </el-form-item>
         <el-form-item label="过期时间" :label-width="formLabelWidth">
           <el-checkbox v-model="neverExpire">永不过期</el-checkbox>
+          <div class="input-tips">
+            <span>用户多少天之内未登录过系统的锁定时间, 防止僵尸用户带来的安全风险</span>
+          </div>
         </el-form-item>
         <el-form-item v-show="!neverExpire" :label-width="formLabelWidth">
           <el-date-picker
@@ -128,19 +146,22 @@ export default {
       form: {
         department_id: '',
         account: '',
+        expires_days: 90,
         password: '',
-        phone: '',
-        email: '',
-        gender: 'unknown',
-        description: ''
+        description: '',
+        profile: {
+          phone: '',
+          email: '',
+          gender: 'unknown'
+        }
       },
       formLabelWidth: '80px',
       rules: {
         department_id: [{ required: true, message: '请选择用户部门', trigger: 'change' }],
         account: [{ required: true, message: '请输入用户名称', trigger: 'change' }],
         password: [{ required: true, message: '请输入用户密码', trigger: 'change' }],
-        phone: [{ required: true, message: '请输入用户电话号码', trigger: 'change' }],
-        email: [{ required: true, message: '请输入用户邮箱', trigger: 'change' }]
+        'profile.phone': [{ required: true, message: '请输入用户电话号码', trigger: 'change' }],
+        'profile.email': [{ required: true, message: '请输入用户邮箱', trigger: 'change' }]
       }
     }
   },
@@ -185,7 +206,11 @@ export default {
     resetForm() {
       this.departmentName = ''
       this.form = {
-        gender: 'unknown'
+        profile: {
+          phone: '',
+          email: '',
+          gender: 'unknown'
+        }
       }
     },
     submit() {

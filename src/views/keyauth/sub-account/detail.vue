@@ -39,7 +39,7 @@
                   <el-radio v-model="form.gender" label="unknown">保密</el-radio>
                 </div>
                 <div v-show="!isEdit">
-                  <span v-if="user.gender">{{ user.gender }}</span>
+                  <span v-if="user.profile">{{ user.profile.gender }}</span>
                   <span v-else>保密</span>
                 </div>
               </div>
