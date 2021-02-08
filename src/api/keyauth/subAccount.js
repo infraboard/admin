@@ -47,3 +47,11 @@ export function resetSubAccountPassword(data) {
     data: data
   })
 }
+
+export function genRandomPassword(data) {
+  return request({
+    url: '/keyauth/v1/password/',
+    method: 'post',
+    data: data
+  })
+}

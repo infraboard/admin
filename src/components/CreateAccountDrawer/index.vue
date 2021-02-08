@@ -23,9 +23,13 @@
           </div>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
-          <el-input v-model="form.password" show-password />
+          <el-input v-model="form.password" style="width:80%" show-password />
+          <div class="fr" style="width:20%;display: inline-flex;">
+            <el-button type="text" @click="generateRandomPass"> <svg-icon style="font-size: 18px;color: #13C2C2;margin-left:12px;" icon-class="random" /></el-button>
+            <el-button v-clipboard:copy="form.password" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;font-size: 16px;" />
+          </div>
           <div class="input-tips">
-            <span>用户密码有强度校验,建议随机生成</span>
+            <span>用户密码有强度校验,建议随机生成, 点击右边循环按钮</span>
           </div>
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth" prop="profile.phone">
@@ -81,13 +85,18 @@
 </template>
 
 <script>
-import { createSubAccount } from '@/api/keyauth/subAccount'
+import { createSubAccount, genRandomPassword } from '@/api/keyauth/subAccount'
 import ChoiceDepartment from '@/components/ChoiceDepartment'
 import { describeDepartment } from '@/api/keyauth/department'
+
+import clipboard from '@/directive/clipboard/index.js'
 
 export default {
   name: 'CreateAccountDrawer',
   components: { ChoiceDepartment },
+  directives: {
+    clipboard
+  },
   props: {
     visible: {
       default: false,
@@ -203,9 +212,25 @@ export default {
       this.dialog = false
       this.$emit('update:visible', false)
     },
+    async generateRandomPass() {
+      var resp = await genRandomPassword({})
+      this.form.password = resp.data.password
+    },
+    clipboardSuccess() {
+      this.$notify({
+        message: '复制成功',
+        duration: 1500,
+        customClass: 'notify-success'
+      })
+    },
     resetForm() {
       this.departmentName = ''
       this.form = {
+        department_id: '',
+        account: '',
+        expires_days: 90,
+        password: '',
+        description: '',
         profile: {
           phone: '',
           email: '',
