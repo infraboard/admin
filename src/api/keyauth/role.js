@@ -31,3 +31,11 @@ export function deleteRole(id, query) {
     params: query
   })
 }
+
+export function listResource(query) {
+  return request({
+    url: '/keyauth/v1/resources/',
+    method: 'get',
+    params: query
+  })
+}

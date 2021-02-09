@@ -1,0 +1,230 @@
+<template>
+  <div class="app-container wrapper">
+    <div class="box-shadow" style="background-color: #fff;">
+      <div>
+        <el-steps :active="active" simple>
+          <el-step title="选择服务" icon="el-icon-menu" />
+          <el-step title="资源授权" icon="el-icon-s-claim" />
+          <el-step title="权限审阅" icon="el-icon-s-check" />
+        </el-steps>
+      </div>
+      <div class="form-content">
+        <el-divider />
+        <div style="margin-top:24px;margin-bottom:12px;">
+          <!-- choice service -->
+          <div>
+            <el-checkbox-group v-show="active === 0" v-model="choicedService" @change="choicedServiceChanged">
+              <el-checkbox v-for="options in serviceOptions" :key="options.id" :label="options">
+                <span>{{ options.description }} ({{ options.name }})</span>
+              </el-checkbox>
+            </el-checkbox-group>
+          </div>
+
+          <!-- perm -->
+          <div v-show="active === 1">
+            <div v-for="svr in choicedService" :key="svr.id">
+              <div style="margin-bottom:12px;">
+                <span class="f12"> {{ svr.description }} ({{ svr.name }})</span>
+              </div>
+              <el-table
+                v-loading="listLoading"
+                border
+                :data="svr.resources"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="name"
+                  label="资源名称"
+                  width="180"
+                />
+                <el-table-column
+                  label="操作方法"
+                >
+                  <template slot-scope="scope">
+                    <el-checkbox v-for="ac in generateActionOptions(scope.row)" :key="ac.id" v-model="choicePerm" :label="ac.id" @change="choicePermChanged">{{ ac.operation }}</el-checkbox>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <div v-show="active === 2">
+            <el-form ref="createFormData" :rules="rules" label-position="left" :model="createForm">
+              <el-form-item label="角色名称" :label-width="formLabelWidth" prop="name">
+                <el-input v-model="createForm.name" maxlength="40" show-word-limit />
+                <div class="input-tips">
+                  <span>推荐直接使用中文</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="角色描述" :label-width="formLabelWidth" prop="description">
+                <el-input
+                  v-model="createForm.description"
+                  type="textarea"
+                  :autosize="{ minRows: 4}"
+                  maxlength="200"
+                  show-word-limit
+                  placeholder=""
+                />
+              </el-form-item>
+              <el-form-item label="权限列表" :label-width="formLabelWidth" />
+            </el-form>
+          </div>
+        </div>
+
+        <div>
+          <div>
+            <el-button :disabled="active === 0" @click="previous">上一步</el-button>
+            <el-button v-if="active < 2" type="primary" :disabled="disableNext" @click="next">下一步</el-button>
+            <el-button v-if="active === 2" type="primary" style="width:68px;" @click="submit">完 成</el-button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<script>
+import { listResource } from '@/api/keyauth/role'
+import { queryService } from '@/api/keyauth/service'
+
+export default {
+  name: 'UserInitial',
+  components: { },
+  data() {
+    return {
+      listLoading: false,
+      service: [],
+      disableNext: true,
+      choicedService: [],
+      serviceOptions: [],
+      choicePerm: [],
+      createForm: {
+        name: '',
+        description: ''
+      },
+      active: 0,
+      formLabelWidth: '80px',
+      rules: {
+        name: [{ required: true, message: '请输入需要创建的角色名称', trigger: 'change' }]
+      }
+    }
+  },
+  mounted() {
+    this.listService()
+  },
+  methods: {
+    async listService() {
+      var resp = await queryService()
+      this.serviceOptions = resp.data.items
+    },
+    choicedServiceChanged() {
+      if (this.choicedService.length > 0) {
+        this.disableNext = false
+      } else {
+        this.disableNext = true
+      }
+    },
+    async listResource() {
+      // 构建查询参数
+      var service_ids = []
+      this.choicedService.forEach(item => {
+        service_ids.push(item.id)
+      })
+
+      // 查询所有服务的资源列表
+      var resp = await listResource({ service_ids: service_ids.join(','), permission_enable: true })
+      var svrResource = new Map()
+      resp.data.items.forEach(item => {
+        if (!svrResource.has(item.service_id)) {
+          svrResource.set(item.service_id, [])
+        }
+        svrResource.get(item.service_id).push(item)
+      })
+
+      // 被选择的服务添加资源列表
+      this.choicedService.forEach(item => {
+        item.resources = svrResource.get(item.id)
+      })
+    },
+    generateActionOptions(resource) {
+      var actions = []
+      if (resource.actions) {
+        resource.actions.forEach(item => {
+          actions.push({
+            operation: item,
+            id: `${resource.service_id},${resource.name},${item}`
+          })
+        })
+      }
+
+      return actions
+    },
+    choicePermChanged() {
+      if (this.choicePerm.length > 0) {
+        this.disableNext = false
+      } else {
+        this.disableNext = true
+      }
+    },
+    async next() {
+      switch (this.active) {
+        case 0:
+          if (this.choicedService.length > 0) {
+            if (this.choicePerm.length === 0) {
+              this.disableNext = true
+            }
+            this.active++
+            this.listLoading = true
+            await this.listResource()
+            this.listLoading = false
+          }
+          break
+        case 1:
+          if (this.choicePerm.length > 0) {
+            this.active++
+          }
+          break
+        case 2:
+          console.log('2')
+          break
+      }
+    },
+    previous() {
+      if (this.active-- < 0) this.active = 0
+    },
+    async submit() {
+      // var upResp = await listResource({ profile: this.profileForm })
+      // console.log(upResp)
+      // var jdResp = await joinDepartment(this.departForm)
+      // console.log(jdResp)
+      // 调转到首页
+      this.$router.push({ path: '/' })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.form-content {
+  padding: 0px 24px 24px 24px;
+}
+
+.tips-content {
+    padding: 0px 0px 10px 0px;
+    font-size: 12px;
+    color: #303133;
+}
+
+.wrapper ::v-deep .el-steps--simple {
+  background: #fff;
+}
+
+.wrapper ::v-deep .el-step__title {
+  font-size: 14px;
+}
+
+.wrapper ::v-deep .el-divider--horizontal {
+  margin: 2px 0px;
+}
+
+</style>
