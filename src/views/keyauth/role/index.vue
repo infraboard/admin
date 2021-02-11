@@ -161,12 +161,8 @@ export default {
       }
     },
     handleCreate() {
-      this.dialogFormType = 'create'
-      this.resetForm()
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      // 调转到角色创建页面
+      this.$router.push({ path: '/permission/create-role' })
     },
     submit() {
       this.$refs['dataForm'].validate((valid) => {

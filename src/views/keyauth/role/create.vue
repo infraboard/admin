@@ -246,12 +246,16 @@ export default {
       if (this.active-- < 0) this.active = 0
     },
     async submit() {
+      this.$refs['createFormData'].validate((valid) => {
+        if (valid) {
+          // 调转到角色列表
+          this.$router.push({ path: '/permission/role' })
+        }
+      })
       // var upResp = await listResource({ profile: this.profileForm })
       // console.log(upResp)
       // var jdResp = await joinDepartment(this.departForm)
       // console.log(jdResp)
-      // 调转到首页
-      this.$router.push({ path: '/' })
     }
   }
 }
