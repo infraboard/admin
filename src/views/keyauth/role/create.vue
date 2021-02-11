@@ -65,7 +65,29 @@
                   placeholder=""
                 />
               </el-form-item>
-              <el-form-item label="权限列表" :label-width="formLabelWidth" />
+              <el-form-item label="权限列表" :label-width="formLabelWidth">
+                <el-table
+                  border
+                  :data="choicedService"
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop="name"
+                    label="服务名称"
+                    width="180"
+                  />
+                  <el-table-column
+                    label="授权条目"
+                  >
+                    <template slot-scope="scope">
+                      <li v-for="item in getServiceChoicedPerm(scope.row.id)" :key="item.resource" style="display: flex">
+                        <div style="width:120px;">{{ item.resource }}</div>
+                        <div>{{ item.actions.join(' ') }}</div>
+                      </li>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-form-item>
             </el-form>
           </div>
         </div>
@@ -165,6 +187,37 @@ export default {
       } else {
         this.disableNext = true
       }
+    },
+    getServiceChoicedPerm(serviceId) {
+      var rns = []
+      var acs = []
+
+      this.choicePerm.forEach(item => {
+        var choiced = item.split(',')
+        var sid = choiced[0]
+        var rn = choiced[1]
+        var ac = choiced[2]
+
+        if (sid === serviceId) {
+          var rnIndex = rns.indexOf(rn)
+          if (rnIndex !== -1) {
+            acs[rnIndex].push(ac)
+          } else {
+            rns.push(rn)
+            acs.push([ac])
+          }
+        }
+      })
+
+      var resources = []
+      for (const i in rns) {
+        resources.push({
+          resource: rns[i],
+          actions: acs[i]
+        })
+      }
+
+      return resources
     },
     async next() {
       switch (this.active) {
