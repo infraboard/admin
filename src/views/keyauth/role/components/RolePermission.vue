@@ -34,7 +34,8 @@
       />
       <el-table-column label="效力" prop="name" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span>{{ row.effect }}</span>
+          <svg-icon v-if="row.effect.toLowerCase() === 'allow'" icon-class="allow" />
+          <svg-icon v-else icon-class="deny" />
         </template>
       </el-table-column>
       <el-table-column label="资源名称" prop="description" align="center" min-width="110">

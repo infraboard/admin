@@ -80,7 +80,7 @@
                     label="授权条目"
                   >
                     <template slot-scope="scope">
-                      <li v-for="item in getServiceChoicedPerm(scope.row.id)" :key="item.resource" style="display: flex">
+                      <li v-for="item in scope.row.resources" :key="item.resource" style="display: flex">
                         <div style="width:120px;">{{ item.resource }}</div>
                         <div>{{ item.actions.join(' ') }}</div>
                       </li>
@@ -96,7 +96,7 @@
           <div>
             <el-button :disabled="active === 0" @click="previous">上一步</el-button>
             <el-button v-if="active < 2" type="primary" :disabled="disableNext" @click="next">下一步</el-button>
-            <el-button v-if="active === 2" type="primary" style="width:68px;" @click="submit">完 成</el-button>
+            <el-button v-if="active === 2" type="primary" :loading="createRoleLoading" style="width:68px;" @click="submit">完 成</el-button>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { listResource } from '@/api/keyauth/role'
+import { listResource, createRole } from '@/api/keyauth/role'
 import { queryService } from '@/api/keyauth/service'
 
 export default {
@@ -114,6 +114,7 @@ export default {
   components: { },
   data() {
     return {
+      createRoleLoading: false,
       listLoading: false,
       service: [],
       disableNext: true,
@@ -122,7 +123,8 @@ export default {
       choicePerm: [],
       createForm: {
         name: '',
-        description: ''
+        description: '',
+        permissions: []
       },
       active: 0,
       formLabelWidth: '80px',
@@ -188,36 +190,37 @@ export default {
         this.disableNext = true
       }
     },
-    getServiceChoicedPerm(serviceId) {
-      var rns = []
-      var acs = []
+    generateChoicePermtoService() {
+      this.choicedService.forEach(svr => {
+        var rns = []
+        var acs = []
 
-      this.choicePerm.forEach(item => {
-        var choiced = item.split(',')
-        var sid = choiced[0]
-        var rn = choiced[1]
-        var ac = choiced[2]
+        this.choicePerm.forEach(item => {
+          var choiced = item.split(',')
+          var sid = choiced[0]
+          var rn = choiced[1]
+          var ac = choiced[2]
 
-        if (sid === serviceId) {
-          var rnIndex = rns.indexOf(rn)
-          if (rnIndex !== -1) {
-            acs[rnIndex].push(ac)
-          } else {
-            rns.push(rn)
-            acs.push([ac])
+          if (sid === svr.id) {
+            var rnIndex = rns.indexOf(rn)
+            if (rnIndex !== -1) {
+              acs[rnIndex].push(ac)
+            } else {
+              rns.push(rn)
+              acs.push([ac])
+            }
           }
-        }
-      })
-
-      var resources = []
-      for (const i in rns) {
-        resources.push({
-          resource: rns[i],
-          actions: acs[i]
         })
-      }
 
-      return resources
+        var resources = []
+        for (const i in rns) {
+          resources.push({
+            resource: rns[i],
+            actions: acs[i]
+          })
+        }
+        svr.resources = resources
+      })
     },
     async next() {
       switch (this.active) {
@@ -235,10 +238,10 @@ export default {
         case 1:
           if (this.choicePerm.length > 0) {
             this.active++
+            this.generateChoicePermtoService()
           }
           break
         case 2:
-          console.log('2')
           break
       }
     },
@@ -246,16 +249,29 @@ export default {
       if (this.active-- < 0) this.active = 0
     },
     async submit() {
-      this.$refs['createFormData'].validate((valid) => {
+      this.$refs['createFormData'].validate(async(valid) => {
         if (valid) {
+          // 生成参数
+          this.choicedService.forEach(svr => {
+            svr.resources.forEach(item => {
+              this.createForm.permissions.push({
+                'effect': 'allow',
+                'service_id': svr.id,
+                'resource_name': item.resource,
+                'label_key': 'action',
+                'label_values': item.actions
+              })
+            })
+          })
+          // 创建角色
+          this.createRoleLoading = true
+          await createRole(this.createForm)
+          this.createRoleLoading = false
+
           // 调转到角色列表
           this.$router.push({ path: '/permission/role' })
         }
       })
-      // var upResp = await listResource({ profile: this.profileForm })
-      // console.log(upResp)
-      // var jdResp = await joinDepartment(this.departForm)
-      // console.log(jdResp)
     }
   }
 }
