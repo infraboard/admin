@@ -29,7 +29,7 @@
               <el-table
                 v-loading="listLoading"
                 border
-                :data="svr.resources"
+                :data="svr.resourceOptions"
                 style="width: 100%"
               >
                 <el-table-column
@@ -148,7 +148,7 @@ export default {
         this.disableNext = true
       }
     },
-    async listResource() {
+    async listResourceOptions() {
       // 构建查询参数
       var service_ids = []
       this.choicedService.forEach(item => {
@@ -167,7 +167,7 @@ export default {
 
       // 被选择的服务添加资源列表
       this.choicedService.forEach(item => {
-        item.resources = svrResource.get(item.id)
+        item.resourceOptions = svrResource.get(item.id)
       })
     },
     generateActionOptions(resource) {
@@ -231,7 +231,7 @@ export default {
             }
             this.active++
             this.listLoading = true
-            await this.listResource()
+            await this.listResourceOptions()
             this.listLoading = false
           }
           break
