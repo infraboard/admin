@@ -32,18 +32,18 @@
         width="45"
         align="center"
       />
-      <el-table-column label="效力" prop="name" align="center" min-width="110">
+      <el-table-column label="效力" prop="name" align="center" width="80">
         <template slot-scope="{row}">
           <svg-icon v-if="row.effect.toLowerCase() === 'allow'" icon-class="allow" />
           <svg-icon v-else icon-class="deny" />
         </template>
       </el-table-column>
-      <el-table-column label="资源名称" prop="description" align="center" min-width="110">
+      <el-table-column label="资源名称" prop="description" align="center" width="180">
         <template slot-scope="{row}">
           <span>{{ row.resource_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签建" min-width="150px" align="center">
+      <el-table-column label="标签建" width="80px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.label_key }}</span>
         </template>
@@ -51,10 +51,12 @@
       <el-table-column label="标签值" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
           <span v-if="row.match_all">所有</span>
-          <span v-else>{{ row.label_values }}</span>
+          <span v-else>
+            <el-tag v-for="action in row.label_values" :key="action" style="margin-right: 12px;">{{ action }}</el-tag>
+          </span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
             移除权限
