@@ -7,10 +7,13 @@
       <div class="setting-form">
         <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
           <el-form-item label="状态">
-            <div style="display:flex">
+            <div v-if="connectOK" style="display:flex">
               <div style="margin-top:11px;width:48px;">
                 <div class="point point-flicker" />
               </div>
+            </div>
+            <div v-else>
+              <span class="f12">-</span>
             </div>
           </el-form-item>
           <el-form-item label="启用">
@@ -146,7 +149,7 @@ export default {
         username_attribute: 'uid',
         mail_attribute: 'mail',
         display_name_attribute: 'displayname',
-        enabled: true
+        enabled: false
       },
       loginCheckForm: {
         grant_type: 'ldap',
@@ -155,12 +158,12 @@ export default {
       },
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
-        user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
+        user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'change' }],
+        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'change' }]
       },
       checkLoginrules: {
-        username: [{ required: true, message: '请输入LDAP管理用户', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'blur' }]
+        username: [{ required: true, message: '请输入LDAP用户', trigger: 'change' }],
+        password: [{ required: true, message: '请输入LDAP用户密码', trigger: 'change' }]
       }
     }
   },
