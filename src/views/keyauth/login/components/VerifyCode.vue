@@ -159,7 +159,7 @@ export default {
         this.form.username = this.username
         this.form.password = this.password
         var resp = await sendVerifyCodeByPass(this.form)
-        this.message = resp.data
+        this.message = resp.data.message
         this.times = 60
         this.show = false
         this.timer = setInterval(() => {
@@ -237,7 +237,7 @@ export default {
         if (index === 5) {
           if (this.input.join('').length === 6) {
             document.activeElement.blur()
-            this.$emit('change', this.input.join(''))
+            this.inputVerifyCodeDown()
           }
         }
       } else {
@@ -259,7 +259,7 @@ export default {
       } else if (e.key === 'Enter') {
         if (this.input.join('').length === 6) {
           document.activeElement.blur()
-          this.$emit('change', this.input.join(''))
+          this.inputVerifyCodeDown()
         }
       }
     },
@@ -269,13 +269,22 @@ export default {
         if (str.toString().length === 6) {
           this.pasteResult = str.split('')
           document.activeElement.blur()
-          this.$emit('change', this.input.join(''))
+          this.inputVerifyCodeDown()
           this.pasteResult = []
         } else {
           // 如果粘贴内容不合规，清除所有内容
           this.input[0] = new Array(6)
         }
       })
+    },
+    inputVerifyCodeDown() {
+      this.$emit('change', this.input.join(''))
+      this.input[0] = null
+      this.input[1] = null
+      this.input[2] = null
+      this.input[3] = null
+      this.input[4] = null
+      this.input[5] = null
     }
   }
 }
