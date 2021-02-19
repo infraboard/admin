@@ -94,12 +94,12 @@ export default {
         content: '该邮件为验证邮件, 请忽略'
       },
       rules: {
-        host: [{ required: true, message: '请输入邮件(SMTP)服务器地址', trigger: 'blur' }],
-        username: [{ required: true, message: '请输入发送邮件的用户名称', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入发送邮件的用户密码', trigger: 'blur' }]
+        host: [{ required: true, message: '请输入邮件(SMTP)服务器地址', trigger: 'change' }],
+        username: [{ required: true, message: '请输入发送邮件的用户名称', trigger: 'change' }],
+        password: [{ required: true, message: '请输入发送邮件的用户密码', trigger: 'change' }]
       },
       checkSendRules: {
-        to: [{ required: true, message: '请输入收件人邮箱地址', trigger: 'blur' }]
+        to: [{ required: true, message: '请输入收件人邮箱地址', trigger: 'change' }]
       }
     }
   },

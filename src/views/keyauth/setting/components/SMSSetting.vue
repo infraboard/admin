@@ -122,16 +122,16 @@ export default {
         param_set: ['666666', '30']
       },
       rules: {
-        'tencent.secret_id': [{ required: true, message: '请输入腾讯云Secret ID', trigger: 'blur' }],
-        'tencent.secret_key': [{ required: true, message: '请输入腾讯云Secret Key', trigger: 'blur' }],
-        'tencent.app_id': [{ required: true, message: '请输入腾讯云短信服务APP ID(短信服务)', trigger: 'blur' }],
-        'tencent.template_id': [{ required: true, message: '请输入腾讯云短信模板 ID(短信服务)', trigger: 'blur' }],
-        'tencent.sign': [{ required: true, message: '请输入腾讯云短信签名(短信服务)', trigger: 'blur' }]
+        'tencent.secret_id': [{ required: true, message: '请输入腾讯云Secret ID', trigger: 'change' }],
+        'tencent.secret_key': [{ required: true, message: '请输入腾讯云Secret Key', trigger: 'change' }],
+        'tencent.app_id': [{ required: true, message: '请输入腾讯云短信服务APP ID(短信服务)', trigger: 'change' }],
+        'tencent.template_id': [{ required: true, message: '请输入腾讯云短信模板 ID(短信服务)', trigger: 'change' }],
+        'tencent.sign': [{ required: true, message: '请输入腾讯云短信签名(短信服务)', trigger: 'change' }]
       },
       checkSendRules: {
-        phones: [{ required: true, message: '请输入短信接收人电话号码', trigger: 'blur' }],
-        template_id: [{ required: true, message: '请输入运营商短信模板ID', trigger: 'blur' }],
-        param_set: [{ required: true, message: '请输入短信模板对应参数', trigger: 'blur' }]
+        phones: [{ required: true, message: '请输入短信接收人电话号码', trigger: 'change' }],
+        template_id: [{ required: true, message: '请输入运营商短信模板ID', trigger: 'change' }],
+        param_set: [{ required: true, message: '请输入短信模板对应参数', trigger: 'change' }]
       }
     }
   },
