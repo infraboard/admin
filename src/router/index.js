@@ -125,6 +125,14 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'domain',
+        component: () => import('@/views/keyauth/sub-account/domain'),
+        name: 'UserDomain',
+        meta: {
+          title: '登录安全',
+          affix: true }
+      },
+      {
         path: 'department',
         component: () => import('@/views/keyauth/department'),
         name: 'DepartmentList',

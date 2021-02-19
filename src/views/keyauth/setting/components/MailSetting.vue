@@ -109,7 +109,7 @@ export default {
       text: '加载中...',
       spinner: 'el-icon-loading',
       target: '.sub-main',
-      body: true
+      body: false
     })
     this.getSystemConfig()
   },
@@ -211,8 +211,11 @@ export default {
   margin-top: 12px;
 }
 
+.sub-main {
+    padding: 0 20px 0 20px;
+}
+
 .el-main {
-  // background-color: #E9EEF3;
   display: flexbox;
   color: #333;
   text-align: center;

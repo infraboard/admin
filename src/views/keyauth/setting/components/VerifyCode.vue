@@ -91,7 +91,7 @@ export default {
       text: '加载中...',
       spinner: 'el-icon-loading',
       target: '.sub-main',
-      body: true
+      body: false
     })
     this.getSystemConfig()
   },
@@ -158,6 +158,17 @@ export default {
 
 .append-text {
   margin-left: 4px;
+}
+
+.sub-main {
+    padding: 0 20px 0 20px;
+}
+
+.el-main {
+  display: flexbox;
+  color: #333;
+  text-align: center;
+  line-height: 40px;
 }
 
 </style>
