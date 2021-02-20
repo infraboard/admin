@@ -44,7 +44,7 @@
         </div>
 
         <el-form-item label="配置验证">
-          <el-button @click="handleCheckSend">发送测试</el-button>
+          <el-button type="primary" @click="handleCheckSend">发送测试</el-button>
           <div class="input-tips">验证通过后才能保存配置</div>
         </el-form-item>
         <el-form-item class="text-center">

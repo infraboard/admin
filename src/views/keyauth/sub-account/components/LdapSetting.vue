@@ -54,7 +54,7 @@
             </div>
           </el-form-item>
           <el-form-item label="配置验证">
-            <el-button :loading="checkConnLoading" @click="checkDomainLDAP">连接测试</el-button>
+            <el-button type="primary" :loading="checkConnLoading" @click="checkDomainLDAP">连接测试</el-button>
             <div class="input-tips">验证通过后才能保存配置</div>
           </el-form-item>
           <el-divider content-position="left">服务状态</el-divider>
@@ -73,7 +73,7 @@
             <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
           </el-form-item>
           <el-form-item label="测试">
-            <el-button @click="handleCheckLDAPLogin">登录测试</el-button>
+            <el-button type="primary" @click="handleCheckLDAPLogin">登录测试</el-button>
             <div class="input-tips">测试用户能否登录</div>
           </el-form-item>
           <el-form-item class="text-center">
