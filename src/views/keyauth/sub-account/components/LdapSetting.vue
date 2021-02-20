@@ -6,7 +6,7 @@
       </div>
       <div class="setting-form">
         <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
-          <el-divider content-position="left">LDAP配置</el-divider>
+          <el-divider content-position="left">服务配置</el-divider>
           <el-form-item label="服务地址" prop="url">
             <el-input v-model="form.url" @input="objectUpdate('url')" />
             <div class="input-tips">LDAP服务端地址, 比如ldap://127.0.0.1:389</div>
@@ -57,7 +57,7 @@
             <el-button :loading="checkConnLoading" @click="checkDomainLDAP">连接测试</el-button>
             <div class="input-tips">验证通过后才能保存配置</div>
           </el-form-item>
-          <el-divider content-position="left">LDAP状态</el-divider>
+          <el-divider content-position="left">服务状态</el-divider>
           <el-form-item label="状态">
             <div v-if="connectOK" style="display:flex">
               <div style="margin-top:11px;width:48px;">
