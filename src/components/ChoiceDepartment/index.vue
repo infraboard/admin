@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     queryRootDepartment() {
-      listQuery.parent_id = ''
+      listQuery.parent_id = '.'
       queryDepartment(listQuery).then(resp => {
         this.total = resp.data.total
         resp.data.items.forEach(item => {
@@ -73,31 +73,24 @@ export default {
     },
     async loadOptions({ action, parentNode, callback }) {
       console.log(parentNode)
+      parentNode.children = []
       if (action === LOAD_CHILDREN_OPTIONS) {
-        switch (parentNode.id) {
-          case 'success': {
-            listQuery.parent_id = parentNode.id
-            const resp = await queryDepartment(listQuery)
-            this.total = resp.data.total
-            resp.data.items.forEach(item => {
-              item.label = item.name + ' (' + item.manager + ')'
-              if (item.sub_count !== 0) {
-                item.children = null
-              }
-              parentNode.children.push(item)
-            })
-            break
-          }
-          case 'no-children': {
-            parentNode.children = []
-            callback()
-            break
-          }
-          case 'failure': {
-            callback(new Error('Failed to load options: network error.'))
-            break
-          }
-          default: /* empty */
+        try {
+          listQuery.parent_id = parentNode.id
+          const resp = await queryDepartment(listQuery)
+          this.total = resp.data.total
+          const children = []
+          resp.data.items.forEach(item => {
+            item.label = item.name + ' (' + item.manager + ')'
+            if (item.sub_count !== 0) {
+              item.children = null
+            }
+            parentNode.children.push(item)
+            children.push(item)
+          })
+        } catch (error) {
+          console.log(error)
+          callback(new Error(`Failed to load options: ${error}`))
         }
       }
     }
