@@ -48,7 +48,6 @@ export default {
         return this.user
       },
       set(val) {
-        console.log(val)
         this.$emit('update:user', val)
         this.$emit('change', val)
       }

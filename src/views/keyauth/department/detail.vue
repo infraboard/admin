@@ -12,11 +12,11 @@
               <el-button type="text" size="mini" @click="handleCancel">取消</el-button>
             </div>
             <div v-show="!isEdit">
-              <el-button type="text" size="mini" @click="handleCreate(current.id)">新增</el-button>
+              <el-button type="text" size="mini" @click="handleCreate(current.id)">新增子部门</el-button>
               <el-divider direction="vertical" />
-              <el-button type="text" size="mini" :loading="deleteLoading" @click="handleDelete">删除</el-button>
+              <el-button type="text" size="mini" style="color:#F56C6C" :loading="deleteLoading" @click="handleDelete">删除</el-button>
               <el-divider direction="vertical" />
-              <el-button type="text" size="mini" @click="handleUpdate">编辑</el-button>
+              <el-button type="text" size="mini" style="color:#E6A23C" @click="handleUpdate">编辑</el-button>
             </div>
           </div>
         </el-col>
@@ -36,6 +36,7 @@
                 placeholder="请输入部门名称"
                 maxlength="60"
                 show-word-limit
+                style="width:80%"
               />
             </div>
           </el-row>
@@ -49,6 +50,7 @@
                 placeholder="请输入部门负责人"
                 maxlength="60"
                 show-word-limit
+                style="width:80%"
               />
             </div>
           </el-row>
@@ -162,7 +164,6 @@ export default {
       createLoading: false,
       deleteLoading: false,
       dialogFormVisible: false,
-      dialogFormType: 'create',
       isEdit: false,
       form: {
         name: '',
@@ -177,7 +178,7 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
+      return '新增子部门'
     }
   },
   watch: {
@@ -225,7 +226,6 @@ export default {
       }
     },
     handleCreate(parentId) {
-      this.dialogFormType = 'create'
       this.resetForm()
       this.form.parent_id = parentId
       this.dialogFormVisible = true
@@ -236,12 +236,7 @@ export default {
     submit() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.dialogFormType === 'create') {
-            // 新建
-            this.create()
-          } else {
-            // 更新
-          }
+          this.create()
         }
       })
     },
@@ -252,36 +247,28 @@ export default {
       })
       return datas
     },
-    create() {
-      // 创建请求
+    async create() {
       this.createLoading = true
-      if (this.form.parent_id) {
-        this.currentNode.loading = true
-      }
-      createDepartment(this.form).then(resp => {
-        this.dialogFormVisible = false
-        if (!this.form.parent_id) {
-          this.departmentList.push(resp.data)
-        }
-
-        this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(resp.data))
-        console.log(this.currentNode)
+      try {
+        var resp = await createDepartment(this.form)
+        this.$emit('create', resp.data)
         this.$notify({
           title: '成功',
           message: '创建成功',
           type: 'success',
           duration: 2000
         })
-
+        this.dialogFormVisible = false
+      } catch (error) {
+        this.$notify({
+          title: '成功',
+          message: `创建失败: ${error}`,
+          type: 'error',
+          duration: 2000
+        })
+      } finally {
         this.createLoading = false
-        this.currentNode.loading = false
-        // 设置创建节点为当前节点
-        this.$refs.tree.setCurrentKey(resp.data.id)
-        this.handleChanged()
-      }).catch(() => {
-        this.createLoading = false
-        this.currentNode.loading = false
-      })
+      }
     },
     handleDelete() {
       if (this.current) {

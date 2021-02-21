@@ -24,7 +24,7 @@
         </el-tree>
       </el-aside>
       <el-main style="padding:0px 0px 0px 10px;">
-        <department-detail :department="current" />
+        <department-detail :department="current" :create="updateCreateSub" />
       </el-main>
     </el-container>
 
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { queryDepartment, querySubDepartment, createDepartment, deleteDepartment, updateDepartment } from '@/api/keyauth/department'
+import { queryDepartment, querySubDepartment, createDepartment } from '@/api/keyauth/department'
 import DepartmentDetail from './detail'
 import ChoiceSubuser from '@/components/ChoiceSubuser'
 
@@ -59,7 +59,6 @@ export default {
   directives: { },
   data() {
     return {
-      activeName: 'first',
       current: {},
       props: {
         children: 'children',
@@ -70,7 +69,6 @@ export default {
       departmentList: [],
       total: 0,
       createLoading: false,
-      deleteLoading: '',
       listDepartmentLoading: false,
       listQuery: {
         page_number: 1,
@@ -81,8 +79,6 @@ export default {
         with_role: true
       },
       dialogFormVisible: false,
-      dialogFormType: 'create',
-      isEdit: false,
       form: {
         name: '',
         parent_id: '',
@@ -96,7 +92,7 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.dialogFormType === 'create' ? '新增部门' : '编辑部门'
+      return '新增顶级部门'
     },
     currentNode() {
       return this.$refs.tree.getNode(this.current.id)
@@ -121,6 +117,7 @@ export default {
     },
     getDepartmentList() {
       // 获取顶层部门
+      this.listQuery.parent_id = '.'
       queryDepartment(this.listQuery).then(resp => {
         this.departmentList = []
         resp.data.items.forEach(item => {
@@ -138,7 +135,6 @@ export default {
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
       this.tableKey = this.current.id
-      this.isEdit = false
     },
     resetForm() {
       this.form = {
@@ -159,12 +155,7 @@ export default {
     submit() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.dialogFormType === 'create') {
-            // 新建
-            this.create()
-          } else {
-            // 更新
-          }
+          this.create()
         }
       })
     },
@@ -188,7 +179,6 @@ export default {
         }
 
         this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(resp.data))
-        console.log(this.currentNode)
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -206,54 +196,57 @@ export default {
         this.currentNode.loading = false
       })
     },
-    handleDelete() {
-      if (this.currentNode) {
-        this.currentNode.loading = true
-        deleteDepartment(this.current.id).then(resp => {
-          // 从tree中清除当前节点
-          this.currentNode.loading = false
-          this.$refs.tree.remove(this.current.id)
-
-          // 设置下一个被选中的节点
-          const parent = this.$refs.tree.getNode(this.current.parent_id)
-          if (parent) {
-            const childCount = parent.childNodes.length
-            if (childCount > 0) {
-              this.current = parent.childNodes[childCount - 1].data
-            } else {
-              this.current = parent.data
-            }
-          } else {
-            // 顶层部门
-            const topCount = this.departmentList.length
-            if (topCount > 0) {
-              this.current = this.departmentList[topCount - 1]
-            }
-          }
-          this.$refs.tree.setCurrentKey(this.current.id)
-        }).catch(() => {
-          this.currentNode.loading = false
-        })
-      }
-    },
-    handleUpdate() {
-      this.isEdit = true
-      this.form = Object.assign({}, this.current) // copy obj
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    handleCancel() {
-      this.isEdit = false
-    },
-    handleSave() {
-      updateDepartment(this.current.id, this.form).then(resp => {
-        // 更新视图
-        this.current = resp.data
-        this.currentNode.data = resp.data
-        this.isEdit = false
-      })
+    updateCreateSub(data) {
+      this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(data))
     }
+    // handleDelete() {
+    //   if (this.currentNode) {
+    //     this.currentNode.loading = true
+    //     deleteDepartment(this.current.id).then(resp => {
+    //       // 从tree中清除当前节点
+    //       this.currentNode.loading = false
+    //       this.$refs.tree.remove(this.current.id)
+
+    //       // 设置下一个被选中的节点
+    //       const parent = this.$refs.tree.getNode(this.current.parent_id)
+    //       if (parent) {
+    //         const childCount = parent.childNodes.length
+    //         if (childCount > 0) {
+    //           this.current = parent.childNodes[childCount - 1].data
+    //         } else {
+    //           this.current = parent.data
+    //         }
+    //       } else {
+    //         // 顶层部门
+    //         const topCount = this.departmentList.length
+    //         if (topCount > 0) {
+    //           this.current = this.departmentList[topCount - 1]
+    //         }
+    //       }
+    //       this.$refs.tree.setCurrentKey(this.current.id)
+    //     }).catch(() => {
+    //       this.currentNode.loading = false
+    //     })
+    //   }
+    // },
+    // handleUpdate() {
+    //   this.isEdit = true
+    //   this.form = Object.assign({}, this.current) // copy obj
+    //   // this.$nextTick(() => {
+    //   //   this.$refs['dataForm'].clearValidate()
+    //   // })
+    // }
+    // handleCancel() {
+    //   this.isEdit = false
+    // }
+    // handleSave() {
+    //   updateDepartment(this.current.id, this.form).then(resp => {
+    //     // 更新视图
+    //     this.current = resp.data
+    //     this.currentNode.data = resp.data
+    //     this.isEdit = false
+    //   })
+    // }
   }
 }
 </script>
