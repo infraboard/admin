@@ -15,7 +15,7 @@
           :load="loadNode"
           lazy
           highlight-current
-          :expand-on-click-node="false"
+          :expand-on-click-node="true"
           @current-change="handleChanged"
         >
           <span slot-scope="{ data }" class="f12">
@@ -24,7 +24,7 @@
         </el-tree>
       </el-aside>
       <el-main style="padding:0px 0px 0px 10px;">
-        <department-detail :department="current" :create="updateCreateSub" />
+        <department-detail :department="current" @create="updateCreateSub" />
       </el-main>
     </el-container>
 
@@ -197,6 +197,7 @@ export default {
       })
     },
     updateCreateSub(data) {
+      data.leaf = true
       this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(data))
     }
     // handleDelete() {
