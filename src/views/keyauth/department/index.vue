@@ -134,6 +134,7 @@ export default {
     },
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
+      console.log(this.current.id)
       this.tableKey = this.current.id
     },
     resetForm() {
@@ -143,10 +144,9 @@ export default {
         manager: ''
       }
     },
-    handleCreate(parentId) {
+    handleCreate() {
       this.dialogFormType = 'create'
       this.resetForm()
-      this.form.parent_id = parentId
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -166,37 +166,36 @@ export default {
       })
       return datas
     },
-    create() {
-      // 创建请求
+    async create() {
       this.createLoading = true
-      if (this.form.parent_id) {
-        this.currentNode.loading = true
-      }
-      createDepartment(this.form).then(resp => {
+      try {
+        var resp = await createDepartment(this.form)
+        resp.data.leaf = true
+        this.departmentList.unshift(resp.data)
         this.dialogFormVisible = false
-        if (!this.form.parent_id) {
-          this.departmentList.push(resp.data)
-        }
-
-        this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(resp.data))
+        // 设置创建节点为当前节点
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(resp.data.id)
+          this.handleChanged()
+        })
+      } catch (error) {
         this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
+          title: '失败',
+          message: `创建失败: ${error}`,
+          type: 'error',
           duration: 2000
         })
-
+      } finally {
         this.createLoading = false
-        this.currentNode.loading = false
-        // 设置创建节点为当前节点
-        this.$refs.tree.setCurrentKey(resp.data.id)
-        this.handleChanged()
-      }).catch(() => {
-        this.createLoading = false
-        this.currentNode.loading = false
-      })
+      }
     },
     updateCreateSub(data) {
+      if (this.currentNode.isLeaf) {
+        this.currentNode.data.leaf = false
+        this.currentNode.isLeaf = false
+        this.currentNode.expanded = true
+        console.log(this.currentNode)
+      }
       data.leaf = true
       this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(data))
     }
@@ -236,9 +235,6 @@ export default {
     //   // this.$nextTick(() => {
     //   //   this.$refs['dataForm'].clearValidate()
     //   // })
-    // }
-    // handleCancel() {
-    //   this.isEdit = false
     // }
     // handleSave() {
     //   updateDepartment(this.current.id, this.form).then(resp => {
