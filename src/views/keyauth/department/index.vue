@@ -24,7 +24,7 @@
         </el-tree>
       </el-aside>
       <el-main style="padding:0px 0px 0px 10px;">
-        <department-detail :department="current" @created="updateCreateSub" @deleted="handleDelete" />
+        <department-detail :department="current" @created="updateCreateSub" @deleted="handleDelete" @updated="handleUpdate" />
       </el-main>
     </el-container>
 
@@ -220,32 +220,20 @@ export default {
           }
         } else {
           // 顶层部门
-          console.log(this.departmentList)
           const topCount = this.departmentList.length
           if (topCount > 0) {
             this.current = this.departmentList[0]
           }
         }
 
-        console.log(this.current)
         this.$refs.tree.setCurrentKey(this.current.id)
       }
+    },
+    handleUpdate(data) {
+      // 更新视图
+      this.current = data
+      this.currentNode.data = data
     }
-    // handleUpdate() {
-    //   this.isEdit = true
-    //   this.form = Object.assign({}, this.current) // copy obj
-    //   // this.$nextTick(() => {
-    //   //   this.$refs['dataForm'].clearValidate()
-    //   // })
-    // }
-    // handleSave() {
-    //   updateDepartment(this.current.id, this.form).then(resp => {
-    //     // 更新视图
-    //     this.current = resp.data
-    //     this.currentNode.data = resp.data
-    //     this.isEdit = false
-    //   })
-    // }
   }
 }
 </script>

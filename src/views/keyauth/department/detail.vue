@@ -8,7 +8,7 @@
         <el-col :xs="12" :sm="12" :lg="12">
           <div class="fr">
             <div v-show="isEdit">
-              <el-button type="text" size="mini" @click="handleSave">保存</el-button>
+              <el-button type="text" size="mini" :loading="updateLoading" @click="handleSave">保存</el-button>
               <el-button type="text" size="mini" @click="handleCancel">取消</el-button>
             </div>
             <div v-show="!isEdit">
@@ -55,36 +55,6 @@
             </div>
           </el-row>
           <el-row class="attr-row">
-            <span class="attr-key">部门人数</span>
-            <span class="attr-value">{{ current.user_count }}</span>
-          </el-row>
-        </el-col>
-        <!-- 第二列 -->
-        <el-col :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">部门ID</span>
-            <span class="attr-value">{{ current.id }}</span>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">上级部门</span>
-            <div class="attr-value">
-              <span v-if="current.parent_id">
-                {{ current.parent_id }}</span>
-              <span v-else>-</span>
-            </div>
-          </el-row>
-          <el-row class="attr-row">
-            <span class="attr-key">子部门数</span>
-            <span class="attr-value">{{ current.sub_count }}</span>
-          </el-row>
-        </el-col>
-        <!-- 第三列 -->
-        <el-col :xs="18" :sm="18" :lg="8">
-          <el-row class="attr-row">
-            <span class="attr-key">创建时间</span>
-            <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          </el-row>
-          <el-row class="attr-row">
             <span class="attr-key">基础角色</span>
             <div class="attr-value">
               <span v-if="current.default_role">
@@ -94,6 +64,36 @@
               </span>
               <span v-else>-</span>
             </div>
+          </el-row>
+        </el-col>
+        <!-- 第二列 -->
+        <el-col :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">部门ID</span>
+            <span class="attr-value">{{ current.id }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">子部门数</span>
+            <span class="attr-value">{{ current.sub_count }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">上级部门</span>
+            <div class="attr-value">
+              <span v-if="current.parent_id">
+                {{ current.parent_id }}</span>
+              <span v-else>-</span>
+            </div>
+          </el-row>
+        </el-col>
+        <!-- 第三列 -->
+        <el-col :xs="18" :sm="18" :lg="8">
+          <el-row class="attr-row">
+            <span class="attr-key">创建时间</span>
+            <span class="attr-value">{{ current.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </el-row>
+          <el-row class="attr-row">
+            <span class="attr-key">部门人数</span>
+            <span class="attr-value">{{ current.user_count }}</span>
           </el-row>
         </el-col>
       </el-row>
@@ -163,6 +163,7 @@ export default {
       },
       createLoading: false,
       deleteLoading: false,
+      updateLoading: false,
       dialogFormVisible: false,
       isEdit: false,
       form: {
@@ -185,6 +186,7 @@ export default {
     department: {
       handler: function(val, oldVal) {
         this.current = val
+        this.isEdit = false
         this.updateURL()
       },
       immediate: true
@@ -297,20 +299,32 @@ export default {
     handleUpdate() {
       this.isEdit = true
       this.form = Object.assign({}, this.current) // copy obj
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
     },
     handleCancel() {
       this.isEdit = false
     },
-    handleSave() {
-      updateDepartment(this.current.id, this.form).then(resp => {
-        // 更新视图
-        this.current = resp.data
-        this.currentNode.data = resp.data
+    async handleSave() {
+      this.updateLoading = true
+      try {
+        var resp = await updateDepartment(this.current.id, this.form)
+        this.$emit('updated', resp.data)
+        this.$notify({
+          title: '成功',
+          message: `更新部门 ${resp.data.name} 成功`,
+          type: 'success',
+          duration: 2000
+        })
         this.isEdit = false
-      })
+      } catch (error) {
+        this.$notify({
+          title: '失败',
+          message: `更新失败: ${error}`,
+          type: 'error',
+          duration: 2000
+        })
+      } finally {
+        this.updateLoading = false
+      }
     }
   }
 }
