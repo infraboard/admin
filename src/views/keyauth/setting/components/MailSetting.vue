@@ -131,6 +131,10 @@ export default {
       } finally {
         this.loading.close()
       }
+
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     cancel() {
       this.form = Object.assign({}, this.email)

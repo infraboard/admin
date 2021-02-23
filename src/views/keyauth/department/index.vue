@@ -24,7 +24,7 @@
         </el-tree>
       </el-aside>
       <el-main style="padding:0px 0px 0px 10px;">
-        <department-detail :department="current" @create="updateCreateSub" />
+        <department-detail :department="current" @created="updateCreateSub" @deleted="handleDelete" />
       </el-main>
     </el-container>
 
@@ -134,7 +134,6 @@ export default {
     },
     handleChanged() {
       this.current = this.$refs.tree.getCurrentNode()
-      console.log(this.current.id)
       this.tableKey = this.current.id
     },
     resetForm() {
@@ -178,6 +177,13 @@ export default {
           this.$refs.tree.setCurrentKey(resp.data.id)
           this.handleChanged()
         })
+
+        this.$notify({
+          title: '成功',
+          message: `创建顶级部门: ${resp.data.name} 成功`,
+          type: 'success',
+          duration: 2000
+        })
       } catch (error) {
         this.$notify({
           title: '失败',
@@ -194,41 +200,37 @@ export default {
         this.currentNode.data.leaf = false
         this.currentNode.isLeaf = false
         this.currentNode.expanded = true
-        console.log(this.currentNode)
       }
       data.leaf = true
       this.$refs.tree.updateKeyChildren(this.current.id, this.mergeChildrenData(data))
-    }
-    // handleDelete() {
-    //   if (this.currentNode) {
-    //     this.currentNode.loading = true
-    //     deleteDepartment(this.current.id).then(resp => {
-    //       // 从tree中清除当前节点
-    //       this.currentNode.loading = false
-    //       this.$refs.tree.remove(this.current.id)
+    },
+    handleDelete() {
+      if (this.currentNode) {
+        // 从tree中清除当前节点
+        this.$refs.tree.remove(this.current.id)
 
-    //       // 设置下一个被选中的节点
-    //       const parent = this.$refs.tree.getNode(this.current.parent_id)
-    //       if (parent) {
-    //         const childCount = parent.childNodes.length
-    //         if (childCount > 0) {
-    //           this.current = parent.childNodes[childCount - 1].data
-    //         } else {
-    //           this.current = parent.data
-    //         }
-    //       } else {
-    //         // 顶层部门
-    //         const topCount = this.departmentList.length
-    //         if (topCount > 0) {
-    //           this.current = this.departmentList[topCount - 1]
-    //         }
-    //       }
-    //       this.$refs.tree.setCurrentKey(this.current.id)
-    //     }).catch(() => {
-    //       this.currentNode.loading = false
-    //     })
-    //   }
-    // },
+        // 设置下一个被选中的节点
+        const parent = this.$refs.tree.getNode(this.current.parent_id)
+        if (parent) {
+          const childCount = parent.childNodes.length
+          if (childCount > 0) {
+            this.current = parent.childNodes[childCount - 1].data
+          } else {
+            this.current = parent.data
+          }
+        } else {
+          // 顶层部门
+          console.log(this.departmentList)
+          const topCount = this.departmentList.length
+          if (topCount > 0) {
+            this.current = this.departmentList[0]
+          }
+        }
+
+        console.log(this.current)
+        this.$refs.tree.setCurrentKey(this.current.id)
+      }
+    }
     // handleUpdate() {
     //   this.isEdit = true
     //   this.form = Object.assign({}, this.current) // copy obj

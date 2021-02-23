@@ -251,7 +251,7 @@ export default {
       this.createLoading = true
       try {
         var resp = await createDepartment(this.form)
-        this.$emit('create', resp.data)
+        this.$emit('created', resp.data)
         this.$notify({
           title: '成功',
           message: '创建成功',
@@ -261,7 +261,7 @@ export default {
         this.dialogFormVisible = false
       } catch (error) {
         this.$notify({
-          title: '成功',
+          title: '失败',
           message: `创建失败: ${error}`,
           type: 'error',
           duration: 2000
@@ -270,34 +270,28 @@ export default {
         this.createLoading = false
       }
     },
-    handleDelete() {
+    async handleDelete() {
       if (this.current) {
         this.deleteLoading = true
-        deleteDepartment(this.current.id).then(resp => {
-          // 从tree中清除当前节点
-          // this.currentNode.loading = false
-          // this.$refs.tree.remove(this.current.id)
-
-          // 设置下一个被选中的节点
-          // const parent = this.$refs.tree.getNode(this.current.parent_id)
-          // if (parent) {
-          //   const childCount = parent.childNodes.length
-          //   if (childCount > 0) {
-          //     this.current = parent.childNodes[childCount - 1].data
-          //   } else {
-          //     this.current = parent.data
-          //   }
-          // } else {
-          //   // 顶层部门
-          //   const topCount = this.departmentList.length
-          //   if (topCount > 0) {
-          //     this.current = this.departmentList[topCount - 1]
-          //   }
-          // }
-          // this.$refs.tree.setCurrentKey(this.current.id)
-        }).finally(() => {
+        try {
+          var resp = await deleteDepartment(this.current.id)
+          this.$emit('deleted', resp.data)
+          this.$notify({
+            title: '成功',
+            message: `删除部门${this.current.name}成功`,
+            type: 'success',
+            duration: 2000
+          })
+        } catch (error) {
+          this.$notify({
+            title: '失败',
+            message: `删除失败: ${error}`,
+            type: 'error',
+            duration: 2000
+          })
+        } finally {
           this.deleteLoading = false
-        })
+        }
       }
     },
     handleUpdate() {

@@ -49,7 +49,7 @@
         </el-form-item>
         <el-form-item class="text-center">
           <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
-          <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveEmailConfig">保存配置</el-button>
+          <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveSMSConfig">保存配置</el-button>
         </el-form-item>
       </el-form>
       <!-- 测试对话框 -->
@@ -59,7 +59,7 @@
           :visible.sync="checkSendDialog"
           width="40%"
         >
-          <el-form ref="checkSendEmailForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
+          <el-form ref="checkSendSMSForm" :rules="checkSendRules" label-position="left" label-width="80px" :model="sendCheckForm">
             <el-form-item label="模板ID" prop="template_id">
               <el-input v-model="sendCheckForm.template_id" />
               <div class="input-tips">
@@ -163,12 +163,15 @@ export default {
       } finally {
         this.loading.close()
       }
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     cancel() {
       this.form = Object.assign({}, this.sms)
       this.noUpdate = true
     },
-    saveEmailConfig() {
+    saveSMSConfig() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.saveLoading = true
@@ -196,13 +199,13 @@ export default {
           this.resetCheckSendForm()
           this.checkSendDialog = true
           this.$nextTick(() => {
-            this.$refs['checkSendEmailForm'].clearValidate()
+            this.$refs['checkSendSMSForm'].clearValidate()
           })
         }
       })
     },
     checkEmailSend() {
-      this.$refs['checkSendEmailForm'].validate((valid) => {
+      this.$refs['checkSendSMSForm'].validate((valid) => {
         if (valid) {
           this.checkSendLoading = true
           this.sendCheckForm.phone_number_set = this.sendCheckForm.phones.split(',')
