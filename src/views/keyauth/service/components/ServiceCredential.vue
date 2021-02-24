@@ -113,7 +113,7 @@
 <script>
 import Tips from '@/components/Tips'
 import { queryPolicy } from '@/api/keyauth/policy'
-import { describeServiceToken, refreshServiceToken } from '@/api/keyauth/service'
+import { refreshServiceClientSecret } from '@/api/keyauth/service'
 import Pagination from '@/components/Pagination'
 import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
 import clipboard from '@/directive/clipboard/index.js'
@@ -162,24 +162,7 @@ export default {
       dialogFormVisible: false
     }
   },
-  watch: {
-    serviceId: {
-      handler: function(sid) {
-        if (sid) {
-          this.queryServiceToken()
-        }
-      },
-      immediate: true
-    }
-  },
   methods: {
-    queryServiceToken() {
-      describeServiceToken(this.serviceId).then(resp => {
-        this.token = resp.data
-        this.listPolicyQuery.account = this.token.account
-        this.getServicePolicy()
-      })
-    },
     getServicePolicy() {
       this.listPolicyLoading = true
       queryPolicy(this.listPolicyQuery).then(resp => {
@@ -224,7 +207,7 @@ export default {
     },
     refreshToken() {
       this.refreshLoading = true
-      refreshServiceToken(this.serviceId).then(resp => {
+      refreshServiceClientSecret(this.serviceId).then(resp => {
         this.token = resp.data
       }).finally(() => {
         this.refreshLoading = false

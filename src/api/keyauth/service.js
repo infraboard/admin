@@ -16,17 +16,9 @@ export function describeService(id, query) {
   })
 }
 
-export function describeServiceToken(id, query) {
+export function refreshServiceClientSecret(id, data) {
   return request({
-    url: '/keyauth/v1/services/' + id + '/token',
-    method: 'get',
-    params: query
-  })
-}
-
-export function refreshServiceToken(id, data) {
-  return request({
-    url: '/keyauth/v1/services/' + id + '/token',
+    url: '/keyauth/v1/services/' + id + '/refresh_client_secret',
     method: 'post',
     data
   })
