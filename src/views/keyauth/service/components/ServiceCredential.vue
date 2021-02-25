@@ -3,131 +3,67 @@
     <tips :tips="seTips" type="warn" title="安全提示" />
     <tips :tips="opTips" type="info" title="使用提示" />
     <el-row style="margin-top:18px;">
-      <el-col :span="4">
+      <el-col :span="2">
         <span class="attr-key f12">状态</span>
         <span class="attr-value f12" style="margin-left:12px;">
-          <span v-if="!token.is_block"><svg-icon icon-class="normal" /></span>
+          <span v-if="service.client_enabled"><svg-icon icon-class="normal" /></span>
           <span v-else><svg-icon icon-class="locked" /></span>
         </span>
       </el-col>
       <el-col :span="4">
         <span class="attr-key f12">操作</span>
-        <el-button v-if="token.is_block" disabled type="text" style="padding:0px;margin-left:12px;">
+        <el-button v-if="service.client_enabled" disabled type="text" style="padding:0px;margin-left:12px;">
           启用
         </el-button>
         <el-button v-else disabled type="text" style="padding:0px;margin-left:12px;">
           禁用
         </el-button>
-        <el-button type="text" style="padding:0px;margin-left:12px;" :loading="refreshLoading" @click="refreshToken">
+        <el-button type="text" style="padding:0px;margin-left:12px;" :loading="refreshLoading" @click="refreshClientSecret">
           刷新
         </el-button>
       </el-col>
-      <el-col :span="8">
-        <span class="attr-key f12">凭证</span>
-        <span class="attr-value f12" style="margin-left:12px;">{{ token.access_token }}</span>
-        <el-button v-clipboard:copy="token.access_token" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
+      <el-col :span="4">
+        <span class="attr-key f12">刷新时间</span>
+        <span v-if="service.client_refresh_at" class="attr-value f12" style="margin-left:12px;">{{ service.client_refresh_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        <span v-else class="attr-value f12" style="margin-left:12px;">-</span>
+      </el-col>
+      <el-col :span="6">
+        <span class="attr-key f12">Client ID</span>
+        <span class="attr-value f12" style="margin-left:12px;">{{ service.client_id }}</span>
+        <el-button v-clipboard:copy="service.client_secret" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
       </el-col>
       <el-col :span="8">
-        <span class="attr-key f12">创建时间</span>
-        <span class="attr-value f12" style="margin-left:12px;">{{ token.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        <span class="attr-key f12">Client Secret</span>
+        <span class="attr-value f12" style="margin-left:12px;">{{ service.client_secret }}</span>
+        <el-button v-clipboard:copy="service.client_secret" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
       </el-col>
     </el-row>
     <el-divider />
     <div style="margin-top:22px;">
       <div class="filter-container">
-        <div class="filter-item">
-          <el-input v-model="filterValue" class="input-with-select filter-search-input" clearable placeholder="按回车进行搜索" @clear="clearSearch" @keyup.enter.native="handleSearch">
-            <el-select slot="prepend" v-model="filterKey" placeholder="请选择">
-              <el-option label="用户名称" value="account" />
-            </el-select>
-          </el-input>
-        </div>
-
-        <div class="filter-item fr">
-          <el-button type="primary" size="mini" @click="handleCreatePolicy()">添加策略</el-button>
-        </div>
+        <span>xxx</span>
       </div>
-
-      <div>
-        <el-table
-          :key="tableKey"
-          v-loading="listPolicyLoading"
-          :data="policys"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
-        >
-          <el-table-column label="空间" prop="name" align="center" min-width="110">
-            <template slot-scope="{row}">
-              <span v-if="row.namespace">{{ row.namespace.name }}</span>
-              <span v-else>{{ row.namespace_id }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="角色" prop="type" align="center" min-width="110">
-            <template slot-scope="{row}">
-              <router-link :to="'/permission/role/'+row.role_id" class="link-type">
-                <span>{{ row.role.name }}</span>
-              </router-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="范围" prop="name" align="center" min-width="110">
-            <template slot-scope="{row}">
-              <span v-if="row.scope">{{ row.scope }}</span>
-              <span v-else> 全部 </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="过期时间" prop="description" align="center" min-width="110">
-            <template slot-scope="{row}">
-              <span v-if="row.expired_time">{{ row.expired_time }}</span>
-              <span v-else> 永不过期 </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="加入时间" min-width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="添加人" prop="type" align="center" min-width="110">
-            <template slot-scope="{row}">
-              <span>{{ row.creater }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" min-width="130" class-name="small-padding fixed-width">
-            <template slot-scope="{row,$index}">
-              <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
-                移除策略
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <pagination v-show="total>0" :total="total" :page.sync="listPolicyQuery.page_number" :limit.sync="listPolicyQuery.page_size" @pagination="getServicePolicy" />
-      </div>
-
-      <create-policy-drawer :visible.sync="dialogFormVisible" :account="token.account" @change="updatePolicy" />
     </div>
   </div>
 </template>
 
 <script>
 import Tips from '@/components/Tips'
-import { queryPolicy } from '@/api/keyauth/policy'
 import { refreshServiceClientSecret } from '@/api/keyauth/service'
-import Pagination from '@/components/Pagination'
-import CreatePolicyDrawer from '@/components/CreatePolicyDrawer'
 import clipboard from '@/directive/clipboard/index.js'
 
 export default {
   name: 'ServiceCredential',
-  components: { Tips, Pagination, CreatePolicyDrawer },
+  components: { Tips },
   directives: {
     clipboard
   },
   props: {
-    serviceId: {
-      type: String,
-      default: ''
+    service: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
@@ -141,38 +77,11 @@ export default {
         '服务凭证主要用于服务注册和服务间调用',
         '服务的操作日志将保存在事件中心'
       ],
-      filterKey: 'account',
-      filterValue: '',
-      tableKey: 0,
-      token: {},
-      policys: [],
-      total: 0,
-      createLoading: false,
-      listPolicyLoading: false,
-      deleteLoading: '',
-      queryLoading: true,
       refreshLoading: false,
-      listPolicyQuery: {
-        account: '',
-        with_role: true,
-        with_namespace: true,
-        page_number: 1,
-        page_size: 20
-      },
       dialogFormVisible: false
     }
   },
   methods: {
-    getServicePolicy() {
-      this.listPolicyLoading = true
-      queryPolicy(this.listPolicyQuery).then(resp => {
-        this.policys = resp.data.items
-        this.total = resp.data.total
-        this.listPolicyLoading = false
-      }).catch(() => {
-        this.listPolicyLoading = false
-      })
-    },
     clipboardSuccess() {
       this.$notify({
         message: '复制成功',
@@ -180,32 +89,7 @@ export default {
         customClass: 'notify-success'
       })
     },
-    handleCreatePolicy() {
-      this.dialogFormVisible = true
-    },
-    updatePolicy(val) {
-      this.getServicePolicy()
-    },
-    handleDelete(row, index) {
-      this.deleteLoading = row.name
-      // deleteNamespace(row.id).then(resp => {
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '删除成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.roleList.splice(index, 1)
-      //   this.deleteLoading = ''
-      // }).catch(() => {
-      //   this.deleteLoading = ''
-      // })
-    },
-    clearSearch() {
-    },
-    handleSearch() {
-    },
-    refreshToken() {
+    refreshClientSecret() {
       this.refreshLoading = true
       refreshServiceClientSecret(this.serviceId).then(resp => {
         this.token = resp.data
