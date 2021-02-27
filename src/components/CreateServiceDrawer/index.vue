@@ -15,19 +15,6 @@
             <span>服务名称需要保持唯一, 不能重复</span>
           </div>
         </el-form-item>
-        <el-form-item label="角色" :label-width="formLabelWidth" prop="role_id">
-          <el-select v-model="form.role_id" style="width:100%" placeholder="visitor" :loading="queryRoleLoading" @visible-change="showRoleList">
-            <el-option
-              v-for="item in roleList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-          <div class="input-tips">
-            <span>默认为访客(vistor)角色</span>
-          </div>
-        </el-form-item>
         <el-form-item label="备注" :label-width="formLabelWidth" prop="description">
           <el-input
             v-model="form.description"
@@ -83,7 +70,6 @@ export default {
       createNamespaceLoading: false,
       form: {
         name: '',
-        role_id: '',
         description: ''
       },
       formLabelWidth: '80px',

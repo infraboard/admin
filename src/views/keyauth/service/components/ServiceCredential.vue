@@ -41,7 +41,7 @@
     <el-divider />
     <div style="margin-top:22px;">
       <div class="filter-container">
-        <span>xxx</span>
+        <span />
       </div>
     </div>
   </div>
