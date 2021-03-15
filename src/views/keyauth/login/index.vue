@@ -172,7 +172,7 @@ export default {
             console.log(user)
 
             // generate accessible routes map based on roles
-            const accessRoutes = await this.$store.dispatch('permission/generateRoutes', user.type.toLocaleLowerCase())
+            const accessRoutes = await this.$store.dispatch('permission/generateRoutes', user.roles)
             console.log(accessRoutes)
             // dynamically add accessible routes
             this.$router.addRoutes(accessRoutes)

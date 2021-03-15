@@ -82,8 +82,10 @@ const actions = {
           reject('getInfo: roles must be a empty!')
         }
 
-        commit('SET_ROLES', [data.type.toLocaleLowerCase()])
-        commit('SET_NAME', data.account)
+        data.roles = [data.type.toLocaleLowerCase()]
+
+        commit('SET_ROLES', data.roles)
+        commit('SET_NAME', (data.profile.realname) ? data.profile.realname : data.account)
         commit('SET_AVATAR', data.profile.avatar)
         commit('SET_IS_INITIALIZED', data.is_initialized)
         commit('SET_INTRODUCTION', '')

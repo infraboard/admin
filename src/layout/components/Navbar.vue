@@ -19,8 +19,9 @@
       </template>
       <el-dropdown class="avatar-container right-menu-item hover-effect">
         <el-button type="text">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <span class="user-name-text"> 喻茂峻</span>
+          <img v-if="avatar" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <span v-else class="text-avatar">{{ name[0].toLocaleUpperCase() }}</span>
+          <span class="user-name-text">{{ name }}</span>
           <i class="el-icon-arrow-down el-icon--right dropdown-color" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -53,6 +54,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
+
 export default {
   components: {
     Breadcrumb,
@@ -66,6 +68,7 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
+      'name',
       'device'
     ])
   },
@@ -163,6 +166,11 @@ export default {
 .dropdown-item-text {
   margin-left: 12px;
   margin-right: 12px;
+}
+
+.text-avatar {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 </style>
