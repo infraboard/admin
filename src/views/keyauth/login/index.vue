@@ -162,18 +162,18 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          console.log('xxx')
           this.loading = true
           try {
             await this.$store.dispatch('user/login', this.loginForm)
 
             // get user info
             // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-            const { roles } = await this.$store.dispatch('user/getInfo')
+            const user = await this.$store.dispatch('user/getInfo')
+            console.log(user)
 
             // generate accessible routes map based on roles
-            const accessRoutes = await this.$store.dispatch('permission/generateRoutes', roles)
-
+            const accessRoutes = await this.$store.dispatch('permission/generateRoutes', user.type.toLocaleLowerCase())
+            console.log(accessRoutes)
             // dynamically add accessible routes
             this.$router.addRoutes(accessRoutes)
           } catch (err) {

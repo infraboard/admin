@@ -215,9 +215,11 @@ export default {
       this.listdepartmentJoinApply.department_id = this.departmentId
       queryJoinApply(this.listdepartmentJoinApply).then(resp => {
         this.departmentJoinApplyTotal = resp.data.total
-        resp.data.items.forEach(element => {
-          this.departmentJoinApplyList.push(element)
-        })
+        if (resp.data.items) {
+          resp.data.items.forEach(element => {
+            this.departmentJoinApplyList.push(element)
+          })
+        }
       })
     },
     loadNextPage() {

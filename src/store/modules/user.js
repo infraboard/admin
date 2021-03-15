@@ -73,26 +73,22 @@ const actions = {
       getProfile().then(response => {
         const { data } = response
 
-        data.roles = ['admin']
-        data.avatar = 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLwp1gIfBxH4dibZZTBrzAWAQN2jeSvp0WGWiaQSvUrbDCqqWIPWNQcbtTsbrGBsZVoicPic4ywibrIzCA/132'
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction, is_initialized, password } = data
-
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+        if (!data.type) {
+          reject('getInfo: roles must be a empty!')
         }
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_IS_INITIALIZED', is_initialized)
-        commit('SET_INTRODUCTION', introduction)
-        commit('SET_NEED_RESET', password.need_reset)
-        commit('SET_RESET_REASON', password.reset_reason)
+        commit('SET_ROLES', [data.type.toLocaleLowerCase()])
+        commit('SET_NAME', data.account)
+        commit('SET_AVATAR', data.profile.avatar)
+        commit('SET_IS_INITIALIZED', data.is_initialized)
+        commit('SET_INTRODUCTION', '')
+        commit('SET_NEED_RESET', data.password.need_reset)
+        commit('SET_RESET_REASON', data.password.reset_reason)
         resolve(data)
       }).catch(error => {
         reject(error)

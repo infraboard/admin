@@ -121,7 +121,7 @@ export const asyncRoutes = [
     meta: {
       title: '用户管理',
       icon: 'account',
-      roles: ['admin', 'vistor'] // you can set roles in root nav
+      roles: ['supper', 'domain_admin', 'org_admin']
     },
     children: [
       {
@@ -137,8 +137,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/department'),
         name: 'DepartmentList',
         meta: {
-          title: '部门列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '部门列表'
         }
       },
       {
@@ -155,8 +154,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/sub-account/index'),
         name: 'SubAccountList',
         meta: {
-          title: '用户列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '用户列表'
         }
       },
       {
@@ -180,7 +178,7 @@ export const asyncRoutes = [
     meta: {
       title: '权限管理',
       icon: 'permission',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['supper', 'domain_admin', 'perm_admin']
     },
     children: [
       {
@@ -188,8 +186,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/role'),
         name: 'RoleList',
         meta: {
-          title: '角色列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '角色列表'
         }
       },
       {
@@ -207,8 +204,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/role/create'),
         name: 'CreateRole',
         meta: {
-          title: '角色创建',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '角色创建'
         }
       },
       {
@@ -216,8 +212,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/namespace'),
         name: 'NamespaceList',
         meta: {
-          title: '空间列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '空间列表'
         }
       },
       {
@@ -241,7 +236,7 @@ export const asyncRoutes = [
     meta: {
       title: '服务管理',
       icon: 'micro',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['supper']
     },
     children: [
       {
@@ -249,8 +244,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/service'),
         name: 'ServiceList',
         meta: {
-          title: '服务列表',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '服务列表'
         }
       },
       {
@@ -274,7 +268,7 @@ export const asyncRoutes = [
     meta: {
       title: '安全审计',
       icon: 'audit',
-      roles: ['admin'] // you can set roles in root nav
+      roles: ['supper', 'domain_admin', 'audit_admin']
     },
     children: [
       {
@@ -282,8 +276,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/audit/session'),
         name: 'LoginAudit',
         meta: {
-          title: '登录日志',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '登录日志'
         }
       },
       {
@@ -291,8 +284,7 @@ export const asyncRoutes = [
         component: () => import('@/views/keyauth/audit/operate'),
         name: 'OperateAudit',
         meta: {
-          title: '操作日志',
-          roles: ['admin'] // or you can only set roles in sub nav
+          title: '操作日志'
         }
       }
     ]
@@ -301,6 +293,7 @@ export const asyncRoutes = [
   {
     path: '/setting',
     component: Layout,
+    roles: ['supper'],
     children: [
       {
         path: '',
