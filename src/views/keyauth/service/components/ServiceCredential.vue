@@ -30,7 +30,7 @@
       <el-col :span="6">
         <span class="attr-key f12">Client ID</span>
         <span class="attr-value f12" style="margin-left:12px;">{{ service.client_id }}</span>
-        <el-button v-clipboard:copy="service.client_secret" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
+        <el-button v-clipboard:copy="service.client_id" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
       </el-col>
       <el-col :span="8">
         <span class="attr-key f12">Client Secret</span>
@@ -39,10 +39,19 @@
       </el-col>
     </el-row>
     <el-divider />
-    <div style="margin-top:22px;">
-      <div class="filter-container">
-        <span />
-      </div>
+    <div style="margin-top:22px;" class="f12">
+      <el-radio-group v-model="language">
+        <el-radio-button label="Golang" />
+        <el-radio-button label="Java" disabled />
+        <el-radio-button label="Python" disabled />
+      </el-radio-group>
+      <p>1. 安装项目初始化工具mcube</p>
+      <p>go install github.com/infraboard/mcube/cmd/mcube</p>
+      <p>2. 创建工程目录并使用mcube初始化项目</p>
+      <p>mkdir demo && cd demo</p>
+      <p>mcube init "github.com/infraboard/demo"</p>
+      <p>3. 启动服务</p>
+      <p>make run</p>
     </div>
   </div>
 </template>
@@ -51,6 +60,19 @@
 import Tips from '@/components/Tips'
 import { refreshServiceClientSecret } from '@/api/keyauth/service'
 import clipboard from '@/directive/clipboard/index.js'
+
+import marked from 'marked'
+var rendererMD = new marked.Renderer()
+marked.setOptions({
+  renderer: rendererMD,
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false
+})
 
 export default {
   name: 'ServiceCredential',
@@ -69,24 +91,27 @@ export default {
   data() {
     return {
       seTips: [
-        '服务凭证是服务间调用的唯一凭证, 默认永不过期, 为了保障系统安全，请妥善保存和定期更换凭证',
-        '服务凭证默认具有所有空间的访客权限'
+        '服务凭证是服务间调用的唯一凭证, 为了保障系统安全，请妥善保存和定期更换凭证'
       ],
       opTips: [
-        '服务凭证代表服务的身份和所拥有的权限,切勿泄露',
         '服务凭证主要用于服务注册和服务间调用',
-        '服务的操作日志将保存在事件中心'
+        '服务凭证并不能直接操作用户的资源, 如果需要操作具体资源, 还需要用户Token'
       ],
       refreshLoading: false,
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      language: 'Golang'
+    }
+  },
+  computed: {
+    compiledMarkdown: function() {
+      return marked(this.markdownContent, { sanitize: true })
     }
   },
   methods: {
     clipboardSuccess() {
-      this.$notify({
+      this.$message({
         message: '复制成功',
-        duration: 1500,
-        customClass: 'notify-success'
+        type: 'success'
       })
     },
     refreshClientSecret() {

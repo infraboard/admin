@@ -59,7 +59,7 @@
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane lazy label="服务凭证" name="first">
+        <el-tab-pane lazy label="服务接入" name="first">
           <service-credential :service="service" />
         </el-tab-pane>
         <el-tab-pane lazy label="功能列表" name="second">
