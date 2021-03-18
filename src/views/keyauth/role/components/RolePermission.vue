@@ -58,7 +58,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+          <el-button :loading="deleteLoading === row.id" size="mini" type="text" @click="handleDelete(row,$index)">
             移除权限
           </el-button>
         </template>
@@ -74,6 +74,7 @@
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
 import UpdatePermissionDrawer from '@/components/UpdatePermissionDrawer'
+import { removePermissionFromRole } from '@/api/keyauth/role'
 
 const tips = [
   '权限条目指匹配服务功能端点(Endpoint)的一组策略'
@@ -114,6 +115,9 @@ export default {
         name: '',
         description: ''
       },
+      deletePermReq: {
+        permission_id: []
+      },
       rules: {
         name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
       }
@@ -151,11 +155,23 @@ export default {
     handlePermissionChanged(val) {
       this.$emit('change', val)
     },
+    async handleDelete(row) {
+      this.deleteLoading = row.id
+      this.deletePermReq.permission_id = [row.id]
+      try {
+        await removePermissionFromRole(this.roleId, this.deletePermReq)
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+        this.$emit('change', true)
+      } finally {
+        this.deleteLoading = ''
+      }
+    },
     clearSearch() {
-
     },
     handleSearch() {
-
     }
   }
 }
