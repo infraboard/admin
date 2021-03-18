@@ -39,3 +39,19 @@ export function listResource(query) {
     params: query
   })
 }
+
+export function addPermissionToRole(id, data) {
+  return request({
+    url: '/keyauth/v1/roles/' + id + '/permissions/',
+    method: 'post',
+    data
+  })
+}
+
+export function removePermissionFromRole(id, data) {
+  return request({
+    url: '/keyauth/v1/roles/' + id + '/permissions/',
+    method: 'delete',
+    data
+  })
+}
