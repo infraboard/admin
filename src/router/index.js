@@ -302,6 +302,7 @@ export const asyncRoutes = [
         meta: {
           title: '系统设置',
           icon: 'setting',
+          roles: ['supper'],
           affix: true }
       }
     ]
