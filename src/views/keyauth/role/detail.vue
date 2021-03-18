@@ -50,14 +50,13 @@
             </el-row>
           </el-col>
         </el-row>
-
       </el-card>
     </div>
 
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
-        <el-tab-pane lazy label="权限条目" name="first">
-          <role-permission :permissions="role.permissions" />
+        <el-tab-pane lazy label="权限条目" name="first" @change="handlePermissionChanged">
+          <role-permission :id="queryTimestamp" :permissions="role.permissions" :role-id="role.id" />
         </el-tab-pane>
         <el-tab-pane lazy label="关联策略" name="second">
           <role-policy :role-id="role.id" />
@@ -69,7 +68,6 @@
 
 <script>
 import { descRole } from '@/api/keyauth/role'
-import { queryPolicy } from '@/api/keyauth/policy'
 import RolePolicy from './components/RolePolicy'
 import RolePermission from './components/RolePermission'
 
@@ -81,6 +79,7 @@ export default {
     return {
       tableKey: 0,
       queryloading: {},
+      queryTimestamp: 0,
       role: {},
       activeName: 'first',
       deleteLoading: false,
@@ -96,7 +95,6 @@ export default {
   },
   created() {
     this.getRole()
-    this.getRolePolicy()
   },
   methods: {
     getRole() {
@@ -110,19 +108,13 @@ export default {
       // 获取用户列表
       descRole(this.$route.params.id, { with_permissions: true }).then(resp => {
         this.role = resp.data
+        this.queryTimestamp = new Date().getTime()
       }).finally(() => {
         this.queryLoading.close()
       })
     },
-    getRolePolicy() {
-      this.listPolicyLoading = true
-      queryPolicy(this.listPolicyQuery).then(resp => {
-        this.policys = resp.data.items
-        this.total = resp.data.total
-        this.listPolicyLoading = false
-      }).catch(() => {
-        this.listPolicyLoading = false
-      })
+    handlePermissionChanged() {
+      this.getRole()
     },
     resetForm() {
       this.form = {

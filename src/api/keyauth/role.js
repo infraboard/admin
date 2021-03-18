@@ -40,6 +40,13 @@ export function listResource(query) {
   })
 }
 
+export function listRolePermission(id) {
+  return request({
+    url: '/keyauth/v1/roles/' + id + '/permissions/',
+    method: 'get'
+  })
+}
+
 export function addPermissionToRole(id, data) {
   return request({
     url: '/keyauth/v1/roles/' + id + '/permissions/',

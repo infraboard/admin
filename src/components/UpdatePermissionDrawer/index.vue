@@ -29,7 +29,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="授权资源" :label-width="formLabelWidth" prop="choice_perm">
+        <el-form-item v-show="form.service_id" label="授权资源" :label-width="formLabelWidth" prop="choice_perm">
           <el-table
             v-loading="queryResourceLoading"
             border
@@ -60,9 +60,8 @@
 </template>
 
 <script>
-import { createNamespace } from '@/api/keyauth/namespace'
 import { queryService } from '@/api/keyauth/service'
-import { listResource } from '@/api/keyauth/role'
+import { listResource, addPermissionToRole } from '@/api/keyauth/role'
 
 export default {
   name: 'UpdatePermissionDrawer',
@@ -74,6 +73,10 @@ export default {
     },
     title: {
       default: '添加权限',
+      type: String
+    },
+    roleId: {
+      default: '',
       type: String
     }
   },
@@ -90,6 +93,9 @@ export default {
       form: {
         service_id: '',
         choice_perm: []
+      },
+      addPermRequest: {
+        permissions: []
       },
       formLabelWidth: '80px',
       rules: {
@@ -148,7 +154,37 @@ export default {
 
       return actions
     },
+    generateChoicePermtoService(choicePerm) {
+      var sid = ''
+      var rns = []
+      var acs = []
 
+      choicePerm.forEach(item => {
+        var choiced = item.split(',')
+        sid = choiced[0]
+        var rn = choiced[1]
+        var ac = choiced[2]
+
+        var rnIndex = rns.indexOf(rn)
+        if (rnIndex !== -1) {
+          acs[rnIndex].push(ac)
+        } else {
+          rns.push(rn)
+          acs.push([ac])
+        }
+      })
+
+      var resources = []
+      for (const i in rns) {
+        resources.push({
+          service_id: sid,
+          resource: rns[i],
+          actions: acs[i]
+        })
+      }
+
+      return resources
+    },
     handleClose(done) {
       if (this.addPermissionLoading) {
         return
@@ -163,6 +199,7 @@ export default {
       this.$emit('update:visible', false)
     },
     resetForm() {
+      this.resourceOptions = []
       this.form = {
         service_id: '',
         choice_perm: []
@@ -172,10 +209,21 @@ export default {
       this.$refs['permissionFrom'].validate((valid) => {
         if (valid) {
           this.addPermissionLoading = true
-          createNamespace(this.form).then(resp => {
-            this.$notify({
-              message: `添加空间[${resp.data.name}]成功`,
-              customClass: 'notify-success'
+          this.addPermRequest.permissions = []
+          var resources = this.generateChoicePermtoService(this.form.choice_perm)
+          resources.forEach(item => {
+            this.addPermRequest.permissions.push({
+              'effect': 'allow',
+              'service_id': item.service_id,
+              'resource_name': item.resource,
+              'label_key': 'action',
+              'label_values': item.actions
+            })
+          })
+          addPermissionToRole(this.roleId, this.addPermRequest).then(resp => {
+            this.$message({
+              message: `添加权限成功`,
+              type: 'success'
             })
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)

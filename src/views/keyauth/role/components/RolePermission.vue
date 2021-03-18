@@ -66,7 +66,7 @@
     </el-table>
 
     <pagination :total="total" :page.sync="listPermissionQuery.page_number" :limit.sync="listPermissionQuery.page_size" @pagination="getRolePermission" />
-    <update-permission-drawer :visible.sync="dialogFormVisible" />
+    <update-permission-drawer :visible.sync="dialogFormVisible" :role-id="roleId" @change="handlePermissionChanged" />
   </div>
 </template>
 
@@ -89,6 +89,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    roleId: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -143,6 +147,9 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
+    },
+    handlePermissionChanged(val) {
+      this.$emit('change', val)
     },
     clearSearch() {
 
