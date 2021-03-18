@@ -5,7 +5,7 @@
     :before-close="handleClose"
     :visible.sync="dialog"
     :show-close="false"
-    size="32%"
+    size="40%"
   >
     <div class="drawer-content">
       <el-form ref="namespaceForm" :model="form" :rules="rules">
@@ -47,7 +47,7 @@ import ChoiceDepartment from '@/components/ChoiceDepartment'
 import { describeDepartment } from '@/api/keyauth/department'
 
 export default {
-  name: 'CreateNamespaceDrawer',
+  name: 'UpdatePermissionDrawer',
   components: { ChoiceDepartment },
   props: {
     visible: {
@@ -55,7 +55,7 @@ export default {
       type: Boolean
     },
     title: {
-      default: '新增空间',
+      default: '添加权限',
       type: String
     },
     departmentId: {

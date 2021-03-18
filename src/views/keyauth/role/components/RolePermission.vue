@@ -66,12 +66,14 @@
     </el-table>
 
     <pagination :total="total" :page.sync="listPermissionQuery.page_number" :limit.sync="listPermissionQuery.page_size" @pagination="getRolePermission" />
+    <update-permission-drawer :visible.sync="dialogFormVisible" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
+import UpdatePermissionDrawer from '@/components/UpdatePermissionDrawer'
 
 const tips = [
   '权限条目指匹配服务功能端点(Endpoint)的一组策略'
@@ -79,7 +81,7 @@ const tips = [
 
 export default {
   name: 'RolePermission',
-  components: { Pagination, Tips },
+  components: { Pagination, Tips, UpdatePermissionDrawer },
   directives: { },
   props: {
     permissions: {
@@ -132,22 +134,7 @@ export default {
     },
     handleCreate() {
       this.dialogFormType = 'create'
-      this.resetForm()
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    submit() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dialogFormType === 'create') {
-            this.createRole()
-          } else {
-            // 更新
-          }
-        }
-      })
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
