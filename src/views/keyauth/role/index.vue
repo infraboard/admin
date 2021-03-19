@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { queryRole, createRole } from '@/api/keyauth/role'
+import { queryRole, createRole, deleteRole } from '@/api/keyauth/role'
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
 
@@ -175,22 +175,20 @@ export default {
         }
       })
     },
-    createRole() {
+    async createRole() {
       this.createLoading = true
       // 创建请求
-      createRole(this.form).then(resp => {
+      try {
+        var resp = await createRole(this.form)
         this.dialogFormVisible = false
-        this.roleList.unshift(resp.data)
-        this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
+        this.getRoleList()
+        this.$message({
+          message: `创建角色${resp.name}成功`,
+          type: 'success'
         })
+      } finally {
         this.createLoading = false
-      }).catch(() => {
-        this.createLoading = false
-      })
+      }
     },
     handleUpdate(row) {
       this.dialogFormType = 'update'
@@ -200,20 +198,19 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    handleDelete(row, index) {
+    async handleDelete(row, index) {
       this.deleteLoading = row.name
-      // deleteSubAccount(row.id).then(resp => {
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '删除成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.roleList.splice(index, 1)
-      //   this.deleteLoading = ''
-      // }).catch(() => {
-      //   this.deleteLoading = ''
-      // })
+
+      try {
+        await deleteRole(row.id)
+        this.getRoleList()
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+      } finally {
+        this.deleteLoading = ''
+      }
     },
     clearSearch() {
 

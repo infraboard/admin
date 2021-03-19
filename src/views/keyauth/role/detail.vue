@@ -56,7 +56,7 @@
     <el-card class="box-card" style="margin-top:12px;">
       <el-tabs v-model="activeName">
         <el-tab-pane lazy label="权限条目" name="first">
-          <role-permission :id="queryTimestamp" :permissions="role.permissions" :role-id="role.id" @change="handlePermissionChanged" />
+          <role-permission :id="queryTimestamp" :permissions="role.permissions" />
         </el-tab-pane>
         <el-tab-pane lazy label="关联策略" name="second">
           <role-policy :role-id="role.id" />
@@ -112,9 +112,6 @@ export default {
       }).finally(() => {
         this.queryLoading.close()
       })
-    },
-    handlePermissionChanged() {
-      this.getRole()
     },
     resetForm() {
       this.form = {

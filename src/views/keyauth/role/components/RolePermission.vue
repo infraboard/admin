@@ -19,7 +19,7 @@
     </div>
 
     <el-table
-      :key="tableKey"
+      :key="queryTimestamp"
       v-loading="queryloading"
       :data="permissions"
       border
@@ -74,7 +74,7 @@
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
 import UpdatePermissionDrawer from '@/components/UpdatePermissionDrawer'
-import { removePermissionFromRole } from '@/api/keyauth/role'
+import { removePermissionFromRole, listRolePermission } from '@/api/keyauth/role'
 
 const tips = [
   '权限条目指匹配服务功能端点(Endpoint)的一组策略'
@@ -85,19 +85,12 @@ export default {
   components: { Pagination, Tips, UpdatePermissionDrawer },
   directives: { },
   props: {
-    permissions: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    roleId: {
-      type: String,
-      default: ''
-    }
   },
   data() {
     return {
+      permissions: [],
+      queryloading: false,
+      queryTimestamp: 0,
       tips,
       filterKey: 'account',
       filterValue: '',
@@ -105,10 +98,7 @@ export default {
         page_number: 1,
         page_size: 20
       },
-      tableKey: 0,
-      activeName: 'first',
       deleteLoading: false,
-      queryloading: false,
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
@@ -117,22 +107,30 @@ export default {
       },
       deletePermReq: {
         permission_id: []
-      },
-      rules: {
-        name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
       }
     }
   },
   computed: {
+    roleId() {
+      return this.$route.params.id
+    },
     total() {
       return this.permissions.length
     }
   },
-  created() {
+  mounted() {
+    this.getRolePermission()
   },
   methods: {
-    getRolePermission() {
-      this.listPolicyLoading = true
+    async getRolePermission() {
+      this.queryloading = true
+      try {
+        var resp = await listRolePermission(this.roleId)
+        this.permissions = resp.data.items
+        this.queryTimestamp = new Date().getTime()
+      } finally {
+        this.queryloading = false
+      }
     },
     resetForm() {
       this.form = {
@@ -153,7 +151,7 @@ export default {
       })
     },
     handlePermissionChanged(val) {
-      this.$emit('change', val)
+      this.getRolePermission()
     },
     async handleDelete(row) {
       this.deleteLoading = row.id
@@ -164,7 +162,7 @@ export default {
           message: '删除成功',
           type: 'success'
         })
-        this.$emit('change', true)
+        this.getRolePermission()
       } finally {
         this.deleteLoading = ''
       }
