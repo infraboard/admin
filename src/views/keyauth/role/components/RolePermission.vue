@@ -25,7 +25,7 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;margin-top:12px;"
+      style="width: 100%;"
     >
       <el-table-column
         type="selection"
@@ -50,16 +50,27 @@
       </el-table-column>
       <el-table-column label="标签值" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
-          <span v-if="row.match_all">所有</span>
-          <span v-else>
-            <el-tag v-for="action in row.label_values" :key="action" style="margin-right: 12px;">{{ action }}</el-tag>
-          </span>
+          <div v-if="editOptionsVisible === row.id">
+            <span>xxx</span>
+          </div>
+          <div v-else>
+            <span v-if="row.match_all">所有</span>
+            <span v-else>
+              <el-tag v-for="action in row.label_values" :key="action" style="margin-right: 12px;">{{ action }}</el-tag>
+            </span>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button :loading="deleteLoading === row.id" size="mini" type="text" @click="handleDelete(row,$index)">
-            移除权限
+          <el-button v-if="editOptionsVisible === row.id" style="color:#67C23A;" :loading="editLoading === row.id" size="mini" type="text" @click="handleSave(row,$index)">
+            保存
+          </el-button>
+          <el-button v-else :loading="editLoading === row.id" style="color:#E6A23C" size="mini" type="text" @click="handleEdit(row,$index)">
+            编辑
+          </el-button>
+          <el-button :loading="deleteLoading === row.id" style="color:#F56C6C" size="mini" type="text" @click="handleDelete(row,$index)">
+            移除
           </el-button>
         </template>
       </el-table-column>
@@ -74,7 +85,7 @@
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
 import UpdatePermissionDrawer from '@/components/UpdatePermissionDrawer'
-import { removePermissionFromRole, listRolePermission } from '@/api/keyauth/role'
+import { removePermissionFromRole, listRolePermission, listResource } from '@/api/keyauth/role'
 
 const tips = [
   '权限条目指匹配服务功能端点(Endpoint)的一组策略'
@@ -91,6 +102,11 @@ export default {
       permissions: [],
       queryloading: false,
       queryTimestamp: 0,
+      queryResourceLoading: false,
+      deleteLoading: false,
+      editLoading: false,
+      editOptionsVisible: false,
+      editOptions: [],
       tips,
       filterKey: 'account',
       filterValue: '',
@@ -98,7 +114,6 @@ export default {
         page_number: 1,
         page_size: 20
       },
-      deleteLoading: false,
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
@@ -166,6 +181,30 @@ export default {
       } finally {
         this.deleteLoading = ''
       }
+    },
+    async handleEdit(row) {
+      this.editLoading = true
+      try {
+        var resp = await listResource({
+          service_ids: row.service_id,
+          resources: row.resource_name
+        })
+        if (resp.data.items.length > 0) {
+          var rs = resp.data.items[0]
+          this.editOptions = (rs.actions) ? rs.actions : []
+          this.editOptionsVisible = row.id
+        } else {
+          this.$message({
+            message: '资源没有方法列表可供选择',
+            type: 'error'
+          })
+        }
+      } finally {
+        this.editLoading = false
+      }
+    },
+    async handleSave(row) {
+      this.editOptionsVisible = ''
     },
     clearSearch() {
     },

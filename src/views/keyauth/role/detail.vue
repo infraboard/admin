@@ -106,7 +106,7 @@ export default {
         body: true
       })
       // 获取用户列表
-      descRole(this.$route.params.id, { with_permissions: true }).then(resp => {
+      descRole(this.$route.params.id).then(resp => {
         this.role = resp.data
         this.queryTimestamp = new Date().getTime()
       }).finally(() => {
