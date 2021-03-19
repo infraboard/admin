@@ -50,8 +50,10 @@
       </el-table-column>
       <el-table-column label="标签值" prop="type" align="center" min-width="110">
         <template slot-scope="{row}">
-          <div v-if="editOptionsVisible === row.id">
-            <span>xxx</span>
+          <div v-if="resourceVisible === row.id">
+            <el-checkbox-group v-model="row.choice_values">
+              <el-checkbox v-for="a in resource.actions" :key="a" :label="a">{{ a }}</el-checkbox>
+            </el-checkbox-group>
           </div>
           <div v-else>
             <span v-if="row.match_all">所有</span>
@@ -63,7 +65,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button v-if="editOptionsVisible === row.id" style="color:#67C23A;" :loading="editLoading === row.id" size="mini" type="text" @click="handleSave(row,$index)">
+          <el-button v-if="resourceVisible === row.id" style="color:#67C23A;" :loading="saveLoading === row.id" size="mini" type="text" @click="handleSave(row,$index)">
             保存
           </el-button>
           <el-button v-else :loading="editLoading === row.id" style="color:#E6A23C" size="mini" type="text" @click="handleEdit(row,$index)">
@@ -85,7 +87,7 @@
 import Pagination from '@/components/Pagination'
 import Tips from '@/components/Tips'
 import UpdatePermissionDrawer from '@/components/UpdatePermissionDrawer'
-import { removePermissionFromRole, listRolePermission, listResource } from '@/api/keyauth/role'
+import { removePermissionFromRole, listRolePermission, listResource, updatePermission } from '@/api/keyauth/role'
 
 const tips = [
   '权限条目指匹配服务功能端点(Endpoint)的一组策略'
@@ -105,8 +107,9 @@ export default {
       queryResourceLoading: false,
       deleteLoading: false,
       editLoading: false,
-      editOptionsVisible: false,
-      editOptions: [],
+      resourceVisible: false,
+      resource: null,
+      saveLoading: false,
       tips,
       filterKey: 'account',
       filterValue: '',
@@ -138,10 +141,14 @@ export default {
   },
   methods: {
     async getRolePermission() {
+      this.permissions = []
       this.queryloading = true
       try {
         var resp = await listRolePermission(this.roleId)
-        this.permissions = resp.data.items
+        resp.data.items.forEach(item => {
+          item.choice_values = (item.label_values) ? item.label_values : []
+          this.permissions.push(item)
+        })
         this.queryTimestamp = new Date().getTime()
       } finally {
         this.queryloading = false
@@ -156,14 +163,6 @@ export default {
     handleCreate() {
       this.dialogFormType = 'create'
       this.dialogFormVisible = true
-    },
-    handleUpdate(row) {
-      this.dialogFormType = 'update'
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
     handlePermissionChanged(val) {
       this.getRolePermission()
@@ -189,10 +188,9 @@ export default {
           service_ids: row.service_id,
           resources: row.resource_name
         })
-        if (resp.data.items.length > 0) {
-          var rs = resp.data.items[0]
-          this.editOptions = (rs.actions) ? rs.actions : []
-          this.editOptionsVisible = row.id
+        if (resp.data.items && resp.data.items.length > 0) {
+          this.resource = resp.data.items[0]
+          this.resourceVisible = row.id
         } else {
           this.$message({
             message: '资源没有方法列表可供选择',
@@ -204,7 +202,23 @@ export default {
       }
     },
     async handleSave(row) {
-      this.editOptionsVisible = ''
+      this.saveLoading = true
+      try {
+        const resp = await updatePermission(row.id, {
+          label_key: row.label_key,
+          match_all: row.match_all,
+          label_values: row.choice_values
+        })
+        this.$message({
+          message: '编辑成功',
+          type: 'success'
+        })
+        // eslint-disable-next-line require-atomic-updates
+        row.label_values = resp.data.label_values
+      } finally {
+        this.saveLoading = false
+        this.resourceVisible = ''
+      }
     },
     clearSearch() {
     },

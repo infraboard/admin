@@ -62,3 +62,11 @@ export function removePermissionFromRole(id, data) {
     data
   })
 }
+
+export function updatePermission(id, data) {
+  return request({
+    url: '/keyauth/v1/permissions/' + id,
+    method: 'put',
+    data
+  })
+}
