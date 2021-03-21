@@ -152,7 +152,7 @@ export default {
     getServiceEndpoint() {
       this.queryloading = true
       // 获取用户列表
-      this.listEndpointQuery.service_id = this.serviceId
+      this.listEndpointQuery.service_ids = this.serviceId
       queryEndpoint(this.listEndpointQuery).then(response => {
         this.endpoints = response.data.items
         this.total = response.data.total
