@@ -2,9 +2,13 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">
+        <el-tabs v-model="loginForm.grant_type" @tab-click="handleClick">
+          <el-tab-pane label="普通登录" name="password" />
+          <el-tab-pane label="LDAP登录" name="ldap" />
+        </el-tabs>
+        <!-- <h3 class="title">
           {{ $t('login.title') }}
-        </h3>
+        </h3> -->
         <lang-select class="set-language" />
       </div>
 
@@ -50,16 +54,6 @@
       <el-button :loading="loading" size="medium" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.thirdparty') }}</span>
-        </div>
-
-        <el-button class="fr" type="primary" @click="showDialog=true">
-          {{ $t('login.ldap') }}
-        </el-button>
-      </div>
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
@@ -252,6 +246,19 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
+.login-container ::v-deep .el-tabs__item {
+  color: white;
+  font-size: 18px;
+}
+
+.login-container ::v-deep .el-tabs__nav-wrap {
+  background-color: #2d3a4b;
+}
+
+.login-container ::v-deep .is-active {
+  color:#13C2C2;
+}
+
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
@@ -319,4 +326,5 @@ $light_gray:#eee;
     }
   }
 }
+
 </style>
