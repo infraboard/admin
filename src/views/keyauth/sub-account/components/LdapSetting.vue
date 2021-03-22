@@ -21,6 +21,10 @@
             <el-input v-model="form.password" show-password @input="objectUpdate('password')" />
             <div class="input-tips">用于验证账号的管理员密码</div>
           </el-form-item>
+          <el-form-item label="BaseDN" prop="base_dn">
+            <el-input v-model="form.base_dn" @input="objectUpdate" />
+            <div class="input-tips">登录用户的BaseDN</div>
+          </el-form-item>
           <el-form-item label="用户过滤器" prop="users_filter">
             <el-input v-model="form.users_filter" @input="objectUpdate" />
             <div class="input-tips">根据字段搜索用户</div>
@@ -160,7 +164,8 @@ export default {
       rules: {
         url: [{ required: true, message: '请输入LDAP服务器地址', trigger: 'change' }],
         user: [{ required: true, message: '请输入LDAP管理用户', trigger: 'change' }],
-        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'change' }]
+        password: [{ required: true, message: '请输入LDAP管理用户密码', trigger: 'change' }],
+        base_dn: [{ required: true, message: '请输入登录用户的BaseDN', trigger: 'change' }]
       },
       checkLoginrules: {
         username: [{ required: true, message: '请输入LDAP用户', trigger: 'change' }],
@@ -238,9 +243,9 @@ export default {
           saveDomainLDAP(this.form, { dry_run: true }).then(resp => {
             this.connectOK = true
             console.log(resp)
-            this.$notify({
+            this.$message({
               message: `连接测试成功`,
-              customClass: 'notify-success'
+              type: 'success'
             })
           }).finally(() => {
             this.checkConnLoading = false
@@ -265,9 +270,9 @@ export default {
           this.checkLoginLoading = true
           login(this.loginCheckForm).then(resp => {
             this.checkLoginDialog = false
-            this.$notify({
+            this.$message({
               message: `用户[${resp.data.account}]登录成功`,
-              customClass: 'notify-success'
+              type: 'success'
             })
           }).finally(() => (
             this.checkLoginLoading = false
