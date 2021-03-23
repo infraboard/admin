@@ -152,7 +152,7 @@ export default {
       if (this.active-- < 0) this.active = 0
     },
     async submit() {
-      var upResp = await updateProfile({ profile: this.profileForm })
+      var upResp = await updateProfile(this.profileForm)
       console.log(upResp)
       var jdResp = await joinDepartment(this.departForm)
       console.log(jdResp)
