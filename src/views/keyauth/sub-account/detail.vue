@@ -20,13 +20,13 @@
           </el-row>
           <el-col class="detail-col" :xs="18" :sm="18" :lg="12">
             <el-row class="attr-row">
-              <span class="attr-key">名称</span>
+              <span class="attr-key">账号</span>
               <span class="attr-value">{{ user.account }}</span>
             </el-row>
             <el-row class="attr-row">
               <span class="attr-key">头像</span>
               <div class="attr-value">
-                <span v-if="user.avatar">{{ user.avatar }}</span>
+                <span v-if="user.profile">{{ user.profile.avatar }}</span>
                 <span v-else>上传</span>
               </div>
             </el-row>
@@ -48,28 +48,28 @@
               <span class="attr-key">昵称</span>
               <div class="attr-value">
                 <el-input v-show="isEdit" v-model="form.nick_name" maxlength="20" show-word-limit placeholder="用户昵称" />
-                <span v-show="!isEdit">{{ user.nick_name }}</span>
+                <span v-show="!isEdit">{{ user.profile.nick_name }}</span>
               </div>
             </el-row>
             <el-row class="attr-row">
               <span class="attr-key">姓名</span>
               <div class="attr-value">
                 <el-input v-show="isEdit" v-model="form.real_name" maxlength="20" show-word-limit placeholder="真实姓名" />
-                <span v-show="!isEdit">{{ user.real_name }}</span>
+                <span v-show="!isEdit">{{ user.profile.real_name }}</span>
               </div>
             </el-row>
             <el-row class="attr-row">
               <span class="attr-key">电话</span>
               <div class="attr-value">
-                <el-input v-show="isEdit" v-model="form.mobile" maxlength="20" show-word-limit placeholder="电话号码" />
-                <span v-show="!isEdit">{{ user.mobile }}</span>
+                <el-input v-show="isEdit" v-model="form.phone" maxlength="20" show-word-limit placeholder="电话号码" />
+                <span v-show="!isEdit">{{ user.profile.phone }}</span>
               </div>
             </el-row>
             <el-row class="attr-row">
               <span class="attr-key">邮箱</span>
               <div class="attr-value">
                 <el-input v-show="isEdit" v-model="form.email" maxlength="20" show-word-limit placeholder="邮箱地址" />
-                <span v-show="!isEdit">{{ user.email }}</span>
+                <span v-show="!isEdit">{{ user.profile.email }}</span>
               </div>
             </el-row>
             <el-row class="attr-row">
@@ -77,7 +77,7 @@
               <div class="attr-value">
                 <el-input v-show="isEdit" v-model="form.province" style="width:48%" maxlength="10" show-word-limit placeholder="省" />
                 <el-input v-show="isEdit" v-model="form.city" style="margin-left:4%;width:48%;" maxlength="10" show-word-limit placeholder="省" />
-                <span v-show="!isEdit">{{ user.province }} {{ user.city }}</span>
+                <span v-show="!isEdit">{{ user.profile.province }} {{ user.profile.city }}</span>
               </div>
             </el-row>
           </el-col>

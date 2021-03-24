@@ -1,11 +1,30 @@
 <template>
   <div class="sub-main">
-    <div v-if="hasConfig">
+    <div v-if="hasConfig || createConfig">
       <div>
         <tips :tips="tips" title="须知" />
       </div>
       <div class="setting-form">
         <el-form ref="dataForm" label-position="left" :rules="rules" label-width="110px" :model="form">
+          <el-divider content-position="left">服务状态</el-divider>
+          <!-- <el-form-item label="状态">
+            <div v-if="connectOK" style="display:flex">
+              <div style="margin-top:11px;width:48px;">
+                <div class="point point-flicker" />
+              </div>
+            </div>
+            <div v-else>
+              <span class="f12">-</span>
+            </div>
+          </el-form-item> -->
+          <el-form-item label="启用">
+            <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
+            <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
+          </el-form-item>
+          <el-form-item v-if="hasConfig" label="测试">
+            <el-button type="primary" @click="handleCheckLDAPLogin">登录测试</el-button>
+            <div class="input-tips">测试用户能否登录</div>
+          </el-form-item>
           <el-divider content-position="left">服务配置</el-divider>
           <el-form-item label="服务地址" prop="url">
             <el-input v-model="form.url" @input="objectUpdate('url')" />
@@ -61,25 +80,6 @@
             <el-button type="primary" :loading="checkConnLoading" @click="checkDomainLDAP">连接测试</el-button>
             <div class="input-tips">验证通过后才能保存配置</div>
           </el-form-item>
-          <el-divider content-position="left">服务状态</el-divider>
-          <el-form-item label="状态">
-            <div v-if="connectOK" style="display:flex">
-              <div style="margin-top:11px;width:48px;">
-                <div class="point point-flicker" />
-              </div>
-            </div>
-            <div v-else>
-              <span class="f12">-</span>
-            </div>
-          </el-form-item>
-          <el-form-item label="启用">
-            <el-checkbox v-model="form.enabled" @change="objectUpdate('enabled')" />
-            <div class="input-tips">启动后允许子用户通过LDAP账号登录</div>
-          </el-form-item>
-          <el-form-item label="测试">
-            <el-button type="primary" @click="handleCheckLDAPLogin">登录测试</el-button>
-            <div class="input-tips">测试用户能否登录</div>
-          </el-form-item>
           <el-form-item class="text-center">
             <el-button :disabled="noUpdate" @click="cancel">取消修改</el-button>
             <el-button :disabled="noUpdate || !connectOK" type="primary" :loading="saveLoading" @click="saveLDAPConfig">保存配置</el-button>
@@ -91,7 +91,7 @@
       <div class="f12 el-main">
         <span>你当前还没有配置LDAP, 点击配置</span>
         <br>
-        <el-button type="primary" @click="hasConfig = true">配置LDAP</el-button>
+        <el-button type="primary" @click="createConfig = true">配置LDAP</el-button>
       </div>
     </div>
     <el-dialog
@@ -140,6 +140,7 @@ export default {
       loading: undefined,
       tips,
       hasConfig: true,
+      createConfig: false,
       showAttrMap: false,
       ldap: {},
       form: {
@@ -154,7 +155,7 @@ export default {
         username_attribute: 'uid',
         mail_attribute: 'mail',
         display_name_attribute: 'displayname',
-        enabled: false
+        enabled: true
       },
       loginCheckForm: {
         grant_type: 'ldap',

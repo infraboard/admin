@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <el-tabs v-model="loginForm.grant_type" @tab-click="handleClick">
+        <el-tabs v-model="loginForm.grant_type">
           <el-tab-pane label="普通登录" name="password" />
           <el-tab-pane label="LDAP登录" name="ldap" />
         </el-tabs>

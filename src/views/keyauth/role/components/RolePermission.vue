@@ -63,7 +63,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="210">
         <template slot-scope="{row,$index}">
           <el-button v-if="resourceVisible === row.id" style="color:#67C23A;" :loading="saveLoading === row.id" size="mini" type="text" @click="handleSave(row,$index)">
             保存
@@ -71,6 +71,7 @@
           <el-button v-else :loading="editLoading === row.id" style="color:#E6A23C" size="mini" type="text" @click="handleEdit(row,$index)">
             编辑
           </el-button>
+          <el-divider direction="vertical" />
           <el-button :loading="deleteLoading === row.id" style="color:#F56C6C" size="mini" type="text" @click="handleDelete(row,$index)">
             移除
           </el-button>

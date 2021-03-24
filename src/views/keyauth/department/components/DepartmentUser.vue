@@ -227,12 +227,13 @@ export default {
     noMore() {
       return this.departmentJoinApplyList.length() >= this.departmentJoinApplyTotal
     },
-    dealJoinApply(index, id, status) {
-      console.log(index, id, status)
-      dealJoinApply(id, { status }).then(resp => {
-        this.departmentJoinApplyList.splice(index, 1)
-        this.departmentJoinApplyTotal--
-      })
+    async dealJoinApply(index, id, status) {
+      await dealJoinApply(id, { status })
+      this.departmentJoinApplyList.splice(index, 1)
+      this.departmentJoinApplyTotal--
+      if (status === 'passed') {
+        this.getDepartmentUser()
+      }
     }
   }
 }
