@@ -223,6 +223,14 @@ export const asyncRoutes = [
         meta: {
           title: '空间详情'
         }
+      },
+      {
+        path: 'tag',
+        component: () => import('@/views/keyauth/tag'),
+        name: 'TagList',
+        meta: {
+          title: '标签列表'
+        }
       }
     ]
   },
