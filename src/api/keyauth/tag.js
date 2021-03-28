@@ -8,6 +8,14 @@ export function queryTag(query) {
   })
 }
 
+export function queryTagValue(tagId, query) {
+  return request({
+    url: '/keyauth/v1/tags/' + tagId + '/values',
+    method: 'get',
+    params: query
+  })
+}
+
 export function describeTag(id, query) {
   return request({
     url: '/keyauth/v1/tags/' + id,

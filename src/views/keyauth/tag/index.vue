@@ -72,9 +72,9 @@
         </el-table-column>
         <el-table-column label="操作" align="center" min-width="230">
           <template slot-scope="{row,$index}">
-            <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
-            <el-divider v-if="row.type !== 'build_in'" direction="vertical" />
-            <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+            <!-- <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
+            <el-divider v-if="row.type !== 'build_in'" direction="vertical" /> -->
+            <el-button v-if="row.type !== 'build_in'" style="color:#F56C6C" :loading="deleteLoading === row.id" size="mini" type="text" @click="handleDelete(row,$index)">
               删除
             </el-button>
           </template>
@@ -166,7 +166,7 @@ export default {
       this.getNamespaceList()
     },
     handleDelete(row, index) {
-      this.deleteLoading = row.name
+      this.deleteLoading = row.id
       deleteTag(row.id).then(resp => {
         this.$notify({
           title: '成功',

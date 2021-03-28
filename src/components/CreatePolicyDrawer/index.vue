@@ -62,9 +62,9 @@
           </div>
         </el-form-item>
         <el-form-item label="范围" :label-width="formLabelWidth">
-          <el-input v-model="form.scope" />
+          <choice-tag :tag-key.sync="scope_key" :tag-values.sync="scope_values" @change="handleTagChanged" />
           <div class="input-tips">
-            <span>用于对空间内做更细粒度的访问范围控制</span>
+            <span>通过标签对空间内的资源做更细粒度的访问控制, 如果没有标签, 请提前创建</span>
           </div>
         </el-form-item>
         <el-form-item label="过期时间" :label-width="formLabelWidth">
@@ -94,9 +94,11 @@ import { queryRole } from '@/api/keyauth/role'
 import { queryNamespace } from '@/api/keyauth/namespace'
 import { querySubAccount } from '@/api/keyauth/subAccount'
 import { createPolicy } from '@/api/keyauth/policy'
+import ChoiceTag from '@/components/ChoiceTag'
 
 export default {
   name: 'CreatePolicyDrawer',
+  components: { ChoiceTag },
   props: {
     visible: {
       default: false,
@@ -117,6 +119,8 @@ export default {
   },
   data() {
     return {
+      scope_key: '',
+      scope_values: [],
       subAccountQuery: { with_department: true },
       queryUserLoading: false,
       subAccountList: [],
@@ -187,6 +191,11 @@ export default {
     }
   },
   methods: {
+    handleTagChanged(val) {
+      console.log(val)
+      console.log(this.scope_key)
+      console.log(this.scope_values)
+    },
     searchSubAccount(keywords) {
       this.queryUserLoading = true
       // 获取用户列表
@@ -253,6 +262,9 @@ export default {
           }
           if (this.roleId) {
             this.form.role_id = this.roleId
+          }
+          if (this.scope_key && this.scope_values) {
+            this.form.scope = `${this.scope_key}=${this.scope_values.join(',')}`
           }
           createPolicy(this.form).then(resp => {
             this.$notify({

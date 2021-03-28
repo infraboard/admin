@@ -8,7 +8,7 @@
     size="60%"
   >
     <div class="drawer-content">
-      <el-form ref="namespaceForm" :model="form" :rules="rules">
+      <el-form ref="TagForm" :model="form" :rules="rules">
         <el-form-item label="访问范围" :label-width="formLabelWidth" prop="scope_type">
           <el-radio-group v-model="form.scope_type">
             <el-radio-button label="global">全局</el-radio-button>
@@ -130,14 +130,14 @@
       </el-form>
       <div class="drawer-footer">
         <el-button @click="cancelForm">取 消</el-button>
-        <el-button type="primary" :loading="createNamespaceLoading" @click="submit">{{ createNamespaceLoading ? '提交中 ...' : '确 定' }}</el-button>
+        <el-button type="primary" :loading="createTagLoading" @click="submit">{{ createTagLoading ? '提交中 ...' : '确 定' }}</el-button>
       </div>
     </div>
   </el-drawer>
 </template>
 
 <script>
-import { createNamespace } from '@/api/keyauth/namespace'
+import { createTag } from '@/api/keyauth/tag'
 import { describeDepartment } from '@/api/keyauth/department'
 
 export default {
@@ -165,7 +165,7 @@ export default {
       departmentList: [],
       table: false,
       dialog: false,
-      createNamespaceLoading: false,
+      createTagLoading: false,
       form: {
         scope_type: '',
         key_name: '',
@@ -173,7 +173,7 @@ export default {
         key_desc: '',
         namespace_id: '',
         value_from: 'MANUAL',
-        http_from_option: [],
+        http_from_option: {},
         values: []
       },
       formLabelWidth: '100px',
@@ -196,7 +196,7 @@ export default {
           this.form.namespace_id = this.namespaceId
           this.describeDepartment()
           this.$nextTick(() => {
-            this.$refs['namespaceForm'].clearValidate()
+            this.$refs['TagForm'].clearValidate()
           })
         }
       },
@@ -213,15 +213,15 @@ export default {
       }
     },
     handleClose(done) {
-      if (this.createNamespaceLoading) {
+      if (this.createTagLoading) {
         return
       }
-      this.createNamespaceLoading = false
+      this.createTagLoading = false
       this.dialog = false
       this.$emit('update:visible', false)
     },
     cancelForm() {
-      this.createNamespaceLoading = false
+      this.createTagLoading = false
       this.dialog = false
       this.$emit('update:visible', false)
     },
@@ -233,7 +233,7 @@ export default {
         key_desc: '',
         namespace_id: '',
         value_from: 'MANUAL',
-        http_from_option: [],
+        http_from_option: {},
         values: []
       }
     },
@@ -248,19 +248,19 @@ export default {
       this.form.values.splice(index, 1)
     },
     submit() {
-      this.$refs['namespaceForm'].validate((valid) => {
+      this.$refs['TagForm'].validate((valid) => {
         if (valid) {
-          this.createNamespaceLoading = true
-          createNamespace(this.form).then(resp => {
+          this.createTagLoading = true
+          createTag(this.form).then(resp => {
             this.$notify({
-              message: `添加空间[${resp.data.name}]成功`,
+              message: `创建标签[${resp.data.key_name}]成功`,
               customClass: 'notify-success'
             })
             this.$refs.drawer.closeDrawer()
             this.$emit('update:visible', false)
             this.$emit('change', resp.data)
           }).finally(() => {
-            this.createNamespaceLoading = false
+            this.createTagLoading = false
           })
         }
       })
