@@ -6,7 +6,7 @@
     <div class="setting-form">
       <el-form label-position="left" label-width="110px" :model="form">
         <el-form-item label="通知方式" prop="notify_type">
-          <el-radio-group v-model="form.notify_type" @@change="objectUpdate">
+          <el-radio-group v-model="form.notify_type" @change="objectUpdate">
             <el-radio-button label="MAIL"> 邮件 </el-radio-button>
             <el-radio-button label="SMS"> 短信 </el-radio-button>
           </el-radio-group>
