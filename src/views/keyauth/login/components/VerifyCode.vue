@@ -70,7 +70,7 @@
             </div>
           </div>
           <div class="input-tips" style="margin-top:22px;">
-            <span v-if="message">{{ message }}</span>
+            <span v-if="message" style="color:#67C23A">{{ message }}</span>
           </div>
         </el-card>
       </div>

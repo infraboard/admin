@@ -135,9 +135,19 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    updateVerifyCode(code) {
+    async updateVerifyCode(code) {
+      const loginLoading = this.$loading({
+        lock: true,
+        text: '登录中...',
+        spinner: 'el-icon-loading',
+        body: true
+      })
       this.loginForm.verify_code = code
-      this.handleLogin()
+      try {
+        await this.handleLogin()
+      } finally {
+        loginLoading.close
+      }
     },
     checkCapslock(e) {
       const { key } = e
@@ -153,7 +163,7 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
+    async handleLogin() {
       this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
