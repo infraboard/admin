@@ -104,6 +104,7 @@ export default {
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
+      pageLoginLoading: null,
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
@@ -136,18 +137,14 @@ export default {
   },
   methods: {
     async updateVerifyCode(code) {
-      const loginLoading = this.$loading({
+      this.pageLoginLoading = this.$loading({
         lock: true,
         text: '登录中...',
         spinner: 'el-icon-loading',
         body: true
       })
       this.loginForm.verify_code = code
-      try {
-        await this.handleLogin()
-      } finally {
-        loginLoading.close()
-      }
+      await this.handleLogin()
     },
     checkCapslock(e) {
       const { key } = e
@@ -187,6 +184,9 @@ export default {
             return
           } finally {
             this.loading = false
+            if (this.pageLoginLoading) {
+              this.pageLoginLoading.close()
+            }
           }
 
           if (!this.$store.getters.isInitialized) {
