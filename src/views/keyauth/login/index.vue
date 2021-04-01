@@ -146,7 +146,7 @@ export default {
       try {
         await this.handleLogin()
       } finally {
-        loginLoading.close
+        loginLoading.close()
       }
     },
     checkCapslock(e) {
