@@ -263,13 +263,16 @@ export default {
               })
             })
           })
+
           // 创建角色
           this.createRoleLoading = true
-          await createRole(this.createForm)
-          this.createRoleLoading = false
-
-          // 调转到角色列表
-          this.$router.push({ path: '/permission/role' })
+          try {
+            await createRole(this.createForm)
+            // 调转到角色列表
+            this.$router.push({ path: '/permission/role' })
+          } finally {
+            this.createRoleLoading = false
+          }
         }
       })
     }
