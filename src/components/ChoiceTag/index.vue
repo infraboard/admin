@@ -2,7 +2,7 @@
   <div class="wrapper">
     <el-select
       v-model="choicedKey"
-      style="width:38%"
+      style="width:100%"
       filterable
       remote
       clearable
@@ -18,10 +18,13 @@
         :value="item.key_name"
       />
     </el-select>
+    <div class="input-tips">
+      <span>通过标签key=value,...的方式进行更细粒度的范围控制</span>
+    </div>
     <el-select
       v-if="tagKey"
       v-model="choicedValue"
-      style="margin-left:4px;width:60%"
+      style="width:100%"
       filterable
       multiple
       remote
@@ -38,6 +41,9 @@
         :value="item.value.value"
       />
     </el-select>
+    <div v-if="tagKey" class="input-tips">
+      <span>标签具体值</span>
+    </div>
   </div>
 </template>
 

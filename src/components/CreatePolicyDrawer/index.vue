@@ -5,7 +5,7 @@
     :before-close="handleClose"
     :visible.sync="dialog"
     :show-close="false"
-    size="32%"
+    size="40%"
   >
     <div class="drawer-content">
       <el-form ref="policyForm" :model="form" :rules="rules">
@@ -63,9 +63,6 @@
         </el-form-item>
         <el-form-item label="范围" :label-width="formLabelWidth">
           <choice-tag :tag-key.sync="scope_key" :tag-values.sync="scope_values" @change="handleTagChanged" />
-          <div class="input-tips">
-            <span>通过标签对空间内的资源做更细粒度的访问控制, 如果没有标签, 请提前创建</span>
-          </div>
         </el-form-item>
         <el-form-item label="过期时间" :label-width="formLabelWidth">
           <el-checkbox v-model="neverExpire">永不过期</el-checkbox>

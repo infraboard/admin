@@ -5,7 +5,7 @@
     :before-close="handleClose"
     :visible.sync="dialog"
     :show-close="false"
-    size="32%"
+    size="40%"
   >
     <div class="drawer-content">
       <el-form ref="userForm" :model="form" :rules="rules">
