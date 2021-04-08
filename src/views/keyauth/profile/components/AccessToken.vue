@@ -32,7 +32,7 @@
           width="45"
           align="center"
         />
-        <el-table-column label="用途描述" prop="description" align="center" min-width="110">
+        <el-table-column label="描述" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
             <span>{{ row.description }}</span>
           </template>
@@ -47,10 +47,15 @@
             <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="过期时间" min-width="150px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column label="状态" prop="status" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span v-if="row.enabled"><svg-icon icon-class="normal" /></span>
+            <span v-if="row.is_block"><svg-icon icon-class="normal" /></span>
             <span v-else><svg-icon icon-class="locked" /></span>
           </template>
         </el-table-column>
