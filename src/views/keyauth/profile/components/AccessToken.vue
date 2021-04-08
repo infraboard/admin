@@ -8,12 +8,7 @@
     <div class="filter-container">
       <div class="filter-item">
         <el-button type="primary" size="mini" @click="handleCreateAccessToken">
-          新建标签
-        </el-button>
-      </div>
-      <div class="filter-item fr">
-        <el-button type="primary" size="mini" @click="handleCreateAccessToken">
-          新建标签
+          新建Token
         </el-button>
       </div>
     </div>
@@ -27,48 +22,63 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column
-          type="selection"
-          width="45"
-          align="center"
-        />
         <el-table-column label="描述" prop="description" align="center" min-width="110">
           <template slot-scope="{row}">
             <span>{{ row.description }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="Token" prop="access_token" align="center" min-width="110">
+        <el-table-column label="Token" prop="access_token" align="center" min-width="260">
           <template slot-scope="{row}">
             <span>{{ row.access_token }}</span>
+            <el-button v-clipboard:copy="row.access_token" v-clipboard:success="clipboardSuccess" type="text" icon="el-icon-document-copy" style="padding:0px;margin-left:12px;" />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" min-width="150px" align="center">
+        <el-table-column label="创建时间" align="center" min-width="180">
           <template slot-scope="{row}">
             <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="过期时间" min-width="150px" align="center">
+        <el-table-column label="过期时间" align="center" min-width="180">
           <template slot-scope="{row}">
             <span>{{ row.create_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-
         <el-table-column label="状态" prop="status" align="center" min-width="110">
           <template slot-scope="{row}">
             <span v-if="row.is_block"><svg-icon icon-class="normal" /></span>
             <span v-else><svg-icon icon-class="locked" /></span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作" align="center" min-width="230">
+        <el-table-column label="操作" align="center" width="230">
           <template slot-scope="{row,$index}">
-            <el-button type="text" size="mini" @click="handleUpdate(row)">编辑</el-button>
-            <el-divider v-if="row.type !== 'build_in'" direction="vertical" />
-            <el-button v-if="row.type !== 'build_in'" :loading="deleteLoading === row.name" size="mini" type="text" @click="handleDelete(row,$index)">
+            <el-button type="text" size="mini" style="color:#E6A23C" @click="handleUpdate(row)">禁用</el-button>
+            <el-divider direction="vertical" />
+            <el-button :loading="deleteLoading === row.access_token" size="mini" style="color:#F56C6C" type="text" @click="handleDelete(row,$index)">
               删除
             </el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
+    </div>
+
+    <!-- 测试对话框 -->
+    <div>
+      <el-dialog
+        title="新建Token"
+        :visible.sync="createTokenDialog"
+        width="40%"
+      >
+        <el-form ref="createTokenForm" :rules="createTokenRules" label-position="left" label-width="80px" :model="createTokenForm">
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="createTokenForm.description" placeholder="" />
+            <div class="input-tips">收件人邮箱地址, 如果多个请使用逗号分隔</div>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="createTokenDialog = false">取 消</el-button>
+          <el-button type="primary" :loading="createTokenLoading" @click="submit">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -96,7 +106,19 @@ export default {
       ],
       tableKey: 0,
       queryLoading: false,
-      tokenList: []
+      deleteLoading: '',
+      tokenList: [],
+      createTokenDialog: false,
+      createTokenLoading: false,
+      createTokenForm: {
+        description: '',
+        expired_at: 0
+      },
+      createTokenRules: {
+        host: [{ required: true, message: '请输入邮件(SMTP)服务器地址', trigger: 'change' }],
+        username: [{ required: true, message: '请输入发送邮件的用户名称', trigger: 'change' }],
+        password: [{ required: true, message: '请输入发送邮件的用户密码', trigger: 'change' }]
+      }
     }
   },
   mounted() {
@@ -109,6 +131,9 @@ export default {
         type: 'success'
       })
     },
+    submit() {
+
+    },
     async queryToken() {
       this.queryLoading = true
       try {
@@ -119,7 +144,7 @@ export default {
       }
     },
     handleCreateAccessToken() {
-
+      this.createTokenDialog = true
     }
   }
 }
