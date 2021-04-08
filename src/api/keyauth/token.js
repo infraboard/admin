@@ -48,3 +48,11 @@ export function sendVerifyCodeByPass(data) {
     data
   })
 }
+
+export function queryToken(query) {
+  return request({
+    url: '/keyauth/v1/self/tokens/',
+    method: 'get',
+    params: query
+  })
+}

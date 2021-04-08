@@ -61,19 +61,6 @@ import Tips from '@/components/Tips'
 import { refreshServiceClientSecret } from '@/api/keyauth/service'
 import clipboard from '@/directive/clipboard/index.js'
 
-import marked from 'marked'
-var rendererMD = new marked.Renderer()
-marked.setOptions({
-  renderer: rendererMD,
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-})
-
 export default {
   name: 'ServiceCredential',
   components: { Tips },
@@ -100,11 +87,6 @@ export default {
       refreshLoading: false,
       dialogFormVisible: false,
       language: 'Golang'
-    }
-  },
-  computed: {
-    compiledMarkdown: function() {
-      return marked(this.markdownContent, { sanitize: true })
     }
   },
   methods: {

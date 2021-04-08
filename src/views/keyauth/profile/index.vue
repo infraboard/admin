@@ -5,8 +5,8 @@
         <el-tab-pane label="账号资料" name="profile">
           <user-card :user="user" />
         </el-tab-pane>
-        <el-tab-pane label="应用管理" name="activity">
-          <activity />
+        <el-tab-pane lazy label="访问凭证" name="activity">
+          <access-token />
         </el-tab-pane>
         <el-tab-pane label="登录日志" name="timeline">
           <timeline />
@@ -22,12 +22,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import UserCard from './components/UserCard'
-import Activity from './components/Activity'
 import Timeline from './components/Timeline'
 import Account from './components/Account'
+import AccessToken from './components/AccessToken'
 export default {
   name: 'Profile',
-  components: { UserCard, Activity, Timeline, Account },
+  components: { UserCard, Timeline, Account, AccessToken },
   data() {
     return {
       user: {},
