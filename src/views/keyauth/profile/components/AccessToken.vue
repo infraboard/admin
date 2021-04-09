@@ -71,7 +71,22 @@
         <el-form ref="createTokenForm" :rules="createTokenRules" label-position="left" label-width="80px" :model="createTokenForm">
           <el-form-item label="描述" prop="description">
             <el-input v-model="createTokenForm.description" placeholder="" />
-            <div class="input-tips">收件人邮箱地址, 如果多个请使用逗号分隔</div>
+            <div class="input-tips">token的描述, 用于区分用途</div>
+          </el-form-item>
+          <el-form-item label="过期时间" prop="description">
+            <el-date-picker
+              v-if="!createTokenForm.not_expired"
+              v-model="createTokenForm.expired_at"
+              type="datetime"
+              :default-value="new Date()"
+              default-time="23:59:59"
+              placeholder="选择Token过期时间"
+              align="right"
+              :clearable="false"
+              :picker-options="pickerOptions"
+            />
+            <el-checkbox v-model="createTokenForm.not_expired" style="margin-left:12px;">永不过期</el-checkbox>
+            <div class="input-tips">过期后将无法使用, 需要重新申请新的</div>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -104,6 +119,33 @@ export default {
       opTips: [
         '您的 Token 代表您的账号身份和所拥有的权限，等同于您的登录密码，切勿泄露他人'
       ],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < new Date().getTime()
+        },
+        shortcuts: [{
+          text: '一天后',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周后',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一月后',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
       tableKey: 0,
       queryLoading: false,
       deleteLoading: '',
@@ -112,7 +154,8 @@ export default {
       createTokenLoading: false,
       createTokenForm: {
         description: '',
-        expired_at: 0
+        not_expired: true,
+        expired_at: ''
       },
       createTokenRules: {
         host: [{ required: true, message: '请输入邮件(SMTP)服务器地址', trigger: 'change' }],
