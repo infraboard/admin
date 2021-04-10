@@ -7,7 +7,7 @@
 
     <div class="filter-container">
       <div class="filter-item">
-        <el-button type="primary" size="mini" @click="handleCreateAccessToken">
+        <el-button type="primary" :disabled="total > 4" size="mini" :loading="createTokenLoading" @click="handleCreateAccessToken">
           新建Token
         </el-button>
       </div>
@@ -45,13 +45,13 @@
         </el-table-column>
         <el-table-column label="状态" prop="status" align="center" min-width="110">
           <template slot-scope="{row}">
-            <span v-if="row.is_block"><svg-icon icon-class="normal" /></span>
-            <span v-else><svg-icon icon-class="locked" /></span>
+            <span v-if="row.is_block"><svg-icon icon-class="locked" /></span>
+            <span v-else><svg-icon icon-class="normal" /></span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="230">
           <template slot-scope="{row,$index}">
-            <el-button type="text" size="mini" style="color:#E6A23C" @click="handleUpdate(row)">禁用</el-button>
+            <el-button type="text" size="mini" style="color:#E6A23C" disabled @click="handleUpdate(row)">禁用</el-button>
             <el-divider direction="vertical" />
             <el-button :loading="deleteLoading === row.access_token" size="mini" style="color:#F56C6C" type="text" @click="handleDelete(row,$index)">
               删除
@@ -100,8 +100,9 @@
 
 <script>
 import Tips from '@/components/Tips'
-import { queryToken } from '@/api/keyauth/token'
+import { queryToken, login } from '@/api/keyauth/token'
 import clipboard from '@/directive/clipboard/index.js'
+import store from '@/store'
 
 export default {
   name: 'AccessToken',
@@ -150,10 +151,13 @@ export default {
       queryLoading: false,
       deleteLoading: '',
       tokenList: [],
+      total: 10,
       createTokenDialog: false,
       createTokenLoading: false,
       createTokenForm: {
+        grant_type: 'access',
         description: '',
+        access_token: store.getters.accessToken,
         not_expired: true,
         expired_at: ''
       },
@@ -174,14 +178,23 @@ export default {
         type: 'success'
       })
     },
-    submit() {
-
+    async submit() {
+      this.createTokenLoading = true
+      try {
+        await login(this.createTokenForm)
+        this.queryToken()
+      } finally {
+        this.createTokenLoading = false
+      }
     },
     async queryToken() {
       this.queryLoading = true
       try {
         var resp = await queryToken({ grant_type: 'access' })
         this.tokenList = resp.data.items
+        this.total = resp.data.total
+        this.createTokenDialog = false
+        console.log(this.total)
       } finally {
         this.queryLoading = false
       }
