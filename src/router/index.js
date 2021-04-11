@@ -238,7 +238,7 @@ export const asyncRoutes = [
   {
     path: '/service',
     component: Layout,
-    redirect: '/service/',
+    redirect: '/service/list',
     alwaysShow: true,
     name: 'Service',
     meta: {
@@ -248,7 +248,7 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: '',
+        path: 'list',
         component: () => import('@/views/keyauth/service'),
         name: 'ServiceList',
         meta: {
@@ -257,11 +257,19 @@ export const asyncRoutes = [
       },
       {
         hidden: true,
-        path: ':id',
+        path: 'detail/:id',
         component: () => import('@/views/keyauth/service/detail'),
         name: 'ServiceDetail',
         meta: {
           title: '服务详情'
+        }
+      },
+      {
+        path: 'config',
+        component: () => import('@/views/keyauth/service/config'),
+        name: 'ServiceConfig',
+        meta: {
+          title: '服务配置'
         }
       }
     ]

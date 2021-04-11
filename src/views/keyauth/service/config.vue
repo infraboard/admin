@@ -35,7 +35,7 @@
         />
         <el-table-column label="服务名称" prop="name" align="center" min-width="110">
           <template slot-scope="{row}">
-            <router-link :to="'/service/detail/'+row.id" class="link-type">
+            <router-link :to="'/service/'+row.id" class="link-type">
               <span>{{ row.name }}</span>
             </router-link>
           </template>
@@ -81,11 +81,11 @@ import CreateServiceDrawer from '@/components/CreateServiceDrawer'
 import Tips from '@/components/Tips'
 
 const tips = [
-  '服务将功能列表注册到权限中心, 实现权限集中管理'
+  '微服务的配置'
 ]
 
 export default {
-  name: 'ServiceList',
+  name: 'ServiceConfig',
   components: { Pagination, CreateServiceDrawer, Tips },
   directives: { },
   data() {
