@@ -53,7 +53,7 @@
           <template slot-scope="{row,$index}">
             <el-button type="text" size="mini" style="color:#E6A23C" disabled @click="handleUpdate(row)">禁用</el-button>
             <el-divider direction="vertical" />
-            <el-button :loading="deleteLoading === row.access_token" size="mini" style="color:#F56C6C" type="text" @click="handleDelete(row,$index)">
+            <el-button :loading="deleteLoading === row.access_token" size="mini" style="color:#F56C6C" type="text" @click="handleDeleteToken(row,$index)">
               删除
             </el-button>
           </template>
@@ -100,7 +100,7 @@
 
 <script>
 import Tips from '@/components/Tips'
-import { queryToken, login } from '@/api/keyauth/token'
+import { queryToken, deleteToken, login } from '@/api/keyauth/token'
 import clipboard from '@/directive/clipboard/index.js'
 import store from '@/store'
 
@@ -201,6 +201,15 @@ export default {
     },
     handleCreateAccessToken() {
       this.createTokenDialog = true
+    },
+    async handleDeleteToken(tk) {
+      this.deleteLoading = tk.access_token
+      try {
+        await deleteToken({ 'access_token': [tk.access_token] })
+        this.queryToken()
+      } finally {
+        this.deleteLoading = ''
+      }
     }
   }
 }

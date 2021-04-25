@@ -56,3 +56,15 @@ export function queryToken(query) {
     params: query
   })
 }
+
+export function deleteToken(data) {
+  return request({
+    url: '/keyauth/v1/self/tokens/',
+    method: 'delete',
+    auth: {
+      username: defaultSettings.client_id,
+      password: defaultSettings.client_secret
+    },
+    data
+  })
+}
