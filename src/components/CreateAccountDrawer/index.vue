@@ -166,7 +166,6 @@ export default {
       },
       formLabelWidth: '80px',
       rules: {
-        department_id: [{ required: true, message: '请选择用户部门', trigger: 'change' }],
         account: [{ required: true, message: '请输入用户名称', trigger: 'change' }],
         password: [{ required: true, message: '请输入用户密码', trigger: 'change' }],
         'profile.phone': [{ required: true, message: '请输入用户电话号码', trigger: 'change' }],
