@@ -16,10 +16,10 @@
             <span>用户归属的部门, 决定了用户可以看到的空间</span>
           </div>
         </el-form-item>
-        <el-form-item label="用户名" :label-width="formLabelWidth" prop="account">
+        <el-form-item label="账号" :label-width="formLabelWidth" prop="account">
           <el-input v-model="form.account" maxlength="60" show-word-limit />
           <div class="input-tips">
-            <span>建议直接使用中文</span>
+            <span>用户登录时的用户名, 可以使用中文</span>
           </div>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
@@ -30,6 +30,24 @@
           </div>
           <div class="input-tips">
             <span>用户密码有强度校验,建议随机生成, 点击右边循环按钮</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="姓名" :label-width="formLabelWidth" prop="profile.real_name">
+          <el-input v-model="form.profile.real_name" maxlength="40" show-word-limit />
+          <div class="input-tips">
+            <span>用户真实姓名</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="昵称" :label-width="formLabelWidth" prop="profile.nick_name">
+          <el-input v-model="form.profile.nick_name" maxlength="40" show-word-limit />
+          <div class="input-tips">
+            <span>昵称, 伪装者使用</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="城市" :label-width="formLabelWidth" prop="profile.city">
+          <el-input v-model="form.profile.city" maxlength="40" show-word-limit />
+          <div class="input-tips">
+            <span>所在城市</span>
           </div>
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth" prop="profile.phone">
@@ -159,9 +177,16 @@ export default {
         password: '',
         description: '',
         profile: {
+          real_name: '',
+          nick_name: '',
           phone: '',
           email: '',
-          gender: 'unknown'
+          address: '',
+          gender: 'unknown',
+          avatar: '',
+          language: '',
+          city: '',
+          province: ''
         }
       },
       formLabelWidth: '80px',
