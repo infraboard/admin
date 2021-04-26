@@ -34,9 +34,9 @@
               <span class="attr-key">性别</span>
               <div class="attr-value">
                 <div v-show="isEdit">
-                  <el-radio v-model="form.gender" label="male">男</el-radio>
-                  <el-radio v-model="form.gender" label="female">女</el-radio>
-                  <el-radio v-model="form.gender" label="unknown">保密</el-radio>
+                  <el-radio v-model="form.gender" label="MALE">男</el-radio>
+                  <el-radio v-model="form.gender" label="FEMALE">女</el-radio>
+                  <el-radio v-model="form.gender" label="UNKNOWN">保密</el-radio>
                 </div>
                 <div v-show="!isEdit">
                   <span v-if="user.profile">{{ user.profile.gender }}</span>
@@ -75,9 +75,8 @@
             <el-row class="attr-row">
               <span class="attr-key">城市</span>
               <div class="attr-value">
-                <el-input v-show="isEdit" v-model="form.province" style="width:48%" maxlength="10" show-word-limit placeholder="省" />
-                <el-input v-show="isEdit" v-model="form.city" style="margin-left:4%;width:48%;" maxlength="10" show-word-limit placeholder="省" />
-                <span v-show="!isEdit">{{ user.profile.province }} {{ user.profile.city }}</span>
+                <el-input v-show="isEdit" v-model="form.city" maxlength="10" show-word-limit placeholder="省" />
+                <span v-show="!isEdit">{{ user.profile.city }}</span>
               </div>
             </el-row>
           </el-col>
@@ -169,7 +168,16 @@ export default {
       dialogFormVisible: false,
       dialogFormType: 'create',
       form: {
-        gender: ''
+        real_name: '',
+        nick_name: '',
+        phone: '',
+        email: '',
+        address: '',
+        gender: 'UNKNOWN',
+        avatar: '',
+        language: '',
+        city: '',
+        province: ''
       },
       rules: {
         name: [{ required: true, message: '请输入角色名称!', trigger: 'change' }]
@@ -214,7 +222,7 @@ export default {
     },
     handleUpdate() {
       this.dialogFormType = 'update'
-      this.form = Object.assign({}, this.user) // copy obj
+      this.form = Object.assign({}, this.user.profile) // copy obj
       this.isEdit = true
     },
     save() {

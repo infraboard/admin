@@ -63,9 +63,9 @@
           </div>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth" prop="profile.gender">
-          <el-radio v-model="form.profile.gender" label="male">男</el-radio>
-          <el-radio v-model="form.profile.gender" label="female">女</el-radio>
-          <el-radio v-model="form.profile.gender" label="unknown">保密</el-radio>
+          <el-radio v-model="form.profile.gender" label="MALE">男</el-radio>
+          <el-radio v-model="form.profile.gender" label="FEMALE">女</el-radio>
+          <el-radio v-model="form.profile.gender" label="UNKNOWN">保密</el-radio>
         </el-form-item>
         <el-form-item label="过期时间" :label-width="formLabelWidth">
           <el-checkbox v-model="neverExpire">永不过期</el-checkbox>
@@ -182,7 +182,7 @@ export default {
           phone: '',
           email: '',
           address: '',
-          gender: 'unknown',
+          gender: 'UNKNOWN',
           avatar: '',
           language: '',
           city: '',
@@ -256,9 +256,15 @@ export default {
         password: '',
         description: '',
         profile: {
+          real_name: '',
+          nick_name: '',
           phone: '',
           email: '',
-          gender: 'unknown'
+          address: '',
+          gender: 'UNKNOWN',
+          avatar: '',
+          language: '',
+          city: ''
         }
       }
     },
