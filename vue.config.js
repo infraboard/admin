@@ -65,7 +65,6 @@ module.exports = {
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
-    
 
     // set svg-sprite-loader
     config.module
