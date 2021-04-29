@@ -8,6 +8,8 @@ function resolve(dir) {
 
 const name = defaultSettings.title || '基础设施服务中心' // page title
 
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
@@ -41,6 +43,7 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    plugins: [new MonacoWebpackPlugin()],
     resolve: {
       alias: {
         '@': resolve('src')
@@ -62,6 +65,7 @@ module.exports = {
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
+    
 
     // set svg-sprite-loader
     config.module

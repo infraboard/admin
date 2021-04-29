@@ -48,6 +48,9 @@
                     <span>{{ props.row.header.level }}</span>
                   </el-form-item>
                 </el-form>
+                <el-form label-position="left" inline>
+                  <el-button type="text" @click="handleShowEventJson(props.row)">查看事件</el-button>
+                </el-form>
               </el-col>
               <el-col :span="6">
                 <el-form label-position="left" inline>
@@ -79,7 +82,6 @@
                 </el-form>
               </el-col>
             </el-row>
-
           </template>
         </el-table-column>
         <el-table-column label="事件时间" prop="name" align="center" width="150">
@@ -115,6 +117,7 @@
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getLoginLogList" />
+      <event-show-drawer :visible.sync="eventShowVisible" :event="showJsonData" />
     </div>
   </div>
 </template>
@@ -124,6 +127,7 @@ import { queryEvent } from '@/api/eventbox/event'
 import Pagination from '@/components/Pagination'
 import DateTimePicker from '@/components/DateTimePicker'
 import Tips from '@/components/Tips'
+import EventShowDrawer from '@/components/EventShowDrawer'
 
 const tips = [
   '操作日志记录了“谁”在“什么时间”、“什么地点”，对“哪个资源”做了“什么操作”'
@@ -131,10 +135,12 @@ const tips = [
 
 export default {
   name: 'OperateLog',
-  components: { Pagination, DateTimePicker, Tips },
+  components: { Pagination, DateTimePicker, Tips, EventShowDrawer },
   directives: { },
   data() {
     return {
+      eventShowVisible: false,
+      showJsonData: '',
       tips,
       filterKey: 'account',
       filterValue: '',
@@ -160,6 +166,12 @@ export default {
     this.getLoginLogList()
   },
   methods: {
+    handleShowEventJson(data) {
+      data.body.request = data.body.request ? JSON.parse(data.body.request) : data.body.request
+      data.body.response = data.body.response ? JSON.parse(data.body.response) : data.body.response
+      this.showJsonData = JSON.stringify(data, null, '\t')
+      this.eventShowVisible = true
+    },
     resetQuery() {
       this.listQuery = {}
     },
