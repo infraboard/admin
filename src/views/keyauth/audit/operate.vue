@@ -167,9 +167,10 @@ export default {
   },
   methods: {
     handleShowEventJson(data) {
-      data.body.request = data.body.request ? JSON.parse(data.body.request) : data.body.request
-      data.body.response = data.body.response ? JSON.parse(data.body.response) : data.body.response
-      this.showJsonData = JSON.stringify(data, null, '\t')
+      var d = JSON.parse(JSON.stringify(data))
+      d.body.request = JSON.parse(data.body.request)
+      d.body.response = JSON.parse(data.body.response)
+      this.showJsonData = JSON.stringify(d, null, '\t')
       this.eventShowVisible = true
     },
     resetQuery() {

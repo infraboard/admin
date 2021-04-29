@@ -21,6 +21,14 @@ export default {
       editor: null
     }
   },
+  watch: {
+    value(value) {
+      const editorValue = this.editor.getValue()
+      if (value !== editorValue) {
+        this.editor.setValue(this.value)
+      }
+    }
+  },
   mounted() {
     this.initEditor()
   },
