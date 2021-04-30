@@ -60,7 +60,7 @@
                 </el-form>
                 <el-form label-position="left" inline>
                   <el-form-item label="会话ID">
-                    <span>{{ props.row.body.session }}</span>
+                    <el-button type="text" @click="handleShowSessionJson(props.row.body.session)">{{ props.row.body.session }}</el-button>
                   </el-form-item>
                 </el-form>
                 <el-form label-position="left" inline>
@@ -117,13 +117,14 @@
       </el-table>
 
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page_number" :limit.sync="listQuery.page_size" @pagination="getLoginLogList" />
-      <event-show-drawer :visible.sync="eventShowVisible" :event="showJsonData" />
+      <event-show-drawer :visible.sync="eventShowVisible" :event="showJsonData" :title="jsonTitle" />
     </div>
   </div>
 </template>
 
 <script>
 import { queryEvent } from '@/api/eventbox/event'
+import { getSession } from '@/api/keyauth/session'
 import Pagination from '@/components/Pagination'
 import DateTimePicker from '@/components/DateTimePicker'
 import Tips from '@/components/Tips'
@@ -141,6 +142,7 @@ export default {
     return {
       eventShowVisible: false,
       showJsonData: '',
+      jsonTitle: '',
       tips,
       filterKey: 'account',
       filterValue: '',
@@ -167,10 +169,18 @@ export default {
   },
   methods: {
     handleShowEventJson(data) {
+      this.jsonTitle = '查看事件'
       var d = JSON.parse(JSON.stringify(data))
       d.body.request = JSON.parse(data.body.request)
       d.body.response = JSON.parse(data.body.response)
       this.showJsonData = JSON.stringify(d, null, '\t')
+      this.eventShowVisible = true
+    },
+    async handleShowSessionJson(id) {
+      var resp = await getSession(id)
+      this.jsonTitle = '查看会话'
+      this.eventShowVisible = true
+      this.showJsonData = JSON.stringify(resp, null, '\t')
       this.eventShowVisible = true
     },
     resetQuery() {

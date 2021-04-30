@@ -1,5 +1,5 @@
 <template>
-  <div id="container" :style="`height:${height}px;width:${width}px`" />
+  <div id="container" style="height:90vh;border: 1px solid #2c2c2c26;" />
 </template>
 <script>
 
@@ -10,14 +10,11 @@ export default {
     value: {
       type: String,
       default: ''
-    },
-    height: {
-      type: Number,
-      default: 795
     }
   },
   data() {
     return {
+      ignoreEvent: false,
       editor: null
     }
   },
@@ -40,8 +37,14 @@ export default {
         value: this.value, // 编辑器初始显示文字
         language: 'json', // 语言支持自行查阅demo
         automaticLayout: true, // 自动布局
-        theme: 'vs' // 官方自带三种主题vs, hc-black, or vs-dark
+        overviewRulerBorder: false, // 不要滚动条的边框
+        tabSize: 2, // tab 缩进长度
+        theme: 'vs', // 官方自带三种主题vs, hc-black, or vs-dark
+        minimap: {
+          enabled: false // 不要小地图
+        }
       })
+
       // 编辑器内容发生改变时触发
       this.editor.onDidChangeModelContent(() => {
         this.$emit('change', this.editor.getValue())
@@ -59,14 +62,6 @@ export default {
   font-size: 12px;
   height: 100%;
   position: relative;
-}
-.json-editor >>> .CodeMirror {
-  height: auto;
-  min-height: 300px;
-  line-height: 150%;
-}
-.json-editor >>> .CodeMirror-scroll{
-  min-height: 300px;
 }
 .json-editor >>> .cm-s-rubyblue span.cm-string {
   color: #F08047;

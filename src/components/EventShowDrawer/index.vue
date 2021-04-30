@@ -8,7 +8,7 @@
     size="42%"
   >
     <div class="drawer-content">
-      <div class="box-shadow">
+      <div style="padding:10px;">
         <json-editor ref="jsonEditor" v-model="event" />
       </div>
     </div>
