@@ -9,8 +9,6 @@ function resolve(dir) {
 const name = defaultSettings.title || '基础设施服务中心' // page title
 
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -48,14 +46,6 @@ module.exports = {
     plugins: [
       new MonacoWebpackPlugin({
         languages: ['javascript']
-      }),
-      new CompressionWebpackPlugin({
-        filename: '[path].gz[query]',
-        algorithm: 'gzip',
-        test: productionGzipExtensions,
-        threshold: 10240,
-        minRatio: 0.5,
-        deleteOriginalAssets: true
       })
     ],
     resolve: {
