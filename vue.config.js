@@ -9,6 +9,8 @@ function resolve(dir) {
 const name = defaultSettings.title || '基础设施服务中心' // page title
 
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -43,7 +45,19 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
-    plugins: [new MonacoWebpackPlugin()],
+    plugins: [
+      new MonacoWebpackPlugin({
+        languages: ['javascript']
+      }),
+      new CompressionWebpackPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: productionGzipExtensions,
+        threshold: 10240,
+        minRatio: 0.8,
+        deleteOriginalAssets: true
+      })
+    ],
     resolve: {
       alias: {
         '@': resolve('src')
