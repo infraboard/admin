@@ -50,7 +50,7 @@ export default {
       const style = {
         marginBottom: '10px',
         borderRadius: '0px',
-        backgroundColor: 'rgb(86 249 249)',
+        backgroundColor: 'rgb(48 210 190 / 42%)',
         color: 'rgb(20 105 105)'
       }
       switch (this.type) {

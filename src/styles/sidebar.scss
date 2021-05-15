@@ -10,7 +10,7 @@
     .sidebar-container {
       transition: width 0.28s;
       width: $sideBarWidth !important;
-      background-color: $menuBg;
+      background-image: $menuBg;
       height: 100%;
       position: fixed;
       font-size: 0px;
@@ -75,6 +75,13 @@
           background-color: $menuHover !important;
         }
       }
+
+      .router-link-active > .is-active {
+        font-weight: bold;
+        border-left: #fff 3px solid;
+        background-color: rgba(222,222,222,0.2);
+        margin: 10px;
+      }
   
       .is-active>.el-submenu__title {
         color: $subMenuActiveText !important;
@@ -83,7 +90,9 @@
       & .nest-menu .el-submenu>.el-submenu__title,
       & .el-submenu .el-menu-item {
         min-width: $sideBarWidth !important;
-        background-color: $subMenuBg !important;
+        // background-color: $subMenuBg !important;
+        margin-left: 10px;
+        margin-right: 10px;
   
         &:hover {
           background-color: $subMenuHover !important;
