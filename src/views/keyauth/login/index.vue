@@ -262,7 +262,7 @@ $cursor: #fff;
 }
 
 .login-container ::v-deep .el-tabs__nav-wrap {
-  background-color: #2d3a4b;
+  background-color: transparent;
 }
 
 .login-container ::v-deep .is-active {
@@ -275,7 +275,7 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background-image: linear-gradient(-225deg, #473B7B 0%, #3584A7 51%, #30D2BE 100%);
   overflow: hidden;
   .login-form {
     position: relative;
