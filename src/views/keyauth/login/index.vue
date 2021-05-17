@@ -240,10 +240,6 @@ $cursor: #fff;
       padding: 12px 5px 12px 15px;
       height: 47px;
       caret-color: $cursor;
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px #3a729c inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
     }
   }
   .el-form-item {
@@ -251,6 +247,12 @@ $cursor: #fff;
 
     color: #454545;
   }
+}
+
+input:-internal-autofill-previewed,
+input:-internal-autofill-selected {
+    -webkit-text-fill-color: #fff;
+    transition: background-color 5000s ease-out 0.5s;
 }
 </style>
 

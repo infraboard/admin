@@ -72,6 +72,15 @@
         <el-tab-pane lazy label="LDAP设置" name="second">
           <ldap-setting />
         </el-tab-pane>
+        <el-tab-pane lazy label="阿里钉钉" name="third" disabled>
+          <ldap-setting />
+        </el-tab-pane>
+        <el-tab-pane lazy label="企业微信" name="four" disabled>
+          <ldap-setting />
+        </el-tab-pane>
+        <el-tab-pane lazy label="飞书" name="five" disabled>
+          <ldap-setting />
+        </el-tab-pane>
       </el-tabs>
     </el-card>
 
