@@ -267,6 +267,7 @@ export default {
         if (valid) {
           // 生成参数
           this.choicedService.forEach(svr => {
+            console.log(svr)
             // 允许所有
             if (svr.allow_all) {
               this.createForm.permissions.push({
@@ -274,20 +275,26 @@ export default {
                 'service_id': svr.id,
                 'resource_name': '*',
                 'label_key': 'action',
-                'label_values': '*'
+                'label_values': ['*']
               })
-            } else {
-              svr.resources.forEach(item => {
-                this.createForm.permissions.push({
-                  'effect': 'allow',
-                  'service_id': svr.id,
-                  'resource_name': item.resource,
-                  'label_key': 'action',
-                  'label_values': item.actions
-                })
-              })
+              return
             }
+
+            if (!Object.prototype.hasOwnProperty.call(svr, 'resources')) {
+              return
+            }
+            svr.resources.forEach(item => {
+              this.createForm.permissions.push({
+                'effect': 'allow',
+                'service_id': svr.id,
+                'resource_name': item.resource,
+                'label_key': 'action',
+                'label_values': item.actions
+              })
+            })
           })
+
+          console.log(this.createForm)
 
           // 创建角色
           this.createRoleLoading = true
