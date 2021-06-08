@@ -23,10 +23,12 @@
           <!-- perm -->
           <div v-show="active === 1">
             <div v-for="svr in choicedService" :key="svr.id">
-              <div style="margin-bottom:12px;">
+              <div style="margin-top:12px;">
                 <span class="f12"> {{ svr.description }} ({{ svr.name }})</span>
+                <span style="margin-left:12px;"><el-checkbox v-model="svr.allow_all" @change="serviceAllowAllChanged">允许所有</el-checkbox></span>
               </div>
               <el-table
+                v-show="!svr.allow_all"
                 v-loading="listLoading"
                 border
                 :data="svr.resourceOptions"
@@ -80,10 +82,15 @@
                     label="授权条目"
                   >
                     <template slot-scope="scope">
-                      <li v-for="item in scope.row.resources" :key="item.resource" style="display: flex">
-                        <div style="width:120px;">{{ item.resource }}</div>
-                        <div>{{ item.actions.join(' ') }}</div>
-                      </li>
+                      <div v-if="!scope.row.allow_all">
+                        <li v-for="item in scope.row.resources" :key="item.resource" style="display: flex">
+                          <div style="width:120px;">{{ item.resource }}</div>
+                          <div>{{ item.actions.join(' ') }}</div>
+                        </li>
+                      </div>
+                      <div v-else>
+                        <span>允许所有资源的所有方法</span>
+                      </div>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -183,6 +190,13 @@ export default {
 
       return actions
     },
+    serviceAllowAllChanged() {
+      this.choicedService.forEach(svr => {
+        if (svr.allow_all) {
+          this.disableNext = false
+        }
+      })
+    },
     choicePermChanged() {
       if (this.choicePerm.length > 0) {
         this.disableNext = false
@@ -237,9 +251,9 @@ export default {
           break
         case 1:
           if (this.choicePerm.length > 0) {
-            this.active++
             this.generateChoicePermtoService()
           }
+          this.active++
           break
         case 2:
           break
@@ -253,15 +267,26 @@ export default {
         if (valid) {
           // 生成参数
           this.choicedService.forEach(svr => {
-            svr.resources.forEach(item => {
+            // 允许所有
+            if (svr.allow_all) {
               this.createForm.permissions.push({
                 'effect': 'allow',
                 'service_id': svr.id,
-                'resource_name': item.resource,
+                'resource_name': '*',
                 'label_key': 'action',
-                'label_values': item.actions
+                'label_values': '*'
               })
-            })
+            } else {
+              svr.resources.forEach(item => {
+                this.createForm.permissions.push({
+                  'effect': 'allow',
+                  'service_id': svr.id,
+                  'resource_name': item.resource,
+                  'label_key': 'action',
+                  'label_values': item.actions
+                })
+              })
+            }
           })
 
           // 创建角色
